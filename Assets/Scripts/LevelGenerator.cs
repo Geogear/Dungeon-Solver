@@ -1,11 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class LevelGenerator : MonoBehaviour
 {
-    /* 1 for tile, 2 for door. The room is a rectangle and can rotate 90 degrees. */
+    /* TODO, keep one map, but generate the level, step by step with updating that map, 
+     * at each step detailing it more. */
+    /* 1 for tile, 2 for door. The room is a rectangle and can rotate 90*n degrees,
+     * satisfying that, door always looks into the dungeon. */
+
+    /* Using separate matrix for each room,
+     + Dungeon size is a minimum requirement
+     + Each newly created room has a chance to have the door to the exit room, this chance will increase at
+     each new room creation
+     + Each room can have upto some number of doors according to its size. But if the dungeon minimum size requirement is met,
+     it won't have any doors, other than its entering door.
+     + Entering door of each room, belongs to the other room as a door count.
+     + Relation between the rooms can be kept as a tree.
+     + Room has a tile matrix and a rotation data.
+     + Each two room, connected by the door, share two neihgbour tiles, parent room knows the door tile's coordinate
+     and the direction the door faces, thus child room learns about its door tile's coordinate.
+     + The room decides where is the entering door exactly on the matrix, but its axis is fixed by its parent.
+     */
     private readonly int[] EntranceRoom =
         {1, 2, 1,
          1, 1, 1};
@@ -16,13 +30,16 @@ public class LevelGenerator : MonoBehaviour
     private const int DungeonFirstMaxEdge = 5;
     private const int DungeonFirstMinEdge = 3;
 
-    private int _currentMaxEdge = 5;
-    private int _currentMinEdge = 3;
-
     private readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
+
+    private int _currentMaxEdge = 5;
+    private int _currentMinEdge = 3;
+
+    private int _currentDungeonHeight = -1;
+    private int _currentDungeonWidth = -1;
 
     // Start is called before the first frame update
     void Start()
