@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Room
 {
+    public static int _minTilesRequired = 0;
     private static bool _exitRoomExists = false;
-    private static int _totalTileCreated = 0;
-    private static int _minTilesRequired = 0;
+    private static int _totalTileCreated = 0;   
     private static float _tileUnit = 1f;
-    private static Dictionary<Vector2, bool> _existingTiles = new Dictionary<Vector2, bool>();
+    private static Dictionary<Vector2, bool> _existingEdges = new Dictionary<Vector2, bool>();
 
     private Vector2 _enteringDoorCoord = new Vector2();
     private List<Room> _leadingRooms = new List<Room>();
@@ -22,6 +22,7 @@ public class Room
     public void CreateRooms(Vector2 enteringDoorCord, Direction enteringDoorDirection)
     {
         _enteringDoorCoord.Set(enteringDoorCord.x, enteringDoorCord.y);
+        FillUpTiles(enteringDoorDirection);
         RecordEnteringTileIndexes();
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
@@ -31,7 +32,7 @@ public class Room
 
     public void OpenNewDictionary()
     {
-        _existingTiles = new Dictionary<Vector2, bool>();
+        _existingEdges = new Dictionary<Vector2, bool>();
     }
 
     public Vector2 GetDoorTileCoordinate()
@@ -39,24 +40,35 @@ public class Room
         return _enteringDoorCoord;
     }
 
-    private void RegisterTilesToDictionary()
+    private void FillUpTiles(Direction enteringDoorDirection)
     {
-        Vector2 toRecord = new Vector2();
-        float x, y;
-        for (int i = 0; i < _tiles.Count; ++i)
+        /* TODO, according to direction mark the entering door and the other tiles */
+        /* int [] edges =  TODO, pass the edges as param or just make them static?? 
+                        + To understand rooms are overlapping only storing and checking the edges are enough. */
+    }
+
+    private void RegisterEdgeTilesToDictionary()
+    {
+        /* For the first row and last row */
+        for (int j = 0; j < _tiles[0].Count; ++j)
         {
-            for (int j = 0; j < _tiles[i].Count; ++j)
-            {
-                if (_tiles[i][j] == (int)Tile.DoorTile)
-                {
-                    continue;
-                }
-                x = _enteringDoorCoord.x + (j - _enteringIndexJ);
-                y = _enteringDoorCoord.y + (i - _enteringIndexI);
-                toRecord.Set(x, y);
-                _existingTiles.Add(toRecord, true);
-            }
+            AddRecordToDictionary(0, j);
+            AddRecordToDictionary(_tiles.Count - 1, j);
         }
+
+        /* For the first and last column */
+        for (int i = 1; i < _tiles.Count-1; ++i)
+        {
+            AddRecordToDictionary(i, 0);
+            AddRecordToDictionary(i, _tiles[0].Count-1);
+        }
+    }
+
+    private void AddRecordToDictionary(int i, int j)
+    {
+        float x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
+        float y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
+        _existingEdges.Add(new Vector2(x, y), true);
     }
 
     private void RecordEnteringTileIndexes()
