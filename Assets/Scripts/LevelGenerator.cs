@@ -20,19 +20,16 @@ public class LevelGenerator : MonoBehaviour
      and the direction the door faces, thus child room learns about its door tile's coordinate.
      + The room decides where is the entering door exactly on the matrix, but its axis is fixed by its parent.
      */
-    private readonly int[] EntranceRoom =
+    private static readonly int[] EntranceRoom =
         {1, 2, 1,
          1, 1, 1};
-    private readonly int[] ExitRoom =
+    private static readonly int[] ExitRoom =
         {1, 2, 1,
          1, 1, 1};
 
-    private const int DungeonFirstMaxEdge = 5;
-    private const int DungeonFirstMinEdge = 3;
-
-    private readonly int [] EdgeIncreaseAmount =
+    private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
-    private readonly int[] EdgeIncreaseAmountWeights =
+    private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
 
     private int _currentMaxEdge = 5;
@@ -44,7 +41,8 @@ public class LevelGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        /* Only place where, GenerateLevel is not called with AmplifyEdges*/
+        GenerateLevel();
     }
 
     // Update is called once per frame
@@ -54,7 +52,11 @@ public class LevelGenerator : MonoBehaviour
 
     public void GenerateLevel()
     {
-
+        /* Calculating min total tile required for this generation */
+        var rand = new System.Random();
+        _currentDungeonHeight = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
+        _currentDungeonWidth = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
+        Room._minTilesRequired = _currentDungeonHeight * _currentDungeonWidth;
     }
 
     private void AmplifyEdges()
@@ -104,5 +106,11 @@ public class LevelGenerator : MonoBehaviour
         }
         /* This shouldn't happen */
         return 0;
+    }
+
+    public int [] GetCurEdgeLengths()
+    {
+        int [] edges = new int []{ _currentDungeonHeight, _currentDungeonWidth};
+        return edges;
     }
 }
