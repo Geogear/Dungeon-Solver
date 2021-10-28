@@ -42,9 +42,72 @@ public class Room
 
     private void FillUpTiles(Direction enteringDoorDirection)
     {
-        /* TODO, according to direction mark the entering door and the other tiles */
+        var rand = new System.Random();
+        /* TODO, Fill all room tiles as normal tiles */
+
+        /* TODO, so each step it has to come up with the new door indexes, and sometimes problem could be not the size but the door placement,
+         so code should do a smart decision based on the overlappings, should think of each overlapping case */
+        /* 1.decide width and height, 2.check if overlapping edges exist go to 1., 3.increase _totalTileCreated 
+         + As the dungeon gets bigger, the rooms should get bigger as well*/
+
+        int roomHeight = -1, roomWidth = -1,
+        lastHeight = LevelGenerator.GetCurHeight(),
+        lastWidth = LevelGenerator.GetCurWidth();
+
+        /* Start of the room generating loop, because it needs entering room indexes to calculate other points */
+        DetermineEnteringDoorIndexes(enteringDoorDirection, rand, lastHeight, lastWidth);
+
+
+        /* After the room size and door location is finalized */
+        _tiles[_enteringIndexI][_enteringIndexJ] = (int)Tile.DoorTile;
+
+        /* TODO, according to the direction, mark the entering door and the other tiles */
         /* int [] edges =  TODO, pass the edges as param or just make them static?? 
                         + To understand rooms are overlapping only storing and checking the edges are enough. */
+    }
+
+    /* TODO, If edges are overlapping returns true */
+    private bool DoEdgesOverlapping(int height, int width)
+    {
+        /* For the first row and last row */
+        for (int j = 0; j < width; ++j)
+        {
+
+        }
+
+        /* For the first and last column */
+        for (int i = 1; i < height - 1; ++i)
+        {
+
+        }
+        return true;
+    }
+
+    private void DetermineEnteringDoorIndexes(Direction enteringDoorDirection, System.Random rand, int height, int width)
+    {
+        /* Placing the door on the designated edge of the room */
+        int upperLimit = (enteringDoorDirection == Direction.Up || enteringDoorDirection == Direction.Down) ? width : height;
+        int doorRow = rand.Next(0, upperLimit);
+        int doorColumn = -1;
+
+        switch (enteringDoorDirection)
+        {
+            case Direction.Up:
+                doorColumn = doorRow;
+                doorRow = 0;
+                break;
+            case Direction.Down:
+                doorColumn = doorRow;
+                doorRow = height - 1;
+                break;
+            case Direction.Left:
+                doorColumn = 0;
+                break;
+            case Direction.Right:
+                doorColumn = width - 1;
+                break;
+        }
+        _enteringIndexI = doorRow; _enteringIndexJ = doorColumn;
     }
 
     private void RegisterEdgeTilesToDictionary()
@@ -66,9 +129,16 @@ public class Room
 
     private void AddRecordToDictionary(int i, int j)
     {
-        float x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
-        float y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
-        _existingEdges.Add(new Vector2(x, y), true);
+        float[] points = CalcCoordinates(i, j);
+        _existingEdges.Add(new Vector2(points[0], points[1]), true);
+    }
+
+    private float [] CalcCoordinates(int i, int j)
+    {
+        float[] points = new float[2];
+        points[0] = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
+        points[1] = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
+        return points;
     }
 
     private void RecordEnteringTileIndexes()
