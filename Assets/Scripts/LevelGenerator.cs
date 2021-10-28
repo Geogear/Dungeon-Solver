@@ -35,8 +35,8 @@ public class LevelGenerator : MonoBehaviour
     private int _currentMaxEdge = 5;
     private int _currentMinEdge = 3;
 
-    private int _currentDungeonHeight = -1;
-    private int _currentDungeonWidth = -1;
+    private static int _currentDungeonHeight = -1;
+    private static int _currentDungeonWidth = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -108,9 +108,6 @@ public class LevelGenerator : MonoBehaviour
         return 0;
     }
 
-    public int [] GetCurEdgeLengths()
-    {
-        int [] edges = new int []{ _currentDungeonHeight, _currentDungeonWidth};
-        return edges;
-    }
+    public static int GetCurHeight() => _currentDungeonHeight;
+    public static int GetCurWidth() => _currentDungeonWidth;
 }
