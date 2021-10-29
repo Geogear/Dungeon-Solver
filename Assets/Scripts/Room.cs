@@ -14,6 +14,7 @@ public class Room
     private List<Room> _leadingRooms = new List<Room>();
     private List<Direction> _doorDirections = new List<Direction>();    
     private List<List<int>> _tiles = new List<List<int>>();
+    private List<Indexes> _edgeOverlappings = null;
 
     private int _enteringIndexI = -1;
     private int _enteringIndexJ = -1;
@@ -23,11 +24,20 @@ public class Room
     {
         _enteringDoorCoord.Set(enteringDoorCord.x, enteringDoorCord.y);
 
-        /* TODO, first a 1x1 room should be checked for overlapping, if it does, then this room cant be created
-            return false, */
+        /* First a 1x1 room should be checked for overlapping, if it does, then this room can't be created,
+            return false to the parent */
+        _enteringIndexI = _enteringIndexJ = 0;
+        if (DoEdgesOverlapping(1, 1))
+        {
+            return false;
+        }
 
         FillUpTiles(enteringDoorDirection);
         RecordEnteringTileIndexes();
+
+        /* TODO, use door expansion technique if first initiated room size is overlapping,
+         start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
+         no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
 
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
@@ -47,7 +57,7 @@ public class Room
     }
 
     private void FillUpTiles(Direction enteringDoorDirection)
-    {
+    {       
         var rand = new System.Random();
         /* TODO, Fill all room tiles as normal tiles */
 
@@ -69,21 +79,38 @@ public class Room
 
     }
 
-    /* TODO, If edges are overlapping returns true */
+    /* If edges are overlapping returns true */
     private bool DoEdgesOverlapping(int height, int width)
     {
+        _edgeOverlappings = new List<Indexes>();
         /* For the first row and last row */
         for (int j = 0; j < width; ++j)
         {
+            if (_existingEdges.ContainsKey(CalcCoordinates(0, j)))
+            {
+                _edgeOverlappings.Add(new Indexes(j, 0));
+            }
 
+            if (_existingEdges.ContainsKey(CalcCoordinates(height - 1, j)))
+            {
+                _edgeOverlappings.Add(new Indexes(j, height - 1));
+            }
         }
 
         /* For the first and last column */
         for (int i = 1; i < height - 1; ++i)
         {
+            if (_existingEdges.ContainsKey(CalcCoordinates(i, 0)))
+            {
+                _edgeOverlappings.Add(new Indexes(i, 0));
+            }
 
+            if (_existingEdges.ContainsKey(CalcCoordinates(i, width - 1)))
+            {
+                _edgeOverlappings.Add(new Indexes(i, width - 1));
+            }
         }
-        return true;
+        return _edgeOverlappings.Count != 0;
     }
 
     private void DetermineEnteringDoorIndexes(Direction enteringDoorDirection, System.Random rand, int height, int width)
@@ -139,7 +166,7 @@ public class Room
     {
         Vector2 vec2 = new Vector2();
         vec2.x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
-        vec2.y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
+        vec2.y = _enteringDoorCoord.y + (_enteringIndexI - i) * _tileUnit;
         return vec2;
     }
 

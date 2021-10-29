@@ -18,4 +18,10 @@ public struct Indexes
 {
     public int j;
     public int i;
+
+    public Indexes(int x, int y)
+    {
+        j = x;
+        i = y;
+    }
 }
