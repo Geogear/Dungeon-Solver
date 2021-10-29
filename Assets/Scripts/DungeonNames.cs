@@ -13,3 +13,9 @@ public enum Tile
     DoorTile = 1,
     TileCount = 2
 }
+
+public struct Indexes
+{
+    public int j;
+    public int i;
+}

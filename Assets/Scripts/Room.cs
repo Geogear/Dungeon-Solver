@@ -19,15 +19,21 @@ public class Room
     private int _enteringIndexJ = -1;
 
     /* This parameters are for this room to directly use, calculated by the parent room. */
-    public void CreateRooms(Vector2 enteringDoorCord, Direction enteringDoorDirection)
+    public bool CreateRoom(Vector2 enteringDoorCord, Direction enteringDoorDirection)
     {
         _enteringDoorCoord.Set(enteringDoorCord.x, enteringDoorCord.y);
+
+        /* TODO, first a 1x1 room should be checked for overlapping, if it does, then this room cant be created
+            return false, */
+
         FillUpTiles(enteringDoorDirection);
         RecordEnteringTileIndexes();
+
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
            Check if exit room is created, if not take your shot to create it
            Check if min tile count is satisfied, if not determine leading doors and their directions etc. */
+        return true;
     }
 
     public void OpenNewDictionary()
@@ -61,9 +67,6 @@ public class Room
         /* After the room size and door location is finalized */
         _tiles[_enteringIndexI][_enteringIndexJ] = (int)Tile.DoorTile;
 
-        /* TODO, according to the direction, mark the entering door and the other tiles */
-        /* int [] edges =  TODO, pass the edges as param or just make them static?? 
-                        + To understand rooms are overlapping only storing and checking the edges are enough. */
     }
 
     /* TODO, If edges are overlapping returns true */
@@ -129,16 +132,15 @@ public class Room
 
     private void AddRecordToDictionary(int i, int j)
     {
-        float[] points = CalcCoordinates(i, j);
-        _existingEdges.Add(new Vector2(points[0], points[1]), true);
+        _existingEdges.Add(CalcCoordinates(i, j), true);
     }
 
-    private float [] CalcCoordinates(int i, int j)
+    private Vector2 CalcCoordinates(int i, int j)
     {
-        float[] points = new float[2];
-        points[0] = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
-        points[1] = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
-        return points;
+        Vector2 vec2 = new Vector2();
+        vec2.x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
+        vec2.y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
+        return vec2;
     }
 
     private void RecordEnteringTileIndexes()
