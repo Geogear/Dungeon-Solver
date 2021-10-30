@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Room
 {
+    private static readonly int MaxRoomHeight = 23;
+    private static readonly int MaxRoomWidth = 23;
+
     public static int _minTilesRequired = 0;
     private static bool _exitRoomExists = false;
     private static int _totalTileCreated = 0;   
@@ -32,12 +35,13 @@ public class Room
             return false;
         }
 
-        FillUpTiles(enteringDoorDirection);
-        RecordEnteringTileIndexes();
+        /* Determine edges, check overlapping if does, enter the loop, in the end fill up tiles, i.e. just create the matrix */
 
-        /* TODO, use door expansion technique if first initiated room size is overlapping,
-         start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
-         no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
+        /* TODO, use room expansion technique if first initiated room size is overlapping,
+            start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
+            no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
+
+        FillUpTiles(enteringDoorDirection);       
 
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
@@ -170,6 +174,7 @@ public class Room
         return vec2;
     }
 
+    /* Uselesss? Already recording in DetermineEtneringDoorIndexes */
     private void RecordEnteringTileIndexes()
     {
         for (int i = 0; i < _tiles.Count; ++i)
@@ -184,5 +189,20 @@ public class Room
                 }
             }
         }
+    }
+
+    private Indexes CalcRoomSize()
+    {
+        var rand = new System.Random();
+        float width = -1, height = -1;
+        int upperWidthLimit = (Mathf.CeilToInt(LevelGenerator.GetCurWidth() / 2) >= MaxRoomWidth) ? MaxRoomWidth
+            : Mathf.CeilToInt(LevelGenerator.GetCurWidth() / 2),
+        upperHeightLimit = (Mathf.CeilToInt(LevelGenerator.GetCurHeight() / 2) >= MaxRoomHeight) ? MaxRoomHeight
+            : Mathf.CeilToInt(LevelGenerator.GetCurHeight() / 2);
+
+        width = rand.Next(2, upperWidthLimit + 1);
+        height = rand.Next(2, upperHeightLimit + 1);
+
+        return new Indexes((int)width, (int)height);
     }
 }
