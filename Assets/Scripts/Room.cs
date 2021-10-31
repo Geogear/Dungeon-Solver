@@ -13,6 +13,7 @@ public class Room
     private static float _tileUnit = 1f;
     private static Dictionary<Vector2, bool> _existingEdges = new Dictionary<Vector2, bool>();
 
+    private Direction _enteringDoorDirection;
     private Vector2 _enteringDoorCoord = new Vector2();
     private List<Room> _leadingRooms = new List<Room>();
     private List<Direction> _doorDirections = new List<Direction>();    
@@ -26,6 +27,7 @@ public class Room
     public bool CreateRoom(Vector2 enteringDoorCord, Direction enteringDoorDirection)
     {
         _enteringDoorCoord.Set(enteringDoorCord.x, enteringDoorCord.y);
+        _enteringDoorDirection = enteringDoorDirection;
 
         /* First a 1x1 room should be checked for overlapping, if it does, then this room can't be created,
             return false to the parent */
@@ -35,26 +37,66 @@ public class Room
             return false;
         }
 
-        /* Determine edges, check overlapping if does, enter the loop, in the end fill up tiles, i.e. just create the matrix */
+        /* Room Expansion technique for overlapping rooms,
+         * Determine edges, check overlapping if does,
+         * enter the loop, in the end fill up tiles, i.e. just create the matrix */
         Indexes firstRoomSize = CalcRoomSize();
-        DetermineEnteringDoorIndexes(enteringDoorDirection, new System.Random(), firstRoomSize.i, firstRoomSize.j);
-        if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j))
+        DetermineEnteringDoorIndexes(new System.Random(), firstRoomSize.i, firstRoomSize.j);
+        if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
+            !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
         {
             /* TODO, use room expansion technique if first initiated room size is overlapping,
                 start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
                 no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
-            /* TODO, try changing the door location of the first sizes, before entering the loop */
-            bool canIncreaseHeight = true, canIncreaseWidth = true;
+            bool canIncreaseHeight = true, canIncreaseWidth = true, increaseHeight = true;
             int curWidth = 1, curHeight = 1;
             /* Loop until can't increase the size anymore or one of the sizes hits the max possible */
             while ((canIncreaseHeight || canIncreaseWidth)
                 && curWidth < firstRoomSize.j && curHeight < firstRoomSize.i)
             {
+                /* First, increase an edge, do this by switching between the edges, if an edge increase is invalidated,
+                 * only the other edge will be increased */
+                if (canIncreaseHeight && increaseHeight)
+                {
+                    ++curHeight;
+                    increaseHeight = !canIncreaseWidth;
+                }
+                else
+                {
+                    ++curWidth;
+                    increaseHeight = canIncreaseHeight;
+                }
 
+                /* If no overlappings or there are overlappings but a legal room exists with another door location, continue */
+                if (!DoEdgesOverlappingFast(curHeight, curWidth) ||
+                    IsThereLegalRoomWithOtherDoor(curHeight, curWidth))
+                {
+                    continue;
+                }
+
+                if (increaseHeight)
+                {
+                    canIncreaseHeight = false;
+                    --curHeight;
+                }
+                else
+                {
+                    canIncreaseWidth = false;
+                    --curWidth;
+                }
+            }
+
+            firstRoomSize.i = curHeight; firstRoomSize.j = curWidth;
+            /* After leaving the loop, the door indexes are lost. Retrieve them. But this will tend to set door indexes, 
+             * of rooms that are created by expansion method, set similiarly */
+            if(DoEdgesOverlappingFast(firstRoomSize.i, firstRoomSize.j) &&
+                !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
+            {
+                Debug.LogAssertion("Something is wrong, this shouldn't happen.");
             }
         }
 
-        FillUpTiles(enteringDoorDirection);       
+        FillUpTiles();       
 
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
@@ -74,11 +116,11 @@ public class Room
     }
 
     /* Tries all possible door index for this room and returns if found a legal room, i.e. room with no edge overlappings */
-    private bool IsThereLegalRoomWithOtherDoor(int height, int width, Direction enteringDoorDirection)
+    private bool IsThereLegalRoomWithOtherDoor(int height, int width)
     {
         int prevI = _enteringIndexI, prevJ = _enteringIndexJ;
         _enteringIndexI = _enteringIndexJ = 0;
-        switch (enteringDoorDirection)
+        switch (_enteringDoorDirection)
         {
             case Direction.Right:
                 _enteringIndexJ = width - 1;
@@ -88,7 +130,7 @@ public class Room
                 break;
         }
 
-        if (enteringDoorDirection == Direction.Up || enteringDoorDirection == Direction.Down)
+        if (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down)
         {
             for(; _enteringIndexJ < width; ++_enteringIndexJ)
             {
@@ -113,7 +155,7 @@ public class Room
         return false;
     }
 
-    private void FillUpTiles(Direction enteringDoorDirection)
+    private void FillUpTiles()
     {       
         /* TODO, just generate the matrix, and fill the values */
 
@@ -183,14 +225,14 @@ public class Room
         return false;
     }
 
-    private void DetermineEnteringDoorIndexes(Direction enteringDoorDirection, System.Random rand, int height, int width)
+    private void DetermineEnteringDoorIndexes(System.Random rand, int height, int width)
     {
         /* Placing the door on the designated edge of the room */
-        int upperLimit = (enteringDoorDirection == Direction.Up || enteringDoorDirection == Direction.Down) ? width : height;
+        int upperLimit = (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down) ? width : height;
         int doorRow = rand.Next(0, upperLimit);
         int doorColumn = -1;
 
-        switch (enteringDoorDirection)
+        switch (_enteringDoorDirection)
         {
             case Direction.Up:
                 doorColumn = doorRow;
