@@ -45,9 +45,9 @@ public class Room
         if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
             !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
         {
-            /* TODO, use room expansion technique if first initiated room size is overlapping,
-                start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
-                no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
+            /* Use room expansion technique if first initiated room size is overlapping,
+                start with 1x1 increase edges one by one with switching if you can,
+                try door index changes too, at each step check for edge overlaps */
             bool canIncreaseHeight = true, canIncreaseWidth = true, increaseHeight = true;
             int curWidth = 1, curHeight = 1;
             /* Loop until can't increase the size anymore or one of the sizes hits the max possible */
@@ -96,7 +96,7 @@ public class Room
             }
         }
 
-        FillUpTiles();       
+        FillUpTiles(firstRoomSize.i, firstRoomSize.j);       
 
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
@@ -105,14 +105,13 @@ public class Room
         return true;
     }
 
+    public int GetRoomWidth => _tiles[0].Count;
+    public int GetRoomHeight() => _tiles.Count;
+    public Vector2 GetDoorTileCoordinate() => _enteringDoorCoord;
+
     public void OpenNewDictionary()
     {
         _existingEdges = new Dictionary<Vector2, bool>();
-    }
-
-    public Vector2 GetDoorTileCoordinate()
-    {
-        return _enteringDoorCoord;
     }
 
     /* Tries all possible door index for this room and returns if found a legal room, i.e. room with no edge overlappings */
@@ -155,9 +154,14 @@ public class Room
         return false;
     }
 
-    private void FillUpTiles()
-    {       
-        /* TODO, just generate the matrix, and fill the values */
+    private void FillUpTiles(int height, int width)
+    {
+        int[] arrRow = new int[width];
+        List<int> row = new List<int>(arrRow);
+        for(int i = 0; i < height; ++i)
+        {
+            _tiles.Add(row);
+        }
 
         /* After the room size and door location is finalized */
         _tiles[_enteringIndexI][_enteringIndexJ] = (int)Tile.DoorTile;
