@@ -40,7 +40,6 @@ public class Room
         DetermineEnteringDoorIndexes(enteringDoorDirection, new System.Random(), firstRoomSize.i, firstRoomSize.j);
         if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j))
         {
-            /* TODO, fast edge overlapping, change the existing one with a bool */
             /* TODO, use room expansion technique if first initiated room size is overlapping,
                 start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
                 no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
@@ -72,6 +71,46 @@ public class Room
     public Vector2 GetDoorTileCoordinate()
     {
         return _enteringDoorCoord;
+    }
+
+    /* Tries all possible door index for this room and returns if found a legal room, i.e. room with no edge overlappings */
+    private bool IsThereLegalRoomWithOtherDoor(int height, int width, Direction enteringDoorDirection)
+    {
+        int prevI = _enteringIndexI, prevJ = _enteringIndexJ;
+        _enteringIndexI = _enteringIndexJ = 0;
+        switch (enteringDoorDirection)
+        {
+            case Direction.Right:
+                _enteringIndexJ = width - 1;
+                break;
+            case Direction.Down:
+                _enteringIndexI = height - 1;
+                break;
+        }
+
+        if (enteringDoorDirection == Direction.Up || enteringDoorDirection == Direction.Down)
+        {
+            for(; _enteringIndexJ < width; ++_enteringIndexJ)
+            {
+                if (DoEdgesOverlappingFast(height, width))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            for (; _enteringIndexI < height; ++_enteringIndexI)
+            {
+                if (DoEdgesOverlappingFast(height, width))
+                {
+                    return true;
+                }
+            }
+        }
+
+        _enteringIndexI = prevI; _enteringIndexJ = prevJ;
+        return false;
     }
 
     private void FillUpTiles(Direction enteringDoorDirection)
