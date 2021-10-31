@@ -36,10 +36,24 @@ public class Room
         }
 
         /* Determine edges, check overlapping if does, enter the loop, in the end fill up tiles, i.e. just create the matrix */
+        Indexes firstRoomSize = CalcRoomSize();
+        DetermineEnteringDoorIndexes(enteringDoorDirection, new System.Random(), firstRoomSize.i, firstRoomSize.j);
+        if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j))
+        {
+            /* TODO, fast edge overlapping, change the existing one with a bool */
+            /* TODO, use room expansion technique if first initiated room size is overlapping,
+                start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
+                no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
+            /* TODO, try changing the door location of the first sizes, before entering the loop */
+            bool canIncreaseHeight = true, canIncreaseWidth = true;
+            int curWidth = 1, curHeight = 1;
+            /* Loop until can't increase the size anymore or one of the sizes hits the max possible */
+            while ((canIncreaseHeight || canIncreaseWidth)
+                && curWidth < firstRoomSize.j && curHeight < firstRoomSize.i)
+            {
 
-        /* TODO, use room expansion technique if first initiated room size is overlapping,
-            start with 1x1 increase edges one by one, try door index changes too, at each step check for edge overlaps 
-            no need to record for edge overlaps for this, might change the exiting one or create a new faster one.*/
+            }
+        }
 
         FillUpTiles(enteringDoorDirection);       
 
@@ -62,30 +76,19 @@ public class Room
 
     private void FillUpTiles(Direction enteringDoorDirection)
     {       
-        var rand = new System.Random();
-        /* TODO, Fill all room tiles as normal tiles */
-
-        /* TODO, so each step it has to come up with the new door indexes, and sometimes problem could be not the size but the door placement,
-         so code should do a smart decision based on the overlappings, should think of each overlapping case */
-        /* 1.decide width and height, 2.check if overlapping edges exist go to 1., 3.increase _totalTileCreated 
-         + As the dungeon gets bigger, the rooms should get bigger as well*/
-
-        int roomHeight = -1, roomWidth = -1,
-        lastHeight = LevelGenerator.GetCurHeight(),
-        lastWidth = LevelGenerator.GetCurWidth();
-
-        /* Start of the room generating loop, because it needs entering room indexes to calculate other points */
-        DetermineEnteringDoorIndexes(enteringDoorDirection, rand, lastHeight, lastWidth);
-
+        /* TODO, just generate the matrix, and fill the values */
 
         /* After the room size and door location is finalized */
         _tiles[_enteringIndexI][_enteringIndexJ] = (int)Tile.DoorTile;
-
     }
 
     /* If edges are overlapping returns true */
-    private bool DoEdgesOverlapping(int height, int width)
+    private bool DoEdgesOverlapping(int height, int width, bool doFast = true)
     {
+        if (doFast)
+        {
+            return DoEdgesOverlappingFast(height, width);
+        }
         _edgeOverlappings = new List<Indexes>();
         /* For the first row and last row */
         for (int j = 0; j < width; ++j)
@@ -115,6 +118,30 @@ public class Room
             }
         }
         return _edgeOverlappings.Count != 0;
+    }
+
+    private bool DoEdgesOverlappingFast(int height, int width)
+    {
+        /* For the first row and last row */
+        for (int j = 0; j < width; ++j)
+        {
+            if (_existingEdges.ContainsKey(CalcCoordinates(0, j))
+                || _existingEdges.ContainsKey(CalcCoordinates(height - 1, j)))
+            {
+                return true;
+            }
+        }
+
+        /* For the first and last column */
+        for (int i = 1; i < height - 1; ++i)
+        {
+            if (_existingEdges.ContainsKey(CalcCoordinates(i, 0))
+                || _existingEdges.ContainsKey(CalcCoordinates(i, width - 1)))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void DetermineEnteringDoorIndexes(Direction enteringDoorDirection, System.Random rand, int height, int width)
@@ -174,7 +201,7 @@ public class Room
         return vec2;
     }
 
-    /* Uselesss? Already recording in DetermineEtneringDoorIndexes */
+    /* TODO, Uselesss? Already recording in DetermineEtneringDoorIndexes */
     private void RecordEnteringTileIndexes()
     {
         for (int i = 0; i < _tiles.Count; ++i)
