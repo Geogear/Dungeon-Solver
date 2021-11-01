@@ -17,11 +17,13 @@ public class Room
     private Vector2 _enteringDoorCoord = new Vector2();
     private List<Room> _leadingRooms = new List<Room>();
     private List<Direction> _doorDirections = new List<Direction>();    
-    private List<List<int>> _tiles = new List<List<int>>();
     private List<Indexes> _edgeOverlappings = null;
+    private int[,] _tiles = null;
 
     private int _enteringIndexI = -1;
     private int _enteringIndexJ = -1;
+    private int _roomHeight = -1;
+    private int _roomWidth = -1;
 
     /* This parameters are for this room to directly use, calculated by the parent room. */
     public bool CreateRoom(Vector2 enteringDoorCord, Direction enteringDoorDirection)
@@ -105,8 +107,8 @@ public class Room
         return true;
     }
 
-    public int GetRoomWidth => _tiles[0].Count;
-    public int GetRoomHeight() => _tiles.Count;
+    public int GetRoomWidth => _roomWidth;
+    public int GetRoomHeight() => _roomHeight;
     public Vector2 GetDoorTileCoordinate() => _enteringDoorCoord;
 
     public void OpenNewDictionary()
@@ -156,15 +158,13 @@ public class Room
 
     private void FillUpTiles(int height, int width)
     {
-        int[] arrRow = new int[width];
-        List<int> row = new List<int>(arrRow);
-        for(int i = 0; i < height; ++i)
-        {
-            _tiles.Add(row);
-        }
+        _roomHeight = height;
+        _roomWidth = width;
+        _tiles = new int[height, width];
 
         /* After the room size and door location is finalized */
-        _tiles[_enteringIndexI][_enteringIndexJ] = (int)Tile.DoorTile;
+        _tiles[_enteringIndexI, _enteringIndexJ] = (int)Tile.DoorTile;
+        _totalTileCreated += _roomHeight * _roomWidth;
     }
 
     /* If edges are overlapping returns true */
@@ -259,17 +259,17 @@ public class Room
     private void RegisterEdgeTilesToDictionary()
     {
         /* For the first row and last row */
-        for (int j = 0; j < _tiles[0].Count; ++j)
+        for (int j = 0; j < _roomWidth; ++j)
         {
             AddRecordToDictionary(0, j);
-            AddRecordToDictionary(_tiles.Count - 1, j);
+            AddRecordToDictionary(_roomHeight - 1, j);
         }
 
         /* For the first and last column */
-        for (int i = 1; i < _tiles.Count-1; ++i)
+        for (int i = 1; i < _roomHeight-1; ++i)
         {
             AddRecordToDictionary(i, 0);
-            AddRecordToDictionary(i, _tiles[0].Count-1);
+            AddRecordToDictionary(i, _roomWidth-1);
         }
     }
 
@@ -289,11 +289,11 @@ public class Room
     /* TODO, Uselesss? Already recording in DetermineEtneringDoorIndexes */
     private void RecordEnteringTileIndexes()
     {
-        for (int i = 0; i < _tiles.Count; ++i)
+        for (int i = 0; i < _roomHeight; ++i)
         {
-            for (int j = 0; j < _tiles[i].Count; ++j)
+            for (int j = 0; j < _roomWidth; ++j)
             {
-                if (_tiles[i][j] == (int)Tile.DoorTile)
+                if (_tiles[i, j] == (int)Tile.DoorTile)
                 {
                     _enteringIndexI = i;
                     _enteringIndexJ = j;
