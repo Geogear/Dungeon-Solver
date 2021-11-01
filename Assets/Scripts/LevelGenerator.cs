@@ -42,7 +42,7 @@ public class LevelGenerator : MonoBehaviour
     void Start()
     {
         /* Only place where, GenerateLevel is not called with AmplifyEdges*/
-        GenerateLevel();
+        //GenerateLevel();
     }
 
     // Update is called once per frame
@@ -57,6 +57,7 @@ public class LevelGenerator : MonoBehaviour
         _currentDungeonHeight = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         _currentDungeonWidth = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         Room._minTilesRequired = _currentDungeonHeight * _currentDungeonWidth;
+        Room.SetExitRoomLimit();
     }
 
     private void AmplifyEdges()
@@ -88,7 +89,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public int GetWeightedRandom(int [] weights)
+    public static int GetWeightedRandom(int [] weights)
     {
         int total = 0;
         foreach(int x in weights)

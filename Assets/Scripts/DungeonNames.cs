@@ -11,7 +11,8 @@ public enum Tile
 {
     Normal = 0,
     DoorTile = 1,
-    TileCount = 2
+    ExitTile = 2,
+    TileCount = 3
 }
 
 public struct Indexes

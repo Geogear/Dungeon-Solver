@@ -4,10 +4,19 @@ using UnityEngine;
 
 public class Room
 {
-    private static readonly int MaxRoomHeight = 23;
-    private static readonly int MaxRoomWidth = 23;
+    private static readonly int[] ChildAmount =
+    {1, 2, 3};
+    private static readonly int[] ChildAmountWeights =
+    {40, 40, 20};
+    private static readonly int RoomHeightMax = 23;
+    private static readonly int RoomWidthMax = 23;
+    private static readonly float ExitRoomLimitMax = 0.8f;
+    private static readonly float ExitRoomLimitMin = 0.4f;
 
     public static int _minTilesRequired = 0;
+    private static float _exitRoomLimitCur = ExitRoomLimitMax;
+    private static float _exitRoomLimitDecrease = 0.02f;
+    private static int _numOfRooms = 0;
     private static bool _exitRoomExists = false;
     private static int _totalTileCreated = 0;   
     private static float _tileUnit = 1f;
@@ -98,22 +107,104 @@ public class Room
             }
         }
 
-        FillUpTiles(firstRoomSize.i, firstRoomSize.j);       
+        FillUpTiles(firstRoomSize.i, firstRoomSize.j);
 
         /* TODO
            Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
            Check if exit room is created, if not take your shot to create it
            Check if min tile count is satisfied, if not determine leading doors and their directions etc. */
+
+        /* Deciding on exit room. */
+        if (CanMakeExitRoom())
+        {
+            MakeThisExitRoom();
+        }
+
+        /* Children generating loop. */
+        GenerateChildren();
         return true;
     }
 
     public int GetRoomWidth => _roomWidth;
     public int GetRoomHeight() => _roomHeight;
+    public static int GetNumOfRooms() => _numOfRooms;
     public Vector2 GetDoorTileCoordinate() => _enteringDoorCoord;
+    
+    public static void SetExitRoomLimit()
+    {
+        if (_exitRoomLimitCur > ExitRoomLimitMin)
+        {
+            _exitRoomLimitCur -= _exitRoomLimitDecrease;
+        }       
+    }
 
     public void OpenNewDictionary()
     {
         _existingEdges = new Dictionary<Vector2, bool>();
+    }
+
+    private void GenerateChildren()
+    {
+        int amountOfChildren = ChildAmount[LevelGenerator.GetWeightedRandom(ChildAmountWeights)];
+        List<Direction> directionList = new List<Direction>();
+        for(int i = 0; i < (int)Direction.DirectionCount; ++i)
+        {
+            if (i != (int)_enteringDoorDirection)
+            {
+                directionList.Add((Direction)i);
+            }          
+        }
+
+        /* TODO, before sending the params, have to convert them for the child, forex, up becomes down etc.
+         * and the child's door tile coordinate must be one tile unit ahead. Because a door sprite will be put there. */
+    }
+
+    /* Decides if this room can be made an exit room with created tile ratio and a limit. Can be improved. */
+    private bool CanMakeExitRoom()
+    {
+        if (_exitRoomExists)
+        {
+            return false;
+        }
+        return ((float)_totalTileCreated / _minTilesRequired) >= _exitRoomLimitCur;       
+    }
+
+    /* Selects a random tile to be the exit tile, this randomness can be improved. */
+    private void MakeThisExitRoom()
+    {
+        var rand = new System.Random();
+        int j = 0, i = 0;
+        bool selectJ = true, selectI = true;
+        _exitRoomExists = true;
+
+        if (_roomHeight == 1)
+        {
+            selectI = false;
+        }
+        else if (_roomWidth == 1)
+        {
+            selectJ = false;
+        }
+
+        while (true)
+        {
+            if (selectJ)
+            {
+                j = rand.Next(0, _roomWidth);
+            }
+            if (selectI)
+            {
+                i = rand.Next(0, _roomHeight);
+            }
+ 
+            if (_tiles[i, j] == (int)Tile.DoorTile)
+            {
+                continue;
+            }
+
+            _tiles[i, j] = (int)Tile.ExitTile;
+            break;
+        }
     }
 
     /* Tries all possible door index for this room and returns if found a legal room, i.e. room with no edge overlappings */
@@ -165,6 +256,7 @@ public class Room
         /* After the room size and door location is finalized */
         _tiles[_enteringIndexI, _enteringIndexJ] = (int)Tile.DoorTile;
         _totalTileCreated += _roomHeight * _roomWidth;
+        ++_numOfRooms;
     }
 
     /* If edges are overlapping returns true */
@@ -307,10 +399,10 @@ public class Room
     {
         var rand = new System.Random();
         float width = -1, height = -1;
-        int upperWidthLimit = (Mathf.CeilToInt(LevelGenerator.GetCurWidth() / 2) >= MaxRoomWidth) ? MaxRoomWidth
-            : Mathf.CeilToInt(LevelGenerator.GetCurWidth() / 2),
-        upperHeightLimit = (Mathf.CeilToInt(LevelGenerator.GetCurHeight() / 2) >= MaxRoomHeight) ? MaxRoomHeight
-            : Mathf.CeilToInt(LevelGenerator.GetCurHeight() / 2);
+        int upperWidthLimit = (Mathf.CeilToInt((float)LevelGenerator.GetCurWidth() / 2) >= RoomWidthMax) ? RoomWidthMax
+            : Mathf.CeilToInt((float)LevelGenerator.GetCurWidth() / 2),
+        upperHeightLimit = (Mathf.CeilToInt((float)LevelGenerator.GetCurHeight() / 2) >= RoomHeightMax) ? RoomHeightMax
+            : Mathf.CeilToInt((float)LevelGenerator.GetCurHeight() / 2);
 
         width = rand.Next(2, upperWidthLimit + 1);
         height = rand.Next(2, upperHeightLimit + 1);
