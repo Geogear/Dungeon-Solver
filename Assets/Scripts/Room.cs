@@ -52,7 +52,7 @@ public class Room
          * Determine edges, check overlapping if does,
          * enter the loop, in the end fill up tiles, i.e. just create the matrix */
         Indexes firstRoomSize = CalcRoomSize();
-        DetermineEnteringDoorIndexes(new System.Random(), firstRoomSize.i, firstRoomSize.j);
+        DetermineEnteringDoorIndexes(firstRoomSize.i, firstRoomSize.j);
         if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
             !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
         {
@@ -155,7 +155,7 @@ public class Room
             }          
         }
 
-        /* TODO, before sending the params, have to convert them for the child, forex, up becomes down etc.
+        /* TODO, before sending the params, have to convert them for the child, for ex, up becomes down etc.
          * and the child's door tile coordinate must be one tile unit ahead. Because a door sprite will be put there. */
     }
 
@@ -172,7 +172,6 @@ public class Room
     /* Selects a random tile to be the exit tile, this randomness can be improved. */
     private void MakeThisExitRoom()
     {
-        var rand = new System.Random();
         int j = 0, i = 0;
         bool selectJ = true, selectI = true;
         _exitRoomExists = true;
@@ -190,11 +189,11 @@ public class Room
         {
             if (selectJ)
             {
-                j = rand.Next(0, _roomWidth);
+                j = LevelGenerator.rand.Next(0, _roomWidth);
             }
             if (selectI)
             {
-                i = rand.Next(0, _roomHeight);
+                i = LevelGenerator.rand.Next(0, _roomHeight);
             }
  
             if (_tiles[i, j] == (int)Tile.DoorTile)
@@ -321,11 +320,11 @@ public class Room
         return false;
     }
 
-    private void DetermineEnteringDoorIndexes(System.Random rand, int height, int width)
+    private void DetermineEnteringDoorIndexes(int height, int width)
     {
         /* Placing the door on the designated edge of the room */
         int upperLimit = (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down) ? width : height;
-        int doorRow = rand.Next(0, upperLimit);
+        int doorRow = LevelGenerator.rand.Next(0, upperLimit);
         int doorColumn = -1;
 
         switch (_enteringDoorDirection)
@@ -397,15 +396,14 @@ public class Room
 
     private Indexes CalcRoomSize()
     {
-        var rand = new System.Random();
         float width = -1, height = -1;
         int upperWidthLimit = (Mathf.CeilToInt((float)LevelGenerator.GetCurWidth() / 2) >= RoomWidthMax) ? RoomWidthMax
             : Mathf.CeilToInt((float)LevelGenerator.GetCurWidth() / 2),
         upperHeightLimit = (Mathf.CeilToInt((float)LevelGenerator.GetCurHeight() / 2) >= RoomHeightMax) ? RoomHeightMax
             : Mathf.CeilToInt((float)LevelGenerator.GetCurHeight() / 2);
 
-        width = rand.Next(2, upperWidthLimit + 1);
-        height = rand.Next(2, upperHeightLimit + 1);
+        width = LevelGenerator.rand.Next(2, upperWidthLimit + 1);
+        height = LevelGenerator.rand.Next(2, upperHeightLimit + 1);
 
         return new Indexes((int)width, (int)height);
     }

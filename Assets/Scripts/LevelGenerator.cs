@@ -19,7 +19,7 @@ public class LevelGenerator : MonoBehaviour
      + Teleport inside the dungeon to make travel easier (later addition)
      + Exiting room has a trap door that leads to a lower level.
      + Keep it simple, at max a room can have 3 children */
-
+    
     private static readonly int[] EntranceRoom =
         {1, 2, 1,
          1, 1, 1};
@@ -35,12 +35,24 @@ public class LevelGenerator : MonoBehaviour
     private int _currentMaxEdge = 5;
     private int _currentMinEdge = 3;
 
+    public static System.Random rand = new System.Random();
+    public static int _latestSeed = 0;
+
+    private static bool _seeded = false;
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (!_seeded)
+        {
+            _seeded = true;
+            if (_latestSeed != 0)
+            {
+                rand = new System.Random(_latestSeed);
+            }
+        }
         /* Only place where, GenerateLevel is not called with AmplifyEdges*/
         //GenerateLevel();
     }
@@ -53,7 +65,6 @@ public class LevelGenerator : MonoBehaviour
     public void GenerateLevel()
     {
         /* Calculating min total tile required for this generation */
-        var rand = new System.Random();
         _currentDungeonHeight = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         _currentDungeonWidth = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         Room._minTilesRequired = _currentDungeonHeight * _currentDungeonWidth;
@@ -65,7 +76,6 @@ public class LevelGenerator : MonoBehaviour
         /* Max edge should never be lower than min edge, 
          * or min edge should never surpass max edge, according to amplifyng order,
          * those two are different things */
-        var rand = new System.Random();
         int otherIncreaseAmount = 0;
         if (rand.Next() % 2 == 0)
         {
