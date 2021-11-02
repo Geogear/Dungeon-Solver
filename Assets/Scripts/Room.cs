@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Room
 {
+    /* TODO, properties of a tile must be considered and updated, right now I can't set a leading door tile as door tile.
+     And even if I could, I would still lose the information if more than one doors are looking to that tile. 
+     What needed is a multi-layered structure. */
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
@@ -25,7 +28,8 @@ public class Room
     private Direction _enteringDoorDirection;
     private Vector2 _enteringDoorCoord = new Vector2();
     private List<Room> _leadingRooms = new List<Room>();
-    private List<Direction> _doorDirections = new List<Direction>();    
+    private List<Direction> _doorDirections = new List<Direction>();
+    private List<Indexes> _leadingDoorIndexes = new List<Indexes>();
     private List<Indexes> _edgeOverlappings = null;
     private int[,] _tiles = null;
 
@@ -50,7 +54,7 @@ public class Room
 
         /* Room Expansion technique for overlapping rooms,
          * Determine edges, check overlapping if does,
-         * enter the loop, in the end fill up tiles, i.e. just create the matrix */
+         * enter the loop, in the end fill up tiles, i.e. create the matrix, assign properties */
         Indexes firstRoomSize = CalcRoomSize();
         DetermineEnteringDoorIndexes(firstRoomSize.i, firstRoomSize.j);
         if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
@@ -77,6 +81,9 @@ public class Room
                     ++curWidth;
                     increaseHeight = canIncreaseHeight;
                 }
+
+                /* Getting the new entering door indexes for the expanded room. */
+                DetermineEnteringDoorIndexes(curHeight, curWidth);
 
                 /* If no overlappings or there are overlappings but a legal room exists with another door location, continue */
                 if (!DoEdgesOverlappingFast(curHeight, curWidth) ||
@@ -108,11 +115,6 @@ public class Room
         }
 
         FillUpTiles(firstRoomSize.i, firstRoomSize.j);
-
-        /* TODO
-           Determine room size, determine the entering door indexes etc., increase totalTileCreated and update minTilesCreated if necessary 
-           Check if exit room is created, if not take your shot to create it
-           Check if min tile count is satisfied, if not determine leading doors and their directions etc. */
 
         /* Deciding on exit room. */
         if (CanMakeExitRoom())
@@ -155,8 +157,64 @@ public class Room
             }          
         }
 
-        /* TODO, before sending the params, have to convert them for the child, for ex, up becomes down etc.
-         * and the child's door tile coordinate must be one tile unit ahead. Because a door sprite will be put there. */
+        for (int i = 0; i < amountOfChildren; ++i)
+        {
+            int selectedIndex = LevelGenerator.rand.Next(directionList.Count);
+
+            Room newChild = new Room();
+            /* Create the new room, sending it the correct params, if room creation fails, try to make this exit room. */
+            if (!newChild.CreateRoom(CalcLeadingDoorCoords(directionList[selectedIndex]), RevertDirection(directionList[selectedIndex]))
+                && !_exitRoomExists)
+            {
+                MakeThisExitRoom();
+                directionList.RemoveAt(selectedIndex);
+                continue;
+            }
+
+            _leadingRooms.Add(newChild);
+            _doorDirections.Add(directionList[selectedIndex]);
+            directionList.RemoveAt(selectedIndex);
+        }
+    }
+
+    /* U <-> D, L <-> R*/
+    private Direction RevertDirection(Direction direction)
+    {
+        int changeAmount = -1;
+        if (direction == Direction.Up || direction == Direction.Left)
+        {
+            changeAmount = 1;
+        }
+
+        return direction + changeAmount;
+    }
+
+    private Vector2 CalcLeadingDoorCoords(Direction direction)
+    {
+        /* First determines indexes, then calcs coords,
+         * returns the one tile unit spaced coordinate, for the child to use. */
+        Indexes ix = DetermineDoorIndexes(_roomHeight, _roomWidth, direction);
+        Vector2 vec2 = CalcCoordinates(ix.i, ix.j);
+
+        /* TODO, must be updated after multi-layered tile structure is implemented. */
+        _leadingDoorIndexes.Add(new Indexes(ix.j, ix.i));
+
+        switch (direction)
+        {
+            case Direction.Up:
+                vec2.y += _tileUnit;
+                break;
+            case Direction.Down:
+                vec2.y -= _tileUnit;
+                break;
+            case Direction.Left:
+                vec2.x -= _tileUnit;
+                break;
+            case Direction.Right:
+                vec2.x += _tileUnit;
+                break;
+        }
+        return vec2;
     }
 
     /* Decides if this room can be made an exit room with created tile ratio and a limit. Can be improved. */
@@ -256,6 +314,7 @@ public class Room
         _tiles[_enteringIndexI, _enteringIndexJ] = (int)Tile.DoorTile;
         _totalTileCreated += _roomHeight * _roomWidth;
         ++_numOfRooms;
+        RegisterEdgeTilesToDictionary();
     }
 
     /* If edges are overlapping returns true */
@@ -322,12 +381,18 @@ public class Room
 
     private void DetermineEnteringDoorIndexes(int height, int width)
     {
+        Indexes ix = DetermineDoorIndexes(height, width, _enteringDoorDirection);
+        _enteringIndexI = ix.i; _enteringIndexJ = ix.j;
+    }
+
+    private Indexes DetermineDoorIndexes(int height, int width, Direction doorDirection)
+    {
         /* Placing the door on the designated edge of the room */
-        int upperLimit = (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down) ? width : height;
+        int upperLimit = (doorDirection == Direction.Up || doorDirection == Direction.Down) ? width : height;
         int doorRow = LevelGenerator.rand.Next(0, upperLimit);
         int doorColumn = -1;
 
-        switch (_enteringDoorDirection)
+        switch (doorDirection)
         {
             case Direction.Up:
                 doorColumn = doorRow;
@@ -344,7 +409,7 @@ public class Room
                 doorColumn = width - 1;
                 break;
         }
-        _enteringIndexI = doorRow; _enteringIndexJ = doorColumn;
+        return new Indexes(doorColumn, doorRow);
     }
 
     private void RegisterEdgeTilesToDictionary()

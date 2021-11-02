@@ -71,34 +71,6 @@ public class LevelGenerator : MonoBehaviour
         Room.SetExitRoomLimit();
     }
 
-    private void AmplifyEdges()
-    {
-        /* Max edge should never be lower than min edge, 
-         * or min edge should never surpass max edge, according to amplifyng order,
-         * those two are different things */
-        int otherIncreaseAmount = 0;
-        if (rand.Next() % 2 == 0)
-        {
-            _currentMaxEdge += EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
-            otherIncreaseAmount = EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
-            while(_currentMinEdge + otherIncreaseAmount >= _currentMaxEdge)
-            {
-                --otherIncreaseAmount;
-            }
-            _currentMinEdge += otherIncreaseAmount;
-        }
-        else
-        {
-            _currentMinEdge += EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
-            otherIncreaseAmount = EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
-            while(_currentMaxEdge + otherIncreaseAmount <= _currentMinEdge)
-            {
-                ++otherIncreaseAmount;
-            }
-            _currentMaxEdge += otherIncreaseAmount;
-        }
-    }
-
     public static int GetWeightedRandom(int [] weights)
     {
         int total = 0;
@@ -121,4 +93,32 @@ public class LevelGenerator : MonoBehaviour
 
     public static int GetCurHeight() => _currentDungeonHeight;
     public static int GetCurWidth() => _currentDungeonWidth;
+
+    private void AmplifyEdges()
+    {
+        /* Max edge should never be lower than min edge, 
+         * or min edge should never surpass max edge, according to amplifyng order,
+         * those two are different things */
+        int otherIncreaseAmount = 0;
+        if (rand.Next() % 2 == 0)
+        {
+            _currentMaxEdge += EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
+            otherIncreaseAmount = EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
+            while (_currentMinEdge + otherIncreaseAmount >= _currentMaxEdge)
+            {
+                --otherIncreaseAmount;
+            }
+            _currentMinEdge += otherIncreaseAmount;
+        }
+        else
+        {
+            _currentMinEdge += EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
+            otherIncreaseAmount = EdgeIncreaseAmount[GetWeightedRandom(EdgeIncreaseAmountWeights)];
+            while (_currentMaxEdge + otherIncreaseAmount <= _currentMinEdge)
+            {
+                ++otherIncreaseAmount;
+            }
+            _currentMaxEdge += otherIncreaseAmount;
+        }
+    }
 }
