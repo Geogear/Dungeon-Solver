@@ -2,30 +2,17 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
-    /* Using separate matrix for each room,
-     + Dungeon size is a minimum requirement
-     + Each newly created room has a chance to have the door to the exit room, this chance will increase at
-     each new room creation
-     + Each room can have upto some number of doors according to its size. But if the dungeon minimum size requirement is met,
-     it won't have any doors, other than its entering door.
-     + Entering door of each room, belongs to its parent room as a door count.
-     + Relation between the rooms can be kept as a tree.
-     + Room has a tile matrix and a rotation data.
-     + Each two room, connected by the door, share two neihgbour tiles, parent room knows the door tile's coordinate
-     and the direction the door faces, thus child room learns about its door tile's coordinate.
-     + The room decides where is the entering door exactly on its own matrix, but the door tile's real world coordinates are fixed by its parent.
-     
-     + Make sure that exiting room always exists.
-     + Teleport inside the dungeon to make travel easier (later addition)
-     + Exiting room has a trap door that leads to a lower level.
-     + Keep it simple, at max a room can have 3 children */
+    /* TODO, 
+      + All dungeon as one matrix. 
+      + Level generator be able to make entering room with, different rotations. */
     
-    private static readonly int[] EntranceRoom =
-        {1, 2, 1,
+    private static readonly int[] EntranceRoom1 =
+        {1, 1, 1,
          1, 1, 1};
-    private static readonly int[] ExitRoom =
-        {1, 2, 1,
-         1, 1, 1};
+    private static readonly int[] EntranceRoom2 =
+        {1, 1,
+         1, 1,
+         1, 1};
 
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
@@ -35,24 +22,16 @@ public class LevelGenerator : MonoBehaviour
     private int _currentMaxEdge = 5;
     private int _currentMinEdge = 3;
 
-    public static System.Random rand = new System.Random();
-    public static int _latestSeed = 0;
+    public static System.Random rand = null;
 
-    private static bool _seeded = false;
+    private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!_seeded)
-        {
-            _seeded = true;
-            if (_latestSeed != 0)
-            {
-                rand = new System.Random(_latestSeed);
-            }
-        }
+        rand = new System.Random(_currentSeed);
         /* Only place where, GenerateLevel is not called with AmplifyEdges*/
         //GenerateLevel();
     }
@@ -91,6 +70,7 @@ public class LevelGenerator : MonoBehaviour
         return 0;
     }
 
+    public static int GetCurSeed() => _currentSeed;
     public static int GetCurHeight() => _currentDungeonHeight;
     public static int GetCurWidth() => _currentDungeonWidth;
 
