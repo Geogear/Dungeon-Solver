@@ -82,9 +82,11 @@ public class LevelGenerator : MonoBehaviour
                             str += 'X';
                             break;
                     }
+                    str += '\t';
                 }
                 Debug.Log(str);
             }
+            Debug.Log("room num:" + Room.GetNumOfRooms());
         }
     }
 
@@ -156,10 +158,10 @@ public class LevelGenerator : MonoBehaviour
             switch (childRooms[i].GetEnteringDoorDirection())
             {
                 case Direction.Up:
-                    childDoorDungeonIndexes.i -= 2;
+                    childDoorDungeonIndexes.i += 2;
                     break;
                 case Direction.Down:
-                    childDoorDungeonIndexes.i += 2;
+                    childDoorDungeonIndexes.i -= 2;
                     break;
                 case Direction.Left:
                     childDoorDungeonIndexes.j += 2;

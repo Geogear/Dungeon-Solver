@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Room
 {
-    /* TODO, properties of a tile must be considered and updated, right now I can't set a leading door tile as door tile.
-     And even if I could, I would still lose the information if more than one doors are looking to that tile. 
-     What needed is a multi-layered structure. */
+    /* TODO, to select more optimal matrix sizes,
+     * look at x and y coords of edges of each room for max and min, for y and x*/
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
@@ -124,7 +123,10 @@ public class Room
         }
 
         /* Children generating loop. */
-        GenerateChildren();
+        if (_totalTileCreated < _minTilesRequired)
+        {
+            GenerateChildren();
+        }            
         return true;
     }
 
@@ -156,39 +158,25 @@ public class Room
         _enteringDoorCoord.x = 0; _enteringDoorCoord.y = 0;
         _enteringIndexI = _enteringIndexJ = 0;
 
-        switch (oneExit)
+        if (oneExit == Direction.Up || oneExit == Direction.Down)
         {
-            case Direction.Up:
-                _tiles = new int[2, 3];
-                _roomHeight = 2;
-                _roomWidth = 3;
-                ++_actualDungeonSize.i;
-                break;
-            case Direction.Down:
-                _tiles = new int[2, 3];
-                _roomHeight = 2;
-                _roomWidth = 3;
-                ++_actualDungeonSize.i;
-                break;
-            case Direction.Left:
-                _tiles = new int[3, 2];
-                _roomHeight = 3;
-                _roomWidth = 2;
-                ++_actualDungeonSize.j;
-                break;
-            case Direction.Right:
-                _tiles = new int[3, 2];
-                _roomHeight = 3;
-                _roomWidth = 2;
-                ++_actualDungeonSize.j;
-                break;
+            _tiles = new int[2, 3];
+            _roomHeight = 2;
+            _roomWidth = 3;
+            ++_actualDungeonSize.i;
+        }
+        else
+        {
+            _tiles = new int[3, 2];
+            _roomHeight = 3;
+            _roomWidth = 2;
+            ++_actualDungeonSize.j;
         }
 
         _totalTileCreated += _roomHeight * _roomWidth;
         ++_numOfRooms;
         _actualDungeonSize.i += _roomHeight;
         _actualDungeonSize.j += _roomWidth;
-        _tiles = new int[_roomHeight, _roomWidth];
         RegisterEdgeTilesToDictionary();
 
         Room child = new Room();
@@ -263,10 +251,10 @@ public class Room
         switch (direction)
         {
             case Direction.Up:
-                vec2.y += _tileUnit;
+                vec2.y -= _tileUnit;
                 break;
             case Direction.Down:
-                vec2.y -= _tileUnit;
+                vec2.y += _tileUnit;
                 break;
             case Direction.Left:
                 vec2.x -= _tileUnit;
@@ -344,7 +332,7 @@ public class Room
         {
             for(; _enteringIndexJ < width; ++_enteringIndexJ)
             {
-                if (DoEdgesOverlappingFast(height, width))
+                if (!DoEdgesOverlappingFast(height, width))
                 {
                     return true;
                 }
@@ -354,7 +342,7 @@ public class Room
         {
             for (; _enteringIndexI < height; ++_enteringIndexI)
             {
-                if (DoEdgesOverlappingFast(height, width))
+                if (!DoEdgesOverlappingFast(height, width))
                 {
                     return true;
                 }
