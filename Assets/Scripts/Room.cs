@@ -23,6 +23,7 @@ public class Room
     private static bool _exitRoomExists = false;
     private static int _totalTileCreated = 0;   
     private static float _tileUnit = 1f;
+    private static Indexes _actualDungeonSize = new Indexes(0, 0);
     private static Dictionary<Vector2, bool> _existingEdges = new Dictionary<Vector2, bool>();
 
     private Direction _enteringDoorDirection;
@@ -127,10 +128,17 @@ public class Room
         return true;
     }
 
-    public int GetRoomWidth => _roomWidth;
+    public int GetRoomWidth() => _roomWidth;
     public int GetRoomHeight() => _roomHeight;
-    public static int GetNumOfRooms() => _numOfRooms;
+    public int[,] GetRoom() => _tiles;
+    public Direction GetEnteringDoorDirection() => _enteringDoorDirection;
+    public Indexes GetEnteringIndexes() => new Indexes(_enteringIndexJ, _enteringIndexI);
     public Vector2 GetDoorTileCoordinate() => _enteringDoorCoord;
+    public List<Room> GetChildRooms() => _leadingRooms;
+    public List<Indexes> GetChildDoorIndexes() => _leadingDoorIndexes;
+    public List<Direction> GetChildDoorDirections() => _doorDirections;
+    public static int GetNumOfRooms() => _numOfRooms;
+    public static Indexes GetActualDungeonSize() => _actualDungeonSize;  
     
     public static void SetExitRoomLimit()
     {
@@ -315,6 +323,19 @@ public class Room
         _totalTileCreated += _roomHeight * _roomWidth;
         ++_numOfRooms;
         RegisterEdgeTilesToDictionary();
+
+        /* Increase dungeon size */
+        _actualDungeonSize.j += height;
+        _actualDungeonSize.i += width;
+
+        if (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down)
+        {
+            ++_actualDungeonSize.j;
+        }
+        else
+        {
+            ++_actualDungeonSize.i;
+        }
     }
 
     /* If edges are overlapping returns true */
