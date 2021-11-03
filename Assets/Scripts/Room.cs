@@ -140,12 +140,59 @@ public class Room
     public static int GetNumOfRooms() => _numOfRooms;
     public static Indexes GetActualDungeonSize() => _actualDungeonSize;  
     
+
     public static void SetExitRoomLimit()
     {
         if (_exitRoomLimitCur > ExitRoomLimitMin)
         {
             _exitRoomLimitCur -= _exitRoomLimitDecrease;
         }       
+    }
+
+    public void MakeThisEnteringRoom()
+    {
+        _enteringDoorDirection = Direction.DirectionCount;
+        Direction oneExit = (Direction)LevelGenerator.rand.Next((int)Direction.DirectionCount);
+        _enteringDoorCoord.x = 0; _enteringDoorCoord.y = 0;
+
+        switch (oneExit)
+        {
+            case Direction.Up:
+                _tiles = new int[2, 3];
+                _roomHeight = 2;
+                _roomWidth = 3;
+                ++_actualDungeonSize.i;
+                break;
+            case Direction.Down:
+                _tiles = new int[2, 3];
+                _roomHeight = 2;
+                _roomWidth = 3;
+                ++_actualDungeonSize.i;
+                break;
+            case Direction.Left:
+                _tiles = new int[3, 2];
+                _roomHeight = 3;
+                _roomWidth = 2;
+                ++_actualDungeonSize.j;
+                break;
+            case Direction.Right:
+                _tiles = new int[3, 2];
+                _roomHeight = 3;
+                _roomWidth = 2;
+                ++_actualDungeonSize.j;
+                break;
+        }
+
+        _totalTileCreated += _roomHeight * _roomWidth;
+        ++_numOfRooms;
+        _actualDungeonSize.i += _roomHeight;
+        _actualDungeonSize.j += _roomWidth;
+        RegisterEdgeTilesToDictionary();
+
+        Room child = new Room();
+        child.CreateRoom(CalcLeadingDoorCoords(oneExit), RevertDirection(oneExit));
+        _leadingRooms.Add(child);
+        _doorDirections.Add(oneExit);
     }
 
     public void OpenNewDictionary()
@@ -171,12 +218,16 @@ public class Room
 
             Room newChild = new Room();
             /* Create the new room, sending it the correct params, if room creation fails, try to make this exit room. */
-            if (!newChild.CreateRoom(CalcLeadingDoorCoords(directionList[selectedIndex]), RevertDirection(directionList[selectedIndex]))
-                && !_exitRoomExists)
+            if (!newChild.CreateRoom(CalcLeadingDoorCoords(directionList[selectedIndex]), RevertDirection(directionList[selectedIndex])))
             {
-                MakeThisExitRoom();
-                directionList.RemoveAt(selectedIndex);
-                continue;
+                /* If child wasn't created this door doesn't exist. */
+                _leadingDoorIndexes.RemoveAt(_leadingDoorIndexes.Count-1);
+                if (!_exitRoomExists)
+                {
+                    MakeThisExitRoom();
+                    directionList.RemoveAt(selectedIndex);
+                    continue;
+                }
             }
 
             _leadingRooms.Add(newChild);
@@ -325,16 +376,16 @@ public class Room
         RegisterEdgeTilesToDictionary();
 
         /* Increase dungeon size */
-        _actualDungeonSize.j += height;
-        _actualDungeonSize.i += width;
+        _actualDungeonSize.i += height;
+        _actualDungeonSize.j += width;
 
         if (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down)
         {
-            ++_actualDungeonSize.j;
+            ++_actualDungeonSize.i;
         }
         else
         {
-            ++_actualDungeonSize.i;
+            ++_actualDungeonSize.j;
         }
     }
 

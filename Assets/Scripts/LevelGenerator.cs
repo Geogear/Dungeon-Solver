@@ -1,11 +1,7 @@
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
-{
-    /* TODO, 
-      + All dungeon as one matrix. 
-      + Level generator be able to make entering room with, different rotations. */
-    
+{   
     private static readonly int[] EntranceRoom1 =
         {1, 1, 1,
          1, 1, 1};
@@ -53,6 +49,8 @@ public class LevelGenerator : MonoBehaviour
         Room.SetExitRoomLimit();
 
         /* Init entering room. */
+        _enteringRoom = new Room();
+        _enteringRoom.MakeThisEnteringRoom();
 
         /* After generation ends, creates and fills the dungeon matrix. */
         CreateDungeonMatrix();
