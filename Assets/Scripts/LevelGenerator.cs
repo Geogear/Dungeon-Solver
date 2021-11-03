@@ -32,7 +32,8 @@ public class LevelGenerator : MonoBehaviour
     {
         rand = new System.Random(_currentSeed);
         /* Only place where, GenerateLevel is not called with AmplifyEdges*/
-        //GenerateLevel();
+        GenerateLevel();
+        PrintDungeonMatrix();
     }
 
     // Update is called once per frame
@@ -47,6 +48,7 @@ public class LevelGenerator : MonoBehaviour
         _currentDungeonWidth = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         Room._minTilesRequired = _currentDungeonHeight * _currentDungeonWidth;
         Room.SetExitRoomLimit();
+        Room.OpenNewDictionary();
 
         /* Init entering room. */
         _enteringRoom = new Room();
@@ -54,6 +56,23 @@ public class LevelGenerator : MonoBehaviour
 
         /* After generation ends, creates and fills the dungeon matrix. */
         CreateDungeonMatrix();
+    }
+
+    public void PrintDungeonMatrix()
+    {
+        if (_dungeonMatrix != null)
+        {
+            for (int i = 0; i < _dungeonSize.i; ++i)
+            {
+                string str = "";
+                for (int j = 0; j < _dungeonSize.j; ++j)
+                {
+                    str += _dungeonMatrix[i, j];
+                }
+                Debug.Log(str);
+            }
+        }
+        Debug.Log("Heyo");
     }
 
     public static int GetWeightedRandom(int [] weights)

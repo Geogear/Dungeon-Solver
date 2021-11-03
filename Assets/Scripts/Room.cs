@@ -154,6 +154,7 @@ public class Room
         _enteringDoorDirection = Direction.DirectionCount;
         Direction oneExit = (Direction)LevelGenerator.rand.Next((int)Direction.DirectionCount);
         _enteringDoorCoord.x = 0; _enteringDoorCoord.y = 0;
+        _enteringIndexI = _enteringIndexJ = 0;
 
         switch (oneExit)
         {
@@ -195,7 +196,7 @@ public class Room
         _doorDirections.Add(oneExit);
     }
 
-    public void OpenNewDictionary()
+    public static void OpenNewDictionary()
     {
         _existingEdges = new Dictionary<Vector2, bool>();
     }
@@ -225,9 +226,9 @@ public class Room
                 if (!_exitRoomExists)
                 {
                     MakeThisExitRoom();
-                    directionList.RemoveAt(selectedIndex);
-                    continue;
+                    directionList.RemoveAt(selectedIndex);                   
                 }
+                continue;
             }
 
             _leadingRooms.Add(newChild);
