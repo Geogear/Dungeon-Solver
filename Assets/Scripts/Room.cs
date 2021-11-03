@@ -188,6 +188,7 @@ public class Room
         ++_numOfRooms;
         _actualDungeonSize.i += _roomHeight;
         _actualDungeonSize.j += _roomWidth;
+        _tiles = new int[_roomHeight, _roomWidth];
         RegisterEdgeTilesToDictionary();
 
         Room child = new Room();
@@ -511,7 +512,7 @@ public class Room
     {
         Vector2 vec2 = new Vector2();
         vec2.x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
-        vec2.y = _enteringDoorCoord.y + (_enteringIndexI - i) * _tileUnit;
+        vec2.y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
         return vec2;
     }
 

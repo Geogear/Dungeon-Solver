@@ -67,12 +67,25 @@ public class LevelGenerator : MonoBehaviour
                 string str = "";
                 for (int j = 0; j < _dungeonSize.j; ++j)
                 {
-                    str += _dungeonMatrix[i, j];
+                    switch (_dungeonMatrix[i, j])
+                    {
+                        case -1:
+                            str += 'E';
+                            break;
+                        case 0:
+                            str += 'N';
+                            break;
+                        case 1:
+                            str += 'D';
+                            break;
+                        case 2:
+                            str += 'X';
+                            break;
+                    }
                 }
                 Debug.Log(str);
             }
         }
-        Debug.Log("Heyo");
     }
 
     public static int GetWeightedRandom(int [] weights)
