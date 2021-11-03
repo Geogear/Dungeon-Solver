@@ -156,16 +156,16 @@ public class LevelGenerator : MonoBehaviour
             switch (childRooms[i].GetEnteringDoorDirection())
             {
                 case Direction.Up:
-                    --childDoorDungeonIndexes.i;
+                    childDoorDungeonIndexes.i -= 2;
                     break;
                 case Direction.Down:
-                    ++childDoorDungeonIndexes.i;
+                    childDoorDungeonIndexes.i += 2;
                     break;
                 case Direction.Left:
-                    ++childDoorDungeonIndexes.j;
+                    childDoorDungeonIndexes.j += 2;
                     break;
                 case Direction.Right:
-                    --childDoorDungeonIndexes.j;
+                    childDoorDungeonIndexes.j -= 2;
                     break;
             }
 
