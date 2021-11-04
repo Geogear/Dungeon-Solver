@@ -15,7 +15,7 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
 
-    private int _currentMaxEdge = 5;
+    private int _currentMaxEdge = 5; 
     private int _currentMinEdge = 3;
 
     public static System.Random rand = null;
