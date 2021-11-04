@@ -15,8 +15,8 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
 
-    private int _currentMaxEdge = 5; 
-    private int _currentMinEdge = 3;
+    private int _currentMaxEdge = 69; //5
+    private int _currentMinEdge = 31; //3
 
     public static System.Random rand = null;
 
@@ -99,19 +99,21 @@ public class LevelGenerator : MonoBehaviour
 
     public static int GetWeightedRandom(int [] weights)
     {
-        int total = 0;
+        int total = 0, randomTotal = 0;
         foreach(int x in weights)
         {
             total += x;
         }
 
+        randomTotal = rand.Next(total);
+
         for(int i = 0; i < weights.Length; ++i)
         {
-            if (total < weights[i])
+            if (randomTotal < weights[i])
             {
                 return i;
             }
-            total -= weights[i];
+            randomTotal -= weights[i];
         }
         /* This shouldn't happen */
         return 0;
@@ -162,11 +164,14 @@ public class LevelGenerator : MonoBehaviour
                 curCell.x = j;
                 if (_dungeonMatrix[i ,j] == -1)
                 {
-                    /* If any of the four neighbours is a door tile */
-                    if (IsNeighbourToTile(i, j, Tile.DoorTile))
+                    /* If one of the four direction is a door tile and the opposing direction is
+                     * eiter normal, door or exit tile. */
+                    if (DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.Normal)
+                        || DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.ExitTile)
+                        || DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.DoorTile))
                     {
                         _tileMap.SetTile(curCell, _normalTile);
-                    }/* If any of the four neighbours is a normal tile */
+                    }/* If any of the eight neighbours is a normal tile */
                     else if (IsNeighbourToTile(i, j, Tile.Normal, false))
                     {
                         _tileMap.SetTile(curCell, _genericWallTile);
@@ -182,6 +187,45 @@ public class LevelGenerator : MonoBehaviour
 
     private bool DoesHaveOppositeNeihgbour(int i, int j, Tile tile, int oppositeTile)
     {
+        int increaseI = 1, increaseJ = 1,
+            decreaseI = 1, decreaseJ = 1;
+
+        if (i == 0)
+        {
+            decreaseI = 0;
+        }
+        else if (i == _dungeonSize.i - 1)
+        {
+            increaseI = 0;
+        }
+
+        if (j == 0)
+        {
+            decreaseJ = 0;
+        }
+        else if (j == _dungeonSize.j - 1)
+        {
+            increaseJ = 0;
+        }
+
+        if (increaseI == 1 && decreaseI == 1)
+        {
+            if ((_dungeonMatrix[i + increaseI, j] == (int)tile && _dungeonMatrix[i - decreaseI, j] == oppositeTile)
+                || (_dungeonMatrix[i + increaseI, j] == oppositeTile && _dungeonMatrix[i - decreaseI, j] == (int)tile))
+            {
+                return true;
+            }
+        }
+
+        if (increaseJ == 1 && decreaseJ == 1)
+        {
+            if ((_dungeonMatrix[i, j + increaseJ] == (int)tile && _dungeonMatrix[i, j - decreaseJ] == oppositeTile)
+                || (_dungeonMatrix[i, j + increaseJ] == oppositeTile && _dungeonMatrix[i, j - decreaseJ] == (int)tile))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
