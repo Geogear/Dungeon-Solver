@@ -5,7 +5,8 @@ using UnityEngine;
 public class Room
 {
     /* TODO, to select more optimal matrix sizes,
-     * look at x and y coords of edges of each room for max and min, for y and x*/
+     * look at x and y coords of edges of each room for max and min, for y and x
+       TODO, make the dungeon visual */
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =

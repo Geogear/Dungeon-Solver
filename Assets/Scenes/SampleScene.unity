@@ -263,6 +263,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd213d115498bd449fed92491484815, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTile: {fileID: 11400000, guid: 3e09279d54936804fb2602bc62c5ebb6, type: 2}
+  _doorTile: {fileID: 11400000, guid: 425ce447dd38a6a429659bd1df1007e3, type: 2}
+  _exitTile: {fileID: 11400000, guid: a0d9a531d9e8a284289b7ba103acf172, type: 2}
+  tileMap: {fileID: 2124968936}
 --- !u!1 &2124968933
 GameObject:
   m_ObjectHideFlags: 0
