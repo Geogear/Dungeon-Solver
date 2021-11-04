@@ -23,6 +23,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
     public UnityEngine.Tilemaps.Tile _exitTile;
+    public UnityEngine.Tilemaps.Tile _genericWallTile;
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
     private static int _currentSeed = new System.Random().Next();
@@ -126,6 +127,7 @@ public class LevelGenerator : MonoBehaviour
          collider type as none, whereas the others have to have collider type, sprite or grid, don't know which
          one would be better, yet. */
         Vector3Int curCell = new Vector3Int();
+        bool exitNotFound = true;
         UnityEngine.Tilemaps.Tile tileToPut = null;
          for (int i = 0; i < _dungeonSize.i; ++i)
         {
@@ -137,13 +139,13 @@ public class LevelGenerator : MonoBehaviour
                 {
                     switch (_dungeonMatrix[i, j])
                     {
-                        case 0:
+                        case (int)Tile.Normal:
                             tileToPut = _normalTile;
                             break;
-                        case 1:
+                        case (int)Tile.DoorTile:
                             tileToPut = _doorTile;
                             break;
-                        case 2:
+                        case (int)Tile.ExitTile:
                             tileToPut = _exitTile;
                             break;
                     }
@@ -151,6 +153,66 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+
+        for (int i = 0; i < _dungeonSize.i; ++i)
+        {
+            curCell.y = i;
+            for (int j = 0; j < _dungeonSize.j; ++j)
+            {
+                curCell.x = j;
+                if (_dungeonMatrix[i ,j] == -1)
+                {
+                    /* If any of the four neighbours is a door tile */
+                    if (IsNeighbourToTile(i, j, Tile.DoorTile))
+                    {
+                        _tileMap.SetTile(curCell, _normalTile);
+                    }/* If any of the four neighbours is a normal tile */
+                    else if (IsNeighbourToTile(i, j, Tile.Normal, false))
+                    {
+                        _tileMap.SetTile(curCell, _genericWallTile);
+                    }else if (exitNotFound && IsNeighbourToTile(i, j, Tile.ExitTile, false))
+                    {
+                        exitNotFound = false;
+                        _tileMap.SetTile(curCell, _exitTile);
+                    }
+                }
+            }
+        }
+    }
+
+    private bool DoesHaveOppositeNeihgbour(int i, int j, Tile tile, int oppositeTile)
+    {
+        return false;
+    }
+
+    /* Returns true if index neihgbours the specified tile. */
+    private bool IsNeighbourToTile(int i, int j, Tile tile, bool fourNeighbourMode = true)
+    {
+        int increaseI = 1, increaseJ = 1, /* TODO, Using increaseI etc. like this creates problems, or does it ?*/
+            decreaseI = 1, decreaseJ = 1;
+
+        if (i == 0)
+        {
+            decreaseI = 0;
+        }else if (i == _dungeonSize.i - 1)
+        {
+            increaseI = 0;
+        }
+
+        if (j == 0)
+        {
+            decreaseJ = 0;
+        }
+        else if (j == _dungeonSize.j - 1)
+        {
+            increaseJ = 0;
+        }
+
+        return ((_dungeonMatrix[i, j - decreaseJ] == (int)tile || _dungeonMatrix[i, j + increaseJ] == (int)tile
+            || _dungeonMatrix[i + increaseI, j] == (int)tile || _dungeonMatrix[i - decreaseI, j] == (int)tile)
+            || (!fourNeighbourMode && (
+            _dungeonMatrix[i + increaseI, j - decreaseJ] == (int)tile || _dungeonMatrix[i + increaseI, j + increaseJ] == (int)tile
+            || _dungeonMatrix[i - decreaseI, j - decreaseJ] == (int)tile || _dungeonMatrix[i - decreaseI, j + increaseJ] == (int)tile)));
     }
 
     private void CreateDungeonMatrix()

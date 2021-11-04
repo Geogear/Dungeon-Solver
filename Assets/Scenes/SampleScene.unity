@@ -266,6 +266,7 @@ MonoBehaviour:
   _normalTile: {fileID: 11400000, guid: 3e09279d54936804fb2602bc62c5ebb6, type: 2}
   _doorTile: {fileID: 11400000, guid: 425ce447dd38a6a429659bd1df1007e3, type: 2}
   _exitTile: {fileID: 11400000, guid: a0d9a531d9e8a284289b7ba103acf172, type: 2}
+  _genericWallTile: {fileID: 11400000, guid: 0561f07a8c787f84abef475e1e3bcd58, type: 2}
   _tileMap: {fileID: 2124968936}
 --- !u!1 &2124968933
 GameObject:
