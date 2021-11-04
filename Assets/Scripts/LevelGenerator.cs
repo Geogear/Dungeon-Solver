@@ -23,7 +23,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
     public UnityEngine.Tilemaps.Tile _exitTile;
-    public UnityEngine.Tilemaps.Tilemap tileMap;
+    public UnityEngine.Tilemaps.Tilemap _tileMap;
 
     private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
@@ -125,6 +125,32 @@ public class LevelGenerator : MonoBehaviour
         /* TODO, for walls, doors and such. Need a tilemapcollider2d, and non-collidable tiles have to have,
          collider type as none, whereas the others have to have collider type, sprite or grid, don't know which
          one would be better, yet. */
+        Vector3Int curCell = new Vector3Int();
+        UnityEngine.Tilemaps.Tile tileToPut = null;
+         for (int i = 0; i < _dungeonSize.i; ++i)
+        {
+            curCell.y = i;
+            for (int j = 0; j < _dungeonSize.j; ++j)
+            {
+                curCell.x = j;
+                if (_dungeonMatrix[i, j] != -1)
+                {
+                    switch (_dungeonMatrix[i, j])
+                    {
+                        case 0:
+                            tileToPut = _normalTile;
+                            break;
+                        case 1:
+                            tileToPut = _doorTile;
+                            break;
+                        case 2:
+                            tileToPut = _exitTile;
+                            break;
+                    }
+                    _tileMap.SetTile(curCell, tileToPut);
+                }
+            }
+        }
     }
 
     private void CreateDungeonMatrix()
