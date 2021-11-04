@@ -7,7 +7,9 @@ public class Room
     /* TODO, to select more optimal matrix sizes,
      * look at x and y coords of edges of each room for max and min, for y and x
        TODO, make the dungeon visual
-       TODO, new bug, it falls into the assertion */
+       TODO, new bug, it falls into the assertion
+       TODO, key colliding error still exists, for some edge cases it somehow ends up there,
+       even though edges are colliding */
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
@@ -62,60 +64,22 @@ public class Room
         if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
             !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
         {
-            /* Use room expansion technique if first initiated room size is overlapping,
-                start with 1x1 increase edges one by one with switching if you can,
-                try door index changes too, at each step check for edge overlaps */
-            bool canIncreaseHeight = true, canIncreaseWidth = true, increaseHeight = true;
-            int curWidth = 1, curHeight = 1;
-            /* Loop until can't increase the size anymore or one of the sizes hits the max possible */
-            while ((canIncreaseHeight || canIncreaseWidth)
-                && curWidth < firstRoomSize.j && curHeight < firstRoomSize.i)
-            {
-                /* First, increase an edge, do this by switching between the edges, if an edge increase is invalidated,
-                 * only the other edge will be increased */
-                if (canIncreaseHeight && increaseHeight)
-                {
-                    ++curHeight;
-                    increaseHeight = !canIncreaseWidth;
-                }
-                else
-                {
-                    ++curWidth;
-                    increaseHeight = canIncreaseHeight;
-                }
 
-                /* Getting the new entering door indexes for the expanded room. */
-                DetermineEnteringDoorIndexes(curHeight, curWidth);
+            firstRoomSize = RoomExpansion(firstRoomSize);;
 
-                /* If no overlappings or there are overlappings but a legal room exists with another door location, continue */
-                if (!DoEdgesOverlappingFast(curHeight, curWidth) ||
-                    IsThereLegalRoomWithOtherDoor(curHeight, curWidth))
-                {
-                    continue;
-                }
-
-                if (increaseHeight)
-                {
-                    canIncreaseHeight = false;
-                    --curHeight;
-                }
-                else
-                {
-                    canIncreaseWidth = false;
-                    --curWidth;
-                }
-            }
-
-            firstRoomSize.i = curHeight; firstRoomSize.j = curWidth;
             /* After leaving the loop, the door indexes are lost. Retrieve them. But this will tend to set door indexes, 
-             * of rooms that are created by expansion method, set similiarly */
-            if(DoEdgesOverlappingFast(firstRoomSize.i, firstRoomSize.j) &&
-                !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
+                * of rooms that are created by expansion method, set similiarly */
+            IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j);
+            if (DoEdgesOverlappingFast(firstRoomSize.i, firstRoomSize.j))
             {
-                Debug.LogAssertion("Something is wrong, this shouldn't happen.");
+                return false;
             }
         }
 
+        if (DoEdgesOverlappingFast(firstRoomSize.i, firstRoomSize.j))
+        {
+            return false;
+        }
         FillUpTiles(firstRoomSize.i, firstRoomSize.j);
 
         /* Deciding on exit room. */
@@ -190,6 +154,56 @@ public class Room
     public static void OpenNewDictionary()
     {
         _existingEdges = new Dictionary<Vector2, bool>();
+    }
+
+    private Indexes RoomExpansion(Indexes firstRoomSize)
+    {
+        /* Use room expansion technique if first initiated room size is overlapping,
+            start with 1x1 increase edges one by one with switching if you can,
+            try door index changes too, at each step check for edge overlaps */
+        bool canIncreaseHeight = true, canIncreaseWidth = true, increaseHeight = true, increasedWidth = false;
+        int curWidth = 1, curHeight = 1;
+        /* Loop until can't increase the size anymore or one of the sizes hits the max possible */
+        while ((canIncreaseHeight || canIncreaseWidth)
+            && curWidth < firstRoomSize.j && curHeight < firstRoomSize.i)
+        {
+            /* First, increase an edge, do this by switching between the edges, if an edge increase is invalidated,
+             * only the other edge will be increased */
+            if (canIncreaseHeight && increaseHeight)
+            {
+                ++curHeight;
+                increaseHeight = !canIncreaseWidth;
+                increasedWidth = false;
+            }
+            else
+            {
+                ++curWidth;
+                increaseHeight = canIncreaseHeight;
+                increasedWidth = true;
+            }
+
+            /* Getting the new entering door indexes for the expanded room. */
+            DetermineEnteringDoorIndexes(curHeight, curWidth);
+
+            /* If no overlappings or there are overlappings but a legal room exists with another door location, continue */
+            if (!DoEdgesOverlappingFast(curHeight, curWidth) ||
+                IsThereLegalRoomWithOtherDoor(curHeight, curWidth))
+            {
+                continue;
+            }
+
+            if (increasedWidth)
+            {
+                canIncreaseWidth = false;
+                --curWidth;
+            }
+            else
+            {
+                canIncreaseHeight = false;
+                --curHeight;
+            }
+        }
+        return new Indexes(curWidth, curHeight);
     }
 
     private void GenerateChildren()
@@ -478,6 +492,18 @@ public class Room
 
     private void RegisterEdgeTilesToDictionary()
     {
+        if (_roomWidth == 1 || _roomHeight == 1)
+        {
+            for (int i = 0; i < _roomHeight; ++i)
+            {
+                for (int j = 0; j < _roomWidth; ++j)
+                {
+                    AddRecordToDictionary(i, j);
+                }
+            }
+            return;
+        }
+
         /* For the first row and last row */
         for (int j = 0; j < _roomWidth; ++j)
         {
@@ -495,6 +521,10 @@ public class Room
 
     private void AddRecordToDictionary(int i, int j)
     {
+        if (_existingEdges.ContainsKey(CalcCoordinates(i, j)))
+        {
+            bool res1 = DoEdgesOverlappingFast(_roomHeight, _roomWidth);
+        }
         _existingEdges.Add(CalcCoordinates(i, j), true);
     }
 

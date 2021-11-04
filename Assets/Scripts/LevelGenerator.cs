@@ -178,7 +178,7 @@ public class LevelGenerator : MonoBehaviour
                     }else if (exitNotFound && IsNeighbourToTile(i, j, Tile.ExitTile, false))
                     {
                         exitNotFound = false;
-                        _tileMap.SetTile(curCell, _exitTile);
+                        _tileMap.SetTile(curCell, _genericWallTile);
                     }
                 }
             }
