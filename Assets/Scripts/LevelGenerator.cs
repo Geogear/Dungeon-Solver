@@ -15,29 +15,32 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
 
-    private int _currentMaxEdge = 69; //5
-    private int _currentMinEdge = 31; //3
-
-    public static System.Random rand = null;
-
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
     public UnityEngine.Tilemaps.Tile _exitTile;
     public UnityEngine.Tilemaps.Tile _genericWallTile;
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
+    private int _currentMaxEdge = 100;
+    private int _currentMinEdge = 100;   
+
+    public static System.Random rand = null;
+
     private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
     private static int[,] _dungeonMatrix = null;
     private static Indexes _dungeonSize = new Indexes(0, 0);
+    private static Indexes _XYMax = new Indexes(0, 0);
+    private static Indexes _XYMin = new Indexes(0, 0);
     private static Room _enteringRoom = null;
 
     // Start is called before the first frame update
     void Start()
     {
         rand = new System.Random(_currentSeed);
-        /* Only place where, GenerateLevel is not called with AmplifyEdges*/
+        /* TODO, Only place where, GenerateLevel is not called with AmplifyEdges
+         TODO, Dont forget instantiating new static properties on each progressed level, if needed. */
         GenerateLevel();
         PrintDungeonMatrix();
         VisualizeDungeon();
@@ -97,6 +100,29 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    public static void UpdateDungeonSize(Vector2 minVec, Vector2 maxVec)
+    {
+        if ((int)minVec.x < _XYMin.j)
+        {
+            _XYMin.j = (int)minVec.x;
+        }
+
+        if ((int)minVec.y < _XYMin.i)
+        {
+            _XYMin.i = (int)minVec.y;
+        }
+
+        if ((int)maxVec.x > _XYMax.j)
+        {
+            _XYMax.j = (int)maxVec.x;
+        }
+
+        if ((int)maxVec.y > _XYMax.i)
+        {
+            _XYMax.i = (int)maxVec.y;
+        }
+    }
+
     public static int GetWeightedRandom(int [] weights)
     {
         int total = 0, randomTotal = 0;
@@ -122,6 +148,8 @@ public class LevelGenerator : MonoBehaviour
     public static int GetCurSeed() => _currentSeed;
     public static int GetCurHeight() => _currentDungeonHeight;
     public static int GetCurWidth() => _currentDungeonWidth;
+    public static int IncreaseX() => ++_XYMax.j;
+    public static int IncreaseY() => ++_XYMax.i;
 
     private void VisualizeDungeon()
     {
@@ -261,8 +289,8 @@ public class LevelGenerator : MonoBehaviour
 
     private void CreateDungeonMatrix()
     {
-        _dungeonSize = Room.GetActualDungeonSize();
-        Indexes firstRoomIndexes = new Indexes(_dungeonSize.j-1, _dungeonSize.i-1);
+        _dungeonSize.i = _XYMax.i - _XYMin.i + 1; _dungeonSize.j = _XYMax.j - _XYMin.j + 1;
+        Indexes firstRoomIndexes = new Indexes(_dungeonSize.j - 1, _dungeonSize.i-1);
         _dungeonSize.i *= 2; _dungeonSize.j *= 2;
 
         _dungeonMatrix = new int[_dungeonSize.i, _dungeonSize.j];

@@ -1,15 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Room
 {
-    /* TODO, to select more optimal matrix sizes,
-     * look at x and y coords of edges of each room for max and min, for y and x
-       TODO, make the dungeon visual
-       TODO, new bug, it falls into the assertion
-       TODO, key colliding error still exists, for some edge cases it somehow ends up there,
-       even though edges are colliding */
+    /* TODO, there are edge cases with the visualizer, and there might be some not because of the
+       visualizer but becaues how rooms are generated, two room will never collide but that doesn't mean,
+       there will be space for walls. Can create rooms with walls in mind, this would simplify the visualizer
+       very much. 
+       Actually, the main thing might not be happening, theoretically, it should be happening, if I'm not missing anything
+       but I didn't see any room generated like that, nevertheless, it would speed up the creation of the dungeon.*/
+
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
@@ -26,7 +26,6 @@ public class Room
     private static bool _exitRoomExists = false;
     private static int _totalTileCreated = 0;   
     private static float _tileUnit = 1f;
-    private static Indexes _actualDungeonSize = new Indexes(0, 0);
     private static Dictionary<Vector2, bool> _existingEdges = new Dictionary<Vector2, bool>();
 
     private Direction _enteringDoorDirection;
@@ -106,8 +105,6 @@ public class Room
     public List<Indexes> GetChildDoorIndexes() => _leadingDoorIndexes;
     public List<Direction> GetChildDoorDirections() => _doorDirections;
     public static int GetNumOfRooms() => _numOfRooms;
-    public static Indexes GetActualDungeonSize() => _actualDungeonSize;  
-    
 
     public static void SetExitRoomLimit()
     {
@@ -129,20 +126,19 @@ public class Room
             _tiles = new int[2, 3];
             _roomHeight = 2;
             _roomWidth = 3;
-            ++_actualDungeonSize.i;
+            LevelGenerator.IncreaseY();
         }
         else
         {
             _tiles = new int[3, 2];
             _roomHeight = 3;
             _roomWidth = 2;
-            ++_actualDungeonSize.j;
+            LevelGenerator.IncreaseX();
         }
 
         _totalTileCreated += _roomHeight * _roomWidth;
         ++_numOfRooms;
-        _actualDungeonSize.i += _roomHeight;
-        _actualDungeonSize.j += _roomWidth;
+        LevelGenerator.UpdateDungeonSize(CalcCoordinates(0, 0), CalcCoordinates(_roomHeight-1, _roomWidth-1));
         RegisterEdgeTilesToDictionary();
 
         Room child = new Room();
@@ -382,16 +378,15 @@ public class Room
         RegisterEdgeTilesToDictionary();
 
         /* Increase dungeon size */
-        _actualDungeonSize.i += height;
-        _actualDungeonSize.j += width;
+        LevelGenerator.UpdateDungeonSize(CalcCoordinates(0, 0), CalcCoordinates(_roomHeight - 1, _roomWidth - 1));
 
         if (_enteringDoorDirection == Direction.Up || _enteringDoorDirection == Direction.Down)
         {
-            ++_actualDungeonSize.i;
+            LevelGenerator.IncreaseY();
         }
         else
         {
-            ++_actualDungeonSize.j;
+            LevelGenerator.IncreaseX();
         }
     }
 
