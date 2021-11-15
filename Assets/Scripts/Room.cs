@@ -6,9 +6,7 @@ public class Room
     /* TODO, there are edge cases with the visualizer, and there might be some not because of the
        visualizer but becaues how rooms are generated, two room will never collide but that doesn't mean,
        there will be space for walls. Can create rooms with walls in mind, this would simplify the visualizer
-       very much. 
-       Actually, the main thing might not be happening, theoretically, it should be happening, if I'm not missing anything
-       but I didn't see any room generated like that, nevertheless, it would speed up the creation of the dungeon.*/
+       very much, it would speed up the creation of the dungeon.*/
 
     private static readonly int[] ChildAmount =
     {1, 2, 3};

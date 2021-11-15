@@ -41,7 +41,7 @@ public class LevelGenerator : MonoBehaviour
     {
         rand = new System.Random(_currentSeed);
         /* TODO, Only place where, GenerateLevel is not called with AmplifyEdges
-         TODO, Dont forget instantiating new static properties on each progressed level, if needed. */
+         TODO, Dont forget assigning new values to static properties on each progressed level, if needed. */
         GenerateLevel();
         PrintDungeonMatrix();
         VisualizeDungeon();
@@ -154,9 +154,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void VisualizeDungeon()
     {
-        /* TODO, for walls, doors and such. Need a tilemapcollider2d, and non-collidable tiles have to have,
-         collider type as none, whereas the others have to have collider type, sprite or grid, don't know which
-         one would be better, yet. */
         Vector3Int curCell = new Vector3Int();
         Vector3Int originCell = _tileMap.WorldToCell(transform.position);
         Debug.Log("originCell: " + originCell);
