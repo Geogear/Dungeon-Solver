@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {   
+    /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. */
     private static readonly int[] EntranceRoom1 =
         {1, 1, 1,
          1, 1, 1};
@@ -158,10 +159,11 @@ public class LevelGenerator : MonoBehaviour
          one would be better, yet. */
         Vector3Int curCell = new Vector3Int();
         Vector3Int originCell = _tileMap.WorldToCell(transform.position);
+        Debug.Log("originCell: " + originCell);
         /* This makes the 0,0 point of the entrance tile, (_dungeon.Size.i-1 and
          * _dungeonSize.j-1 on the dungeon matrix)to be on the originCell. */
-        int differenceY = _dungeonSize.i - 1 - originCell.y;
-        int differenceX = _dungeonSize.j - 1 - originCell.x;
+        int differenceY = _dungeonSize.i/2 - 1 - originCell.y;
+        int differenceX = _dungeonSize.j/2 - 1 - originCell.x;
         bool exitNotFound = true;
         UnityEngine.Tilemaps.Tile tileToPut = null;
          for (int i = 0; i < _dungeonSize.i; ++i)
@@ -191,10 +193,10 @@ public class LevelGenerator : MonoBehaviour
 
         for (int i = 0; i < _dungeonSize.i; ++i)
         {
-            curCell.y = i;
+            curCell.y = i - differenceY;
             for (int j = 0; j < _dungeonSize.j; ++j)
             {
-                curCell.x = j;
+                curCell.x = j - differenceX;
                 if (_dungeonMatrix[i ,j] == -1)
                 {
                     /* If one of the four direction is a door tile and the opposing direction is
