@@ -43,7 +43,7 @@ public class LevelGenerator : MonoBehaviour
         /* TODO, Only place where, GenerateLevel is not called with AmplifyEdges
          TODO, Dont forget assigning new values to static properties on each progressed level, if needed. */
         GenerateLevel();
-        PrintDungeonMatrix();
+        PrintDungeonMatrix(false);
         VisualizeDungeon();
     }
 
@@ -69,8 +69,9 @@ public class LevelGenerator : MonoBehaviour
         CreateDungeonMatrix();
     }
 
-    public void PrintDungeonMatrix()
+    public void PrintDungeonMatrix(bool print)
     {
+        int xi = -1, xj = -1;
         if (_dungeonMatrix != null)
         {
             for (int i = 0; i < _dungeonSize.i; ++i)
@@ -90,15 +91,21 @@ public class LevelGenerator : MonoBehaviour
                             str += 'D';
                             break;
                         case 2:
+                            xi = i;
+                            xj = j;
                             str += 'X';
                             break;
                     }
                     str += '\t';
                 }
-                Debug.Log(str);
+                if (print)
+                {
+                    Debug.Log(str);
+                }                   
             }
-            Debug.Log("room num:" + Room.GetNumOfRooms());
         }
+        Debug.Log("exit indexes, i, j: " + xi + " " + xj);
+        Debug.Log("room num:" + Room.GetNumOfRooms());
     }
 
     public static void UpdateDungeonSize(Vector2 minVec, Vector2 maxVec)
@@ -156,12 +163,11 @@ public class LevelGenerator : MonoBehaviour
     {
         Vector3Int curCell = new Vector3Int();
         Vector3Int originCell = _tileMap.WorldToCell(transform.position);
-        Debug.Log("originCell: " + originCell);
         /* This makes the 0,0 point of the entrance tile, (_dungeon.Size.i-1 and
          * _dungeonSize.j-1 on the dungeon matrix)to be on the originCell. */
         int differenceY = _dungeonSize.i/2 - 1 - originCell.y;
         int differenceX = _dungeonSize.j/2 - 1 - originCell.x;
-        bool exitNotFound = true;
+        bool exitFound = false;
         UnityEngine.Tilemaps.Tile tileToPut = null;
          for (int i = 0; i < _dungeonSize.i; ++i)
         {
@@ -180,7 +186,11 @@ public class LevelGenerator : MonoBehaviour
                             tileToPut = _doorTile;
                             break;
                         case (int)Tile.ExitTile:
+                            exitFound = true;
                             tileToPut = _exitTile;
+                            break;
+                        case (int)Tile.WallTile:
+                            tileToPut = _genericWallTile;
                             break;
                     }
                     _tileMap.SetTile(curCell, tileToPut);
@@ -188,33 +198,8 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < _dungeonSize.i; ++i)
-        {
-            curCell.y = i - differenceY;
-            for (int j = 0; j < _dungeonSize.j; ++j)
-            {
-                curCell.x = j - differenceX;
-                if (_dungeonMatrix[i ,j] == -1)
-                {
-                    /* If one of the four direction is a door tile and the opposing direction is
-                     * eiter normal, door or exit tile. */
-                    if (DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.Normal)
-                        || DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.ExitTile)
-                        || DoesHaveOppositeNeihgbour(i, j, Tile.DoorTile, (int)Tile.DoorTile))
-                    {
-                        _tileMap.SetTile(curCell, _normalTile);
-                    }/* If any of the eight neighbours is a normal tile */
-                    else if (IsNeighbourToTile(i, j, Tile.Normal, false))
-                    {
-                        _tileMap.SetTile(curCell, _genericWallTile);
-                    }else if (exitNotFound && IsNeighbourToTile(i, j, Tile.ExitTile, false))
-                    {
-                        exitNotFound = false;
-                        _tileMap.SetTile(curCell, _genericWallTile);
-                    }
-                }
-            }
-        }
+        Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
+        return;
     }
 
     private bool DoesHaveOppositeNeihgbour(int i, int j, Tile tile, int oppositeTile)
@@ -323,6 +308,38 @@ public class LevelGenerator : MonoBehaviour
                 _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] = roomMatrix[i, j];
             }
         }
+
+        /* Surround with walls. */
+        for (int j = -1; j <= room.GetRoomWidth(); ++j)
+        {
+            _dungeonMatrix[newOrigin.i -1, newOrigin.j + j] = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j] = (int)Tile.WallTile;
+        }
+
+        for (int i = 0; i < room.GetRoomHeight(); ++i)
+        {
+            _dungeonMatrix[newOrigin.i + i, newOrigin.j - 1] = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()] = (int)Tile.WallTile;
+        }
+
+        /* Switch the doortile to its correct place. */
+        _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.Normal;
+        switch (room.GetEnteringDoorDirection())
+        {
+            case Direction.Up:
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i-1, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.DoorTile;
+                break;
+            case Direction.Down:
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i+1, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.DoorTile;
+                break;
+            case Direction.Left:
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j-1] = (int)Tile.DoorTile;
+                break;
+            case Direction.Right:
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j+1] = (int)Tile.DoorTile;
+                break;
+        }
+
         /* For each child, call put room with appropriate params. */
         System.Collections.Generic.List<Room> childRooms = room.GetChildRooms();
         System.Collections.Generic.List<Indexes> childDoorIndexes = room.GetChildDoorIndexes();
