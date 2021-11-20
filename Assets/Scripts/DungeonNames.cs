@@ -16,6 +16,14 @@ public enum Tile
     TileCount = 4
 }
 
+public enum FilledType
+{
+    Monster_Goblin = 0,
+    Treasure_1 = 1,
+    Trap_1 = 2,
+    FilledTypeCount = 3
+}
+
 public struct Indexes
 {
     public int j;
