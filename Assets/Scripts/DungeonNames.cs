@@ -18,10 +18,9 @@ public enum Tile
 
 public enum FilledType
 {
-    Monster_Goblin = 0,
-    Treasure_1 = 1,
-    Trap_1 = 2,
-    FilledTypeCount = 3
+    MonsterGoblin = 1,
+    Treasure_1 = 2,
+    Trap_1 = 3
 }
 
 public struct Indexes

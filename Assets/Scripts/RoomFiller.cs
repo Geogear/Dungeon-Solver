@@ -7,24 +7,14 @@ public static class RoomFiller
     /* These are probabilities. For easy - medium - hard,
      * determines the range of the random number. */
     private static float[] _difficultyRanges = { 0.3f, 0.5f, 0.2f };
-    private static float _minMonsterNumDivider = 5.0f;
+    private static float _minMonsterNumDivider = 7.0f;
     private static float _maxMonsterNumDivider = 4.0f;
     private static int[] _difficultyWeights = { 30, 55, 15 };
 
-    private static List<List<Indexes>> _filledIndexes = new List<List<Indexes>>();
-    private static List<List<FilledType>> _filledTypes = new List<List<FilledType>>();
-    private static List<int> _roomIds = new List<int>();
+    public static int [,] _filledTypes = null;
 
-    public static void InitData()
-    {
-        _filledIndexes = new List<List<Indexes>>();
-        _filledTypes = new List<List<FilledType>>();
-        _roomIds = new List<int>();
-    }
-
-    public static void FillRoom(int roomId, Indexes roomEdges)
-    {
-        _roomIds.Add(roomId);
+    public static void FillRoom(Indexes roomEdges)
+    {        
         float roomTileCount = roomEdges.j * roomEdges.i;
         int difficultyIndex = LevelGenerator.GetWeightedRandom(_difficultyWeights);
         float minBoundry = roomTileCount / _minMonsterNumDivider,
@@ -46,9 +36,9 @@ public static class RoomFiller
         }
         maxBoundry -= difference * rangeFixer;
 
+        /* Determine monster count. */
         float monsterCount = LevelGenerator.rand.Next((int)minBoundry, (int)maxBoundry+1);
         monsterCount += (float)LevelGenerator.rand.NextDouble();
-
         if (monsterCount < minBoundry)
         {
             monsterCount = minBoundry;
@@ -57,7 +47,7 @@ public static class RoomFiller
             monsterCount = maxBoundry;
         }
         /* Adding a constant on top according to the tile count for flavour. */
-        monsterCount += Mathf.RoundToInt(roomTileCount/(_maxMonsterNumDivider*_maxMonsterNumDivider));
+        //monsterCount += Mathf.RoundToInt(roomTileCount/(_maxMonsterNumDivider*_maxMonsterNumDivider));
 
         /* Record all existing indexes for the room to pull with rand. */
         monsterCount = Mathf.RoundToInt(monsterCount);
@@ -70,18 +60,12 @@ public static class RoomFiller
             }
         }
 
-        List<Indexes> selectedIndexes = new List<Indexes>();
-        List<FilledType> selectedTypes = new List<FilledType>();
+        _filledTypes = new int[roomEdges.i, roomEdges.j];
         for(; monsterCount > 0 && allIndexes.Count > 0; --monsterCount)
         {
             int randIndex = LevelGenerator.rand.Next(allIndexes.Count);
-            selectedIndexes.Add(allIndexes[randIndex]);
-            selectedTypes.Add(FilledType.Monster_Goblin);
+            _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = (int)FilledType.MonsterGoblin;
             allIndexes.RemoveAt(randIndex);
         }
-
-        /* Add generated lists to the outer lists. */
-        _filledIndexes.Add(selectedIndexes);
-        _filledTypes.Add(selectedTypes);
     }
 }

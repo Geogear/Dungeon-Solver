@@ -22,6 +22,8 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tile _genericWallTile;
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
+    public GameObject _goblinPrefab;
+
     [SerializeField]private int _currentMaxEdge = 100;
     [SerializeField]private int _currentMinEdge = 100;   
 
@@ -169,6 +171,7 @@ public class LevelGenerator : MonoBehaviour
         int differenceX = _dungeonSize.j/2 - 1 - originCell.x;
         bool exitFound = false;
         UnityEngine.Tilemaps.Tile tileToPut = null;
+        GameObject prefabToPut = null;
          for (int i = 0; i < _dungeonSize.i; ++i)
         {
             curCell.y = i - differenceY;
@@ -177,7 +180,7 @@ public class LevelGenerator : MonoBehaviour
                 curCell.x = j - differenceX;
                 if (_dungeonMatrix[i, j] != -1)
                 {
-                    switch (_dungeonMatrix[i, j])
+                    switch (_dungeonMatrix[i, j]%10)
                     {
                         case (int)Tile.Normal:
                             tileToPut = _normalTile;
@@ -194,12 +197,25 @@ public class LevelGenerator : MonoBehaviour
                             break;
                     }
                     _tileMap.SetTile(curCell, tileToPut);
+
+                    switch(_dungeonMatrix[i, j]/10)
+                    {
+                        case (int)FilledType.MonsterGoblin:
+                            prefabToPut = _goblinPrefab;
+                            break;
+                    }
+                    if (prefabToPut != null)
+                    {
+                        Vector3 pos = _tileMap.CellToWorld(curCell);
+                        pos.y += 0.6f; pos.x += 0.5f;
+                        Instantiate(prefabToPut, pos, Quaternion.identity);
+                        prefabToPut = null;
+                    }                 
                 }
             }
         }
-
         Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
-        return;
+        /* TODO, after visualizing the tiles, it should put the monsters, doors, treasures etc. */
     }
 
     private bool DoesHaveOppositeNeihgbour(int i, int j, Tile tile, int oppositeTile)
@@ -301,11 +317,20 @@ public class LevelGenerator : MonoBehaviour
             enteringDoorIndexesDungeon.i - enteringDoorIndexesRoom.i);
 
         int[,] roomMatrix = room.GetRoom();
+        bool notOnFirstRoom = room.GetEnteringDoorDirection() != Direction.DirectionCount;
+        if (notOnFirstRoom)
+        {
+            RoomFiller.FillRoom(new Indexes(room.GetRoomWidth(), room.GetRoomHeight()));
+        }
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
             for (int j = 0; j < room.GetRoomWidth(); ++j)
             {
                 _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] = roomMatrix[i, j];
+                if (notOnFirstRoom)
+                {
+                    _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] += RoomFiller._filledTypes[i, j] * 10;
+                }               
             }
         }
 
@@ -367,7 +392,6 @@ public class LevelGenerator : MonoBehaviour
 
             PutRoom(childDoorDungeonIndexes, childRooms[i]);
         }
-
     }
 
     private void AmplifyEdges()
