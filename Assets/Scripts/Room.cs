@@ -38,6 +38,7 @@ public class Room
     private int _enteringIndexJ = -1;
     private int _roomHeight = -1;
     private int _roomWidth = -1;
+    private int _roomId = -1;
 
     /* This parameters are for this room to directly use, calculated by the parent room. */
     public bool CreateRoom(Vector2 enteringDoorCord, Direction enteringDoorDirection)
@@ -96,6 +97,7 @@ public class Room
     public int GetRoomWidth() => _roomWidth;
     public int GetRoomHeight() => _roomHeight;
     public int[,] GetRoom() => _tiles;
+    public int GetRoomId() => _roomId;
     public Direction GetEnteringDoorDirection() => _enteringDoorDirection;
     public Indexes GetEnteringIndexes() => new Indexes(_enteringIndexJ, _enteringIndexI);
     public Vector2 GetDoorTileCoordinate() => _enteringDoorCoord;
@@ -372,7 +374,7 @@ public class Room
         /* After the room size and door location is finalized */
         _tiles[_enteringIndexI, _enteringIndexJ] = (int)Tile.DoorTile;
         _totalTileCreated += _roomHeight * _roomWidth;
-        ++_numOfRooms;
+        _roomId = ++_numOfRooms;
         RegisterEdgeTilesToDictionary();
 
         /* Increase dungeon size */
