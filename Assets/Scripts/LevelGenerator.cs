@@ -2,7 +2,11 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {   
-    /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. */
+    /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. 
+       KNOWN BUGS
+       + Exit room doesn't exist.
+       + Dungeon-matrix is too small. 
+       + Walls overlap on tiles. */
     private static readonly int[] EntranceRoom1 =
         {1, 1, 1,
          1, 1, 1};
