@@ -178,6 +178,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelGenerator
       objectReference: {fileID: 0}
+    - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
+      propertyPath: _currentMaxEdge
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
+      propertyPath: _currentMinEdge
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
 --- !u!1001 &8817742017174615376

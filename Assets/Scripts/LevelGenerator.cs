@@ -27,6 +27,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
     public GameObject _goblinPrefab;
+    public GameObject _background;
 
     [SerializeField]private int _currentMaxEdge = 100;
     [SerializeField]private int _currentMinEdge = 100;   
@@ -220,6 +221,7 @@ public class LevelGenerator : MonoBehaviour
         }
         Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
         /* TODO, after visualizing the tiles, it should put the monsters, doors, treasures etc. */
+        SetBG();
     }
 
     private bool DoesHaveOppositeNeihgbour(int i, int j, Tile tile, int oppositeTile)
@@ -424,5 +426,11 @@ public class LevelGenerator : MonoBehaviour
             }
             _currentMaxEdge += otherIncreaseAmount;
         }
+    }
+
+    private void SetBG()
+    {
+        _background.transform.localScale = new Vector3(_dungeonSize.j, _dungeonSize.i, 1);
+        Instantiate(_background, new Vector3(transform.position.x, transform.position.y, 1), Quaternion.identity);
     }
 }
