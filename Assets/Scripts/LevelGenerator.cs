@@ -6,7 +6,7 @@ public class LevelGenerator : MonoBehaviour
        KNOWN BUGS
        + Exit room doesn't exist.
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
-       + Walls overlap on tiles. */
+       + Walls overlap on tiles. I believe only happens with the entrance room. */
     private static readonly int[] EntranceRoom1 =
         {1, 1, 1,
          1, 1, 1};
