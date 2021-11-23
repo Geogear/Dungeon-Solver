@@ -1,30 +1,23 @@
 using UnityEngine;
 
-public class PlayerCharacter : MonoBehaviour
+public class PlayerCharacter : Character
 {
-    [SerializeField] private float _moveSpeed = 7.0f;
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
 
-    private bool _running = false;
-    private bool _facingRight = true;
-
-    private Animator _animator = null;
-    private SpriteRenderer _spriteRenderer = null;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        _animator = GetComponent<Animator>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        MoveCharacter();
+        base.Update();      
     }
 
-    private void MoveCharacter()
+    protected override void MoveCharacter()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");        
