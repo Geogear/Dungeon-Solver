@@ -73,7 +73,7 @@ public class PlayerCharacter : Character
 
     protected override void SetYourProperties()
     {
-        _hitTargetTag = "Enemy";
-        _attackAnimName = "FA2Idle";
+        _characterName = "FA2";
+        base.SetYourProperties();
     }
 }

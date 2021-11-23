@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 8817742015899828396}
   - component: {fileID: 8817742015899828397}
   - component: {fileID: -7552296397805003727}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,11 +156,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7bf3e4ab8035d4c8d671b2975974ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterName: FA2
   _moveSpeed: 3.7
   _attackDamage: 3
   _attackRange: 0.35
   _hitPoints: 15
-  _enemy:
+  _targetLayer:
     serializedVersion: 2
     m_Bits: 64
   _attackLocation: {fileID: 2149717467512497153}
