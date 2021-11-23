@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    /* TODO, can attack if _attacked is false. */
+    /* TODO, hurt anim cd, and invincible while hurt. */
     [SerializeField] protected float _moveSpeed = 7.0f;
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
@@ -20,6 +20,8 @@ public abstract class Character : MonoBehaviour
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
+    protected bool _invincible = false;
+    protected bool _died = false;
 
     protected virtual void Awake()
     {
@@ -44,14 +46,17 @@ public abstract class Character : MonoBehaviour
 
     public void GetHit(float damage)
     {
-        _hitPoints -= damage;
-        if (_hitPoints < float.Epsilon)
+        if (!_invincible)
         {
-            _animator.SetTrigger("Death");
-            GetComponent<BoxCollider2D>().enabled = false;
-            return;
-        }
-        _animator.SetTrigger("GetHit");
+            _hitPoints -= damage;
+            if (_hitPoints < float.Epsilon)
+            {
+                _animator.SetTrigger("Death");
+                _died = _invincible = true;
+                return;
+            }
+            _animator.SetTrigger("GetHit");
+        }      
     }
 
     protected abstract void MoveCharacter();

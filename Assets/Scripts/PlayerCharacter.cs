@@ -27,6 +27,10 @@ public class PlayerCharacter : Character
 
     protected override void MoveCharacter()
     {
+        if (_attacked)
+        {
+            return;
+        }
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");        
         bool haveInput = _horizontalInput > float.Epsilon || _horizontalInput < -float.Epsilon
