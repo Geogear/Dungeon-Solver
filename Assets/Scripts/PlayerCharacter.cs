@@ -2,8 +2,16 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
+    /* TODO, when animation is supposed to be speed up, set a bool on character.
+       StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
+       Will the animation clip length will increase? */
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     // Start is called before the first frame update
     protected override void Start()
@@ -14,7 +22,7 @@ public class PlayerCharacter : Character
     // Update is called once per frame
     protected override void Update()
     {
-        base.Update();      
+        base.Update();
     }
 
     protected override void MoveCharacter()
@@ -41,8 +49,27 @@ public class PlayerCharacter : Character
             {
                 _spriteRenderer.flipX = _facingRight;
                 _facingRight = !_facingRight;
+                _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
+                    _attackLocation.localPosition.y, _attackLocation.localPosition.z);
             }
         }
         transform.Translate(new Vector3(_horizontalInput, _verticalInput, 0) * _moveSpeed * Time.deltaTime);
+    }
+
+    protected override void AttackCharacter()
+    {
+        if (Input.GetAxis("Fire2") > float.Epsilon && !_attacked)
+        {
+            _attacked = true;
+            _animator.SetTrigger("Attack");
+            _attackTime = _attackAnim.length;
+            MeleeAttack();
+        }
+    }
+
+    protected override void SetYourProperties()
+    {
+        _hitTargetTag = "Enemy";
+        _attackAnimName = "FA2Idle";
     }
 }
