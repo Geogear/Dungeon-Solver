@@ -21,6 +21,7 @@ public abstract class Character : MonoBehaviour
     protected string _dyingAnimName = "";
     protected float _animCounter = 0.0f;
     protected float _leftAttackCD = -1.0f;
+    protected float _leftHurtCD = -1.0f;
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
@@ -44,6 +45,18 @@ public abstract class Character : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        if (_died)
+        {
+            return;
+        }
+
+        if (_leftHurtCD > float.Epsilon)
+        {
+            _leftHurtCD -= Time.deltaTime;
+            _running = false;
+            return;
+        }
+
         AttackAnimCountDown();
         MoveCharacter();
         AttackCharacter();
@@ -65,7 +78,7 @@ public abstract class Character : MonoBehaviour
                 return;
             }
             _animator.SetTrigger("Hurt");
-            _animCounter = _hurtAnim.length;
+            _leftHurtCD = _hurtAnim.length;
         }      
     }
 

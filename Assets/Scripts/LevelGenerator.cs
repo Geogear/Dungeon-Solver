@@ -6,15 +6,8 @@ public class LevelGenerator : MonoBehaviour
        KNOWN BUGS
        + Exit room doesn't exist.
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
-       + Walls overlap on tiles. I believe only happens with the entrance room. */
-    private static readonly int[] EntranceRoom1 =
-        {1, 1, 1,
-         1, 1, 1};
-    private static readonly int[] EntranceRoom2 =
-        {1, 1,
-         1, 1,
-         1, 1};
-
+       + Walls overlap on tiles. Because on places where tiles might exist, im putting wall tiles.
+       To solve, this need to have a different dictionary for wall tiles. When making a room this dictionary is also checked. */
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
@@ -30,7 +23,8 @@ public class LevelGenerator : MonoBehaviour
     public GameObject _background;
 
     [SerializeField]private int _currentMaxEdge = 100;
-    [SerializeField]private int _currentMinEdge = 100;   
+    [SerializeField]private int _currentMinEdge = 100;
+    [SerializeField] private int _customSeed = 0;
 
     public static System.Random rand = null;
 
@@ -46,6 +40,11 @@ public class LevelGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (_customSeed != 0)
+        {
+            _currentSeed = _customSeed;
+        }
+        Debug.Log("Seed:" + _currentSeed);
         rand = new System.Random(_currentSeed);
         /* TODO, Only place where, GenerateLevel is not called with AmplifyEdges
          TODO, Dont forget assigning new values to static properties on each progressed level, if needed. */
@@ -201,7 +200,8 @@ public class LevelGenerator : MonoBehaviour
                             tileToPut = _genericWallTile;
                             break;
                     }
-                    _tileMap.SetTile(curCell, tileToPut);
+                    if (tileToPut != _genericWallTile)
+                        _tileMap.SetTile(curCell, tileToPut);
 
                     switch(_dungeonMatrix[i, j]/10)
                     {
@@ -341,11 +341,11 @@ public class LevelGenerator : MonoBehaviour
         }
 
         /* Surround with walls. */
-        for (int j = -1; j <= room.GetRoomWidth(); ++j)
+        /*for (int j = -1; j <= room.GetRoomWidth(); ++j)
         {
             _dungeonMatrix[newOrigin.i -1, newOrigin.j + j] = (int)Tile.WallTile;
             _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j] = (int)Tile.WallTile;
-        }
+        }*/
 
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
