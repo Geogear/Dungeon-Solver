@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
-    /* TODO, when animation is supposed to be speed up, set a bool on character.
+    /* TODO, Attack speed buff, when animation is supposed to be speed up, set a bool on character.
        StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
        Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
     private float _horizontalInput = 0.0f;
@@ -36,6 +36,7 @@ public class PlayerCharacter : Character
         {
             return;
         }
+
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");        
         bool haveInput = _horizontalInput > float.Epsilon || _horizontalInput < -float.Epsilon
@@ -45,6 +46,7 @@ public class PlayerCharacter : Character
         {
             _animator.SetTrigger("Idle");
             _running = false;
+            return;
         }
         else if (haveInput && !_running)
         {
@@ -52,24 +54,26 @@ public class PlayerCharacter : Character
             _running = true;
         }
 
-        if (_horizontalInput > float.Epsilon || _horizontalInput < -float.Epsilon)
+        if (_running)
         {
-            if (_facingRight != (_horizontalInput > float.Epsilon))
+            if ((_horizontalInput > float.Epsilon || _horizontalInput < -float.Epsilon) &&
+                _facingRight != (_horizontalInput > float.Epsilon))
             {
                 _spriteRenderer.flipX = _facingRight;
                 _facingRight = !_facingRight;
                 _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
                     _attackLocation.localPosition.y, _attackLocation.localPosition.z);
             }
-        }
-        transform.Translate(new Vector3(_horizontalInput, _verticalInput, 0) * _moveSpeed * Time.deltaTime);
+            transform.Translate(new Vector3(_horizontalInput, _verticalInput, 0) * _moveSpeed * Time.deltaTime);
+        }        
     }
 
     protected override void AttackCharacter()
     {
-        if (!_attacked && Input.GetAxis("Fire2") > float.Epsilon)
+        if (!_attacked && Input.GetAxis("Fire2") > float.Epsilon && _leftAttackCD < float.Epsilon)
         {
             _attacked = true;
+            _running = false;
             _animator.SetTrigger("Attack");
             _animCounter = _attackAnim.length;
         }

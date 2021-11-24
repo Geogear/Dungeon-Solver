@@ -2,13 +2,11 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    /* TODO, hurt anim cd, and invincible while hurt.
-     TODO, after got hit, it should wait for some time before playing anim. */
     [SerializeField] protected string _characterName = "";
     [SerializeField] protected float _moveSpeed = 7.0f;
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
-    [SerializeField] protected float _attackCD = 3.0f;
+    [SerializeField] protected float _attackCD = 1.0f;
     [SerializeField] protected float _hitPoints = 15.0f;
     [SerializeField] protected LayerMask _targetLayer;
     [SerializeField] protected Transform _attackLocation;
@@ -96,7 +94,6 @@ public abstract class Character : MonoBehaviour
 
     protected void AttackAnimCountDown()
     {
-
         if (_leftAttackCD > float.Epsilon)
         {
             _leftAttackCD -= Time.deltaTime;
@@ -109,7 +106,7 @@ public abstract class Character : MonoBehaviour
             _attacked = _animCounter > float.Epsilon;
             if (!_attacked)
             {
-                MeleeAttack();
+                MeleeAttack();               
                 _leftAttackCD = _attackCD;
             }
         }
