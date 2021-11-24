@@ -4,7 +4,7 @@ public class PlayerCharacter : Character
 {
     /* TODO, when animation is supposed to be speed up, set a bool on character.
        StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
-       Will the animation clip length will increase? */
+       Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
 
@@ -23,6 +23,11 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
     }
 
     protected override void MoveCharacter()
@@ -62,18 +67,16 @@ public class PlayerCharacter : Character
 
     protected override void AttackCharacter()
     {
-        if (Input.GetAxis("Fire2") > float.Epsilon && !_attacked)
+        if (!_attacked && Input.GetAxis("Fire2") > float.Epsilon)
         {
             _attacked = true;
             _animator.SetTrigger("Attack");
-            _attackTime = _attackAnim.length;
-            MeleeAttack();
+            _animCounter = _attackAnim.length;
         }
     }
 
     protected override void SetYourProperties()
     {
-        _characterName = "FA2";
         base.SetYourProperties();
     }
 }

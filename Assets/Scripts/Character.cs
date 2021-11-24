@@ -2,11 +2,13 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    /* TODO, hurt anim cd, and invincible while hurt. */
+    /* TODO, hurt anim cd, and invincible while hurt.
+     TODO, after got hit, it should wait for some time before playing anim. */
     [SerializeField] protected string _characterName = "";
     [SerializeField] protected float _moveSpeed = 7.0f;
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
+    [SerializeField] protected float _attackCD = 3.0f;
     [SerializeField] protected float _hitPoints = 15.0f;
     [SerializeField] protected LayerMask _targetLayer;
     [SerializeField] protected Transform _attackLocation;
@@ -18,8 +20,9 @@ public abstract class Character : MonoBehaviour
    
     protected string _attackAnimName = "";
     protected string _hurtAnimName = "";
-    protected float _attackTime = 0.0f;
-    protected float _hurtTime = 0.0f;
+    protected string _dyingAnimName = "";
+    protected float _animCounter = 0.0f;
+    protected float _leftAttackCD = -1.0f;
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
@@ -43,9 +46,13 @@ public abstract class Character : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        AttackAnimCountDown();
         MoveCharacter();
         AttackCharacter();
-        AttackAnimCountDown();
+    }
+
+    protected virtual void FixedUpdate()
+    {
     }
 
     public void GetHit(float damage)
@@ -60,7 +67,7 @@ public abstract class Character : MonoBehaviour
                 return;
             }
             _animator.SetTrigger("Hurt");
-            _hurtTime = _hurtAnim.length;
+            _animCounter = _hurtAnim.length;
         }      
     }
 
@@ -72,6 +79,7 @@ public abstract class Character : MonoBehaviour
     {
         _attackAnimName = _characterName + "Attack";
         _hurtAnimName = _characterName + "Hurt";
+        _dyingAnimName = _characterName + "Dying";
     }
 
     protected AnimationClip GetAnimFromAnimator(string name)
@@ -88,13 +96,21 @@ public abstract class Character : MonoBehaviour
 
     protected void AttackAnimCountDown()
     {
+
+        if (_leftAttackCD > float.Epsilon)
+        {
+            _leftAttackCD -= Time.deltaTime;
+            return;
+        }
+
         if (_attacked)
         {
-            _attackTime -= Time.deltaTime;
-            _attacked = _attackTime > float.Epsilon;
+            _animCounter -= Time.deltaTime;
+            _attacked = _animCounter > float.Epsilon;
             if (!_attacked)
             {
-                _animator.SetTrigger("Idle");
+                MeleeAttack();
+                _leftAttackCD = _attackCD;
             }
         }
     }

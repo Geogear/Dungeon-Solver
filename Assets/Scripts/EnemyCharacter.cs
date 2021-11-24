@@ -19,6 +19,11 @@ public class EnemyCharacter : Character
         base.Update();
     }
 
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
     protected override void MoveCharacter()
     {
         /* TODO */
