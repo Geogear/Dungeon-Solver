@@ -25,6 +25,7 @@ public class Room
     private static int _totalTileCreated = 0;   
     private static float _tileUnit = 1f;
     private static Dictionary<Vector2, bool> _existingEdges = new Dictionary<Vector2, bool>();
+    private static Dictionary<Vector2, bool> _existingWalls = new Dictionary<Vector2, bool>();
 
     private Direction _enteringDoorDirection;
     private Vector2 _enteringDoorCoord = new Vector2();
@@ -49,7 +50,7 @@ public class Room
         /* First a 1x1 room should be checked for overlapping, if it does, then this room can't be created,
             return false to the parent */
         _enteringIndexI = _enteringIndexJ = 0;
-        if (DoEdgesOverlapping(1, 1))
+        if (DoEdgesOverlappingFast(1, 1))
         {
             return false;
         }
@@ -59,7 +60,7 @@ public class Room
          * enter the loop, in the end fill up tiles, i.e. create the matrix, assign properties */
         Indexes firstRoomSize = CalcRoomSize();
         DetermineEnteringDoorIndexes(firstRoomSize.i, firstRoomSize.j);
-        if (DoEdgesOverlapping(firstRoomSize.i, firstRoomSize.j) &&
+        if (DoEdgesOverlappingFast(firstRoomSize.i, firstRoomSize.j) &&
             !IsThereLegalRoomWithOtherDoor(firstRoomSize.i, firstRoomSize.j))
         {
 
@@ -150,6 +151,7 @@ public class Room
     public static void OpenNewDictionary()
     {
         _existingEdges = new Dictionary<Vector2, bool>();
+        _existingWalls = new Dictionary<Vector2, bool>();
     }
 
     private Indexes RoomExpansion(Indexes firstRoomSize)
@@ -390,51 +392,15 @@ public class Room
         }
     }
 
-    /* If edges are overlapping returns true */
-    private bool DoEdgesOverlapping(int height, int width, bool doFast = true)
-    {
-        if (doFast)
-        {
-            return DoEdgesOverlappingFast(height, width);
-        }
-        _edgeOverlappings = new List<Indexes>();
-        /* For the first row and last row */
-        for (int j = 0; j < width; ++j)
-        {
-            if (_existingEdges.ContainsKey(CalcCoordinates(0, j)))
-            {
-                _edgeOverlappings.Add(new Indexes(j, 0));
-            }
-
-            if (_existingEdges.ContainsKey(CalcCoordinates(height - 1, j)))
-            {
-                _edgeOverlappings.Add(new Indexes(j, height - 1));
-            }
-        }
-
-        /* For the first and last column */
-        for (int i = 1; i < height - 1; ++i)
-        {
-            if (_existingEdges.ContainsKey(CalcCoordinates(i, 0)))
-            {
-                _edgeOverlappings.Add(new Indexes(i, 0));
-            }
-
-            if (_existingEdges.ContainsKey(CalcCoordinates(i, width - 1)))
-            {
-                _edgeOverlappings.Add(new Indexes(i, width - 1));
-            }
-        }
-        return _edgeOverlappings.Count != 0;
-    }
-
     private bool DoEdgesOverlappingFast(int height, int width)
     {
         /* For the first row and last row */
         for (int j = 0; j < width; ++j)
         {
-            if (_existingEdges.ContainsKey(CalcCoordinates(0, j))
-                || _existingEdges.ContainsKey(CalcCoordinates(height - 1, j)))
+            Vector2 calced1 = CalcCoordinates(0, j);
+            Vector2 calced2 = CalcCoordinates(height - 1, j);
+            if (_existingEdges.ContainsKey(calced1) || _existingWalls.ContainsKey(calced1)
+                || _existingEdges.ContainsKey(calced2) ||_existingWalls.ContainsKey(calced2))
             {
                 return true;
             }
@@ -443,12 +409,17 @@ public class Room
         /* For the first and last column */
         for (int i = 1; i < height - 1; ++i)
         {
+            Vector2 calced1 = CalcCoordinates(i, 0);
+            Vector2 calced2 = CalcCoordinates(i, width - 1);
             if (_existingEdges.ContainsKey(CalcCoordinates(i, 0))
                 || _existingEdges.ContainsKey(CalcCoordinates(i, width - 1)))
             {
                 return true;
             }
         }
+
+        /* Check for corners. */
+
         return false;
     }
 
@@ -529,23 +500,6 @@ public class Room
         vec2.x = _enteringDoorCoord.x + (j - _enteringIndexJ) * _tileUnit;
         vec2.y = _enteringDoorCoord.y + (i - _enteringIndexI) * _tileUnit;
         return vec2;
-    }
-
-    /* TODO, Uselesss? Already recording in DetermineEtneringDoorIndexes */
-    private void RecordEnteringTileIndexes()
-    {
-        for (int i = 0; i < _roomHeight; ++i)
-        {
-            for (int j = 0; j < _roomWidth; ++j)
-            {
-                if (_tiles[i, j] == (int)Tile.DoorTile)
-                {
-                    _enteringIndexI = i;
-                    _enteringIndexJ = j;
-                    return;
-                }
-            }
-        }
     }
 
     private Indexes CalcRoomSize()

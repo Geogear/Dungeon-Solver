@@ -341,11 +341,11 @@ public class LevelGenerator : MonoBehaviour
         }
 
         /* Surround with walls. */
-        /*for (int j = -1; j <= room.GetRoomWidth(); ++j)
+        for (int j = -1; j <= room.GetRoomWidth(); ++j)
         {
             _dungeonMatrix[newOrigin.i -1, newOrigin.j + j] = (int)Tile.WallTile;
             _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j] = (int)Tile.WallTile;
-        }*/
+        }
 
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
