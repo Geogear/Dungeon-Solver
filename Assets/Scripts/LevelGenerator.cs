@@ -5,9 +5,7 @@ public class LevelGenerator : MonoBehaviour
     /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. 
        KNOWN BUGS
        + Exit room doesn't exist.
-       + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
-       + Walls overlap on tiles. Because on places where tiles might exist, im putting wall tiles.
-       To solve, this need to have a different dictionary for wall tiles. When making a room this dictionary is also checked. */
+       + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. */
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
@@ -199,9 +197,8 @@ public class LevelGenerator : MonoBehaviour
                         case (int)Tile.WallTile:
                             tileToPut = _genericWallTile;
                             break;
-                    }
-                    if (tileToPut != _genericWallTile)
-                        _tileMap.SetTile(curCell, tileToPut);
+                    }                    
+                    _tileMap.SetTile(curCell, tileToPut);
 
                     switch(_dungeonMatrix[i, j]/10)
                     {
@@ -300,9 +297,9 @@ public class LevelGenerator : MonoBehaviour
 
     private void CreateDungeonMatrix()
     {
-        _dungeonSize.i = _XYMax.i - _XYMin.i + 1; _dungeonSize.j = _XYMax.j - _XYMin.j + 1;
-        Indexes firstRoomIndexes = new Indexes(_dungeonSize.j - 1, _dungeonSize.i-1);
-        _dungeonSize.i *= 2; _dungeonSize.j *= 2;
+        _dungeonSize.i = _XYMax.i - _XYMin.i + 1; _dungeonSize.j = _XYMax.j - _XYMin.j + 1;        
+        _dungeonSize.i *= 4; _dungeonSize.j *= 4;
+        Indexes firstRoomIndexes = new Indexes(_dungeonSize.j/2, _dungeonSize.i/2);
 
         _dungeonMatrix = new int[_dungeonSize.i, _dungeonSize.j];
         for (int i = 0; i < _dungeonSize.i; ++i)

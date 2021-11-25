@@ -32,7 +32,6 @@ public class Room
     private List<Room> _leadingRooms = new List<Room>();
     private List<Direction> _doorDirections = new List<Direction>();
     private List<Indexes> _leadingDoorIndexes = new List<Indexes>();
-    private List<Indexes> _edgeOverlappings = null;
     private int[,] _tiles = null;
 
     private int _enteringIndexI = -1;
@@ -265,16 +264,16 @@ public class Room
         switch (direction)
         {
             case Direction.Up:
-                vec2.y -= _tileUnit;
+                vec2.y -= 2*_tileUnit;
                 break;
             case Direction.Down:
-                vec2.y += _tileUnit;
+                vec2.y += 2*_tileUnit;
                 break;
             case Direction.Left:
-                vec2.x -= _tileUnit;
+                vec2.x -= 2*_tileUnit;
                 break;
             case Direction.Right:
-                vec2.x += _tileUnit;
+                vec2.x += 2*_tileUnit;
                 break;
         }
         return vec2;
@@ -411,14 +410,12 @@ public class Room
         {
             Vector2 calced1 = CalcCoordinates(i, 0);
             Vector2 calced2 = CalcCoordinates(i, width - 1);
-            if (_existingEdges.ContainsKey(CalcCoordinates(i, 0))
-                || _existingEdges.ContainsKey(CalcCoordinates(i, width - 1)))
+            if (_existingEdges.ContainsKey(calced1) || _existingWalls.ContainsKey(calced1)
+                || _existingEdges.ContainsKey(calced2) ||_existingWalls.ContainsKey(calced2))
             {
                 return true;
             }
         }
-
-        /* Check for corners. */
 
         return false;
     }
@@ -458,38 +455,62 @@ public class Room
 
     private void RegisterEdgeTilesToDictionary()
     {
+        /* Add 4 corners. */
+        AddRecordToDictionary(-1, -1, true);
+        AddRecordToDictionary(-1, _roomWidth, true);
+        AddRecordToDictionary(_roomHeight, -1, true);
+        AddRecordToDictionary(_roomHeight, _roomWidth, true);
+
+        /* Special case for rooms with one length width or height. */
         if (_roomWidth == 1 || _roomHeight == 1)
         {
             for (int i = 0; i < _roomHeight; ++i)
             {
                 for (int j = 0; j < _roomWidth; ++j)
                 {
+                    /* Add the normal edge. */
                     AddRecordToDictionary(i, j);
+                    /* Add the wall edge. */
+                    AddRecordToDictionary(i - 1, j, true);
                 }
             }
             return;
         }
 
-        /* For the first row and last row */
+        /* For the first row and last row. */
         for (int j = 0; j < _roomWidth; ++j)
         {
+            /* Add the normal edges. */
             AddRecordToDictionary(0, j);
             AddRecordToDictionary(_roomHeight - 1, j);
+            /* Add the wall edges. */
+            AddRecordToDictionary(-1, j, true);
+            AddRecordToDictionary(_roomHeight, j, true);
         }
 
-        /* For the first and last column */
+        /* For the first and last column. */
         for (int i = 1; i < _roomHeight-1; ++i)
         {
+            /* Add the normal edges. */
             AddRecordToDictionary(i, 0);
             AddRecordToDictionary(i, _roomWidth-1);
+            /* Add the wall edges. */
+            AddRecordToDictionary(i, -1, true);
+            AddRecordToDictionary(i, _roomWidth, true);
         }
     }
 
-    private void AddRecordToDictionary(int i, int j)
+    private void AddRecordToDictionary(int i, int j, bool wallTile = false)
     {
-        if (_existingEdges.ContainsKey(CalcCoordinates(i, j)))
+        /* Since wall edges can overlap with each other. */
+        if (wallTile)
         {
-            bool res1 = DoEdgesOverlappingFast(_roomHeight, _roomWidth);
+            if (_existingWalls.ContainsKey(CalcCoordinates(i, j)))
+            {
+                return;
+            }
+            _existingWalls.Add(CalcCoordinates(i, j), true);
+            return;
         }
         _existingEdges.Add(CalcCoordinates(i, j), true);
     }

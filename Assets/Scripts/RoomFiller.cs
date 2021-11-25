@@ -14,7 +14,7 @@ public static class RoomFiller
     public static int [,] _filledTypes = null;
 
     public static void FillRoom(Indexes roomEdges)
-    {        
+    {
         float roomTileCount = roomEdges.j * roomEdges.i;
         int difficultyIndex = LevelGenerator.GetWeightedRandom(_difficultyWeights);
         float minBoundry = roomTileCount / _minMonsterNumDivider,
