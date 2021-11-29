@@ -334,6 +334,7 @@ public class LevelGenerator : MonoBehaviour
         Indexes newOrigin = new Indexes(enteringDoorIndexesDungeon.j - enteringDoorIndexesRoom.j,
             enteringDoorIndexesDungeon.i - enteringDoorIndexesRoom.i);
 
+        /* If not first room, fill it using RoomFiller. */
         int[,] roomMatrix = room.GetRoom();
         bool notOnFirstRoom = room.GetEnteringDoorDirection() != Direction.DirectionCount;
         if (notOnFirstRoom)
