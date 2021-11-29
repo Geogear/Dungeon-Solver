@@ -5,7 +5,8 @@ public class LevelGenerator : MonoBehaviour
     /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. 
        KNOWN BUGS
        + Exit room doesn't exist.
-       + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. */
+       + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
+       *2 +2 on edges and when doing bg add the camera size?*/
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
