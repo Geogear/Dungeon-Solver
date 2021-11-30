@@ -12,8 +12,8 @@ public static class RoomFiller
     private static float[] _treasureAmountRange = { 0.2f, 0.5f, 0.3f };
     private static float _minMonsterNumDivider = 7.0f;
     private static float _maxMonsterNumDivider = 4.0f;
-    private static float _minTreasureNumDivider = 11.0f;
-    private static float _maxTreasureNumDivider = 7.0f;
+    private static float _minTreasureNumDivider = 15.0f;
+    private static float _maxTreasureNumDivider = 11.0f;
     private static int[] _difficultyWeights = { 30, 55, 15 };
     private static List<int[]> _treasureRichnessLevelWeights = new List<int[]>
     {
@@ -55,7 +55,7 @@ public static class RoomFiller
         rangeFixer = DetermineRangeFixer(_treasureAmountRange, difficultyIndex, false);
         minBoundry += difference * rangeFixer;
 
-        float treasureCount = LevelGenerator.RandomFloat(minBoundry, maxBoundry);
+        int treasureCount = Mathf.RoundToInt(LevelGenerator.RandomFloat(minBoundry, maxBoundry));
 
         /* Record all existing indexes for the room to pull with rand. */
         monsterCount = Mathf.RoundToInt(monsterCount);
@@ -68,6 +68,7 @@ public static class RoomFiller
             }
         }
 
+        /* Fill treasures. */
         _filledTypes = new int[roomEdges.i, roomEdges.j];
         for (; treasureCount > 0 && allIndexes.Count > 0; --treasureCount)
         {
@@ -76,6 +77,7 @@ public static class RoomFiller
             _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = treasureType;
             allIndexes.RemoveAt(randIndex);
         }
+        /* Fill goblins. */
         FillWith(allIndexes, FilledType.MonsterGoblin, (int)monsterCount);
     }
 

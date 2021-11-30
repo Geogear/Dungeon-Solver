@@ -5,7 +5,11 @@ public class LevelGenerator : MonoBehaviour
     /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. 
        KNOWN BUGS
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
-       *2 +2 on edges and when doing bg add the camera size?*/
+       *2 +2 on edges and when doing bg add the camera size?
+       TODO
+       + RoomFiller sophistication. Treasures shouldn't be put if doortile is in 4 neighbour.
+       + Proceeding to the next level.
+       + Enemy AI. */
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
@@ -18,6 +22,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
     public GameObject _goblinPrefab;
+    public GameObject _treasurePrefab;
     public GameObject _background;
 
     [SerializeField]private int _currentMaxEdge = 100;
@@ -215,11 +220,15 @@ public class LevelGenerator : MonoBehaviour
                     }                    
                     _tileMap.SetTile(curCell, tileToPut);
 
-                    switch(_dungeonMatrix[i, j]/10)
+                    int filledType = _dungeonMatrix[i, j] / 10;
+                    if (filledType == (int)FilledType.MonsterGoblin)
                     {
-                        case (int)FilledType.MonsterGoblin:
-                            prefabToPut = _goblinPrefab;
-                            break;
+                        prefabToPut = _goblinPrefab;
+                    }
+                    else if (filledType >= (int)FilledType.TreasureLow && filledType <= (int)FilledType.TreasureHigh)
+                    {
+                        prefabToPut = _treasurePrefab;
+                        prefabToPut.GetComponent<Treasure>()._richnessIndex = filledType - (int)FilledType.TreasureLow;
                     }
                     if (prefabToPut != null)
                     {

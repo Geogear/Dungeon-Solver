@@ -226,6 +226,8 @@ MonoBehaviour:
   _genericWallTile: {fileID: 11400000, guid: 0561f07a8c787f84abef475e1e3bcd58, type: 2}
   _tileMap: {fileID: 80233822873461019}
   _goblinPrefab: {fileID: 5646927135974474903, guid: a451ec3c0f395fd4b8ddc6374f545303, type: 3}
+  _treasurePrefab: {fileID: 2094785687004538110, guid: ec49a13e19c50ad43b2a951a5ff4e6e2, type: 3}
   _background: {fileID: 8113622058849453991, guid: 7a6b926fe13e074429ef651c69e1b696, type: 3}
   _currentMaxEdge: 10
   _currentMinEdge: 10
+  _customSeed: 0
