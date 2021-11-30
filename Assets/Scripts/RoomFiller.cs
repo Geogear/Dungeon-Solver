@@ -24,7 +24,7 @@ public static class RoomFiller
 
     public static int [,] _filledTypes = null;
 
-    public static void FillRoom(Indexes roomEdges)
+    public static void FillRoom(Indexes roomEdges, Indexes enteringDoor, List<Indexes>leadingDoors)
     {
         float roomTileCount = roomEdges.j * roomEdges.i;
         /* Set variables for monster generation. */
@@ -70,10 +70,28 @@ public static class RoomFiller
 
         /* Fill treasures. */
         _filledTypes = new int[roomEdges.i, roomEdges.j];
+        int randIndex = 0, treasureType = 0;
+        bool exitLoop = true;
         for (; treasureCount > 0 && allIndexes.Count > 0; --treasureCount)
         {
-            int randIndex = LevelGenerator.rand.Next(allIndexes.Count);
-            int treasureType = (int)FilledType.TreasureLow + LevelGenerator.GetWeightedRandom(_treasureRichnessLevelWeights[difficultyIndex]);
+            /* Currently, mathematically not possible for a treasure to not find a suitable position inside a room. 
+             But better safe than sorry. */
+            exitLoop = true;
+            for (int failCount = 0; failCount < allIndexes.Count; ++failCount)
+            {
+                randIndex = LevelGenerator.rand.Next(allIndexes.Count);
+                if (!leadingDoors.Contains(allIndexes[randIndex]) &&
+                    (allIndexes[randIndex].i != enteringDoor.i || allIndexes[randIndex].j != enteringDoor.j))
+                {
+                    exitLoop = false;
+                    break;
+                }
+            }
+            if (exitLoop)
+            {
+                break;
+            }
+            treasureType = (int)FilledType.TreasureLow + LevelGenerator.GetWeightedRandom(_treasureRichnessLevelWeights[difficultyIndex]);
             _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = treasureType;
             allIndexes.RemoveAt(randIndex);
         }

@@ -348,7 +348,7 @@ public class LevelGenerator : MonoBehaviour
         bool notOnFirstRoom = room.GetEnteringDoorDirection() != Direction.DirectionCount;
         if (notOnFirstRoom)
         {
-            RoomFiller.FillRoom(new Indexes(room.GetRoomWidth(), room.GetRoomHeight()));
+            RoomFiller.FillRoom(new Indexes(room.GetRoomWidth(), room.GetRoomHeight()), room.GetEnteringIndexes(), room.GetChildDoorIndexes());
         }
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
