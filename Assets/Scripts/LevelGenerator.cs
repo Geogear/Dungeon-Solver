@@ -23,6 +23,7 @@ public class LevelGenerator : MonoBehaviour
 
     public GameObject _goblinPrefab;
     public GameObject _treasurePrefab;
+    public GameObject _levelExitPrefab;
     public GameObject _background;
 
     [SerializeField]private int _currentMaxEdge = 100;
@@ -159,7 +160,7 @@ public class LevelGenerator : MonoBehaviour
             randomTotal -= weights[i];
         }
         /* This shouldn't happen */
-        return 0;
+        return -1;
     }
 
     public static float RandomFloat(float minBoundary, float maxBoundary)
@@ -221,19 +222,25 @@ public class LevelGenerator : MonoBehaviour
                     _tileMap.SetTile(curCell, tileToPut);
 
                     int filledType = _dungeonMatrix[i, j] / 10;
-                    if (filledType == (int)FilledType.MonsterGoblin)
+                    Vector3 pos = _tileMap.CellToWorld(curCell);
+                    if (tileToPut == _exitTile)
+                    {
+                        prefabToPut = _levelExitPrefab;
+                        pos.y += 0.5f; pos.x += 0.455f;
+                    }
+                    else if (filledType == (int)FilledType.MonsterGoblin)
                     {
                         prefabToPut = _goblinPrefab;
+                        pos.y += 0.6f; pos.x += 0.5f;
                     }
                     else if (filledType >= (int)FilledType.TreasureLow && filledType <= (int)FilledType.TreasureHigh)
                     {
                         prefabToPut = _treasurePrefab;
+                        pos.y += 0.5f; pos.x += 0.5f;
                         prefabToPut.GetComponent<Treasure>()._richnessIndex = filledType - (int)FilledType.TreasureLow;
                     }
                     if (prefabToPut != null)
-                    {
-                        Vector3 pos = _tileMap.CellToWorld(curCell);
-                        pos.y += 0.6f; pos.x += 0.5f;
+                    {                      
                         Instantiate(prefabToPut, pos, Quaternion.identity);
                         prefabToPut = null;
                     }                 
