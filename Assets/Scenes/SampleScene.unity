@@ -180,7 +180,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
       propertyPath: _customSeed
-      value: 31
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
+      propertyPath: _currentMaxEdge
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
+      propertyPath: _currentMinEdge
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c5e85bc543ae484492194db3c227237, type: 3}

@@ -7,7 +7,7 @@ public class LevelGenerator : MonoBehaviour
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
        *2 +2 on edges and when doing bg add the camera size?
        TODO
-       + RoomFiller sophistication. Treasures shouldn't be put if doortile is in 4 neighbour.
+       + RoomFiller sophistication. Trap puttings should be clever.
        + Proceeding to the next level.
        + Enemy AI. */
     private static readonly int [] EdgeIncreaseAmount =
@@ -454,5 +454,11 @@ public class LevelGenerator : MonoBehaviour
     {
         _background.transform.localScale = new Vector3(_dungeonSize.j, _dungeonSize.i, 1);
         Instantiate(_background, new Vector3(transform.position.x, transform.position.y, 1), Quaternion.identity);
+    }
+
+    private void ClearLevel()
+    {
+        /* TODO, get gameobects by tag and destroy them. */
+        
     }
 }
