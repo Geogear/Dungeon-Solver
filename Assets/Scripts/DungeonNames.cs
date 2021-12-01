@@ -25,6 +25,18 @@ public enum FilledType
     Trap1 = 5
 }
 
+public enum CTPColours
+{
+    Yellow = 0,
+    Green = 1,
+    Blue = 2,
+    Red = 3,
+    Black = 4,
+    Orange = 5,
+    Purple = 6,
+    CTPCCount = 7
+}
+
 public struct Indexes
 {
     public int j;
