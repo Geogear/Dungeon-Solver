@@ -9,7 +9,11 @@ public class LevelGenerator : MonoBehaviour
        TODO
        + RoomFiller sophistication. Trap puttings should be clever.
        + Proceeding to the next level.
-       + Enemy AI. */
+       + Enemy AI.
+       + Keep play time and score, display them at the end.
+       + According to the treasure richness, a puzzle should display with chance
+       and its difficulty relative to the richness.
+       + Make non-walkable areas. */
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =

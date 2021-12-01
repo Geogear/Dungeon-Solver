@@ -64,6 +64,7 @@ public class PlayerCharacter : Character
                 _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
                     _attackLocation.localPosition.y, _attackLocation.localPosition.z);
             }
+            //CheckUnmovablesForFourDirection(); /* TODO according to rayhit, zero out the input*/
             transform.Translate(new Vector3(_horizontalInput, _verticalInput, 0) * _moveSpeed * Time.deltaTime);
         }        
     }

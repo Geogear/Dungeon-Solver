@@ -22,11 +22,16 @@ public abstract class Character : MonoBehaviour
     protected float _animCounter = 0.0f;
     protected float _leftAttackCD = -1.0f;
     protected float _leftHurtCD = -1.0f;
+    protected float _raycastDistanceProportion = 0.2f;
+    protected float _raycastPositionProportion = 0.6f;
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
     protected bool _invincible = false;
     protected bool _died = false;
+
+    protected static string[] _unMovablesTags = 
+        {"Wall", "Treasure"};
 
     protected virtual void Awake()
     {
@@ -132,6 +137,30 @@ public abstract class Character : MonoBehaviour
         {
             damage[i].GetComponent<Character>().GetHit(_attackDamage);
         }
+    }
+
+    protected bool[] CheckUnmovablesForFourDirection()
+    {
+        /* TODO, more logical to only raycast where the player is moving. */
+        Vector2[] directionVectors = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+        float[] vectorLengths = { _spriteRenderer.size.y, _spriteRenderer.size.y, _spriteRenderer.size.x, _spriteRenderer.size.x };
+        bool[] hitRays = new bool[(int)Direction.DirectionCount];
+        Vector3 newPos = new Vector3(); newPos.z = transform.position.z;
+
+        for (int i = 0; i < (int)Direction.DirectionCount; ++i)
+        {
+            newPos.x = transform.position.x + directionVectors[i].x * _spriteRenderer.size.x * _raycastPositionProportion;
+            newPos.y = transform.position.y + directionVectors[i].y * _spriteRenderer.size.y * _raycastPositionProportion;
+            RaycastHit2D hit = Physics2D.Raycast(newPos, directionVectors[i], vectorLengths[i] * _raycastDistanceProportion);
+            if (hit.collider != null && System.Array.IndexOf(_unMovablesTags, hit.collider.tag) > -1)
+            {
+                Debug.Log(i + " " + hit.collider.tag + hit.GetType());
+                hitRays[i] = true;
+            }
+            if (!hitRays[i] && hit.collider != null)
+                Debug.Log(i + " " + hit.collider.tag + " " + hit.distance + " " + hit.transform.name + " " + hit.point);
+        }
+        return hitRays;
     }
 
     private void OnDrawGizmosSelected()
