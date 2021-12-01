@@ -56,6 +56,19 @@ public class PlayerCharacter : Character
 
         if (_running)
         {
+            /* Check for unmovables on the walked direction. */
+            if (_verticalInput > float.Epsilon && CheckUnmovablesForDirection(Vector2.up)
+                || _verticalInput < -float.Epsilon && CheckUnmovablesForDirection(Vector2.down))
+            {
+                _verticalInput = 0.0f;
+            }
+            if (_horizontalInput > float.Epsilon && CheckUnmovablesForDirection(Vector2.right)
+                || _horizontalInput < -float.Epsilon && CheckUnmovablesForDirection(Vector2.left))
+            {
+                _horizontalInput = 0.0f;
+            }
+
+            /* Flip the sprite and attack location if needed. */
             if ((_horizontalInput > float.Epsilon || _horizontalInput < -float.Epsilon) &&
                 _facingRight != (_horizontalInput > float.Epsilon))
             {
@@ -64,7 +77,7 @@ public class PlayerCharacter : Character
                 _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
                     _attackLocation.localPosition.y, _attackLocation.localPosition.z);
             }
-            //CheckUnmovablesForFourDirection(); /* TODO according to rayhit, zero out the input*/
+
             transform.Translate(new Vector3(_horizontalInput, _verticalInput, 0) * _moveSpeed * Time.deltaTime);
         }        
     }

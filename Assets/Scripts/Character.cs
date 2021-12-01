@@ -15,6 +15,7 @@ public abstract class Character : MonoBehaviour
     protected AnimationClip _attackAnim = null;
     protected AnimationClip _hurtAnim = null;
     protected SpriteRenderer _spriteRenderer = null;
+    protected BoxCollider2D _boxCollider2D = null;
    
     protected string _attackAnimName = "";
     protected string _hurtAnimName = "";
@@ -22,8 +23,8 @@ public abstract class Character : MonoBehaviour
     protected float _animCounter = 0.0f;
     protected float _leftAttackCD = -1.0f;
     protected float _leftHurtCD = -1.0f;
-    protected float _raycastDistanceProportion = 0.2f;
-    protected float _raycastPositionProportion = 0.6f;
+    protected float _raycastDistanceProportion = 0.1f;
+    protected float _raycastPositionProportion = 0.55f;
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
@@ -43,6 +44,7 @@ public abstract class Character : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _boxCollider2D = GetComponent<BoxCollider2D>();
         _attackAnim = GetAnimFromAnimator(_attackAnimName);
         _hurtAnim = GetAnimFromAnimator(_hurtAnimName);
     }
@@ -139,28 +141,15 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    protected bool[] CheckUnmovablesForFourDirection()
+    protected bool CheckUnmovablesForDirection(Vector2 direction)
     {
-        /* TODO, more logical to only raycast where the player is moving. */
-        Vector2[] directionVectors = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-        float[] vectorLengths = { _spriteRenderer.size.y, _spriteRenderer.size.y, _spriteRenderer.size.x, _spriteRenderer.size.x };
-        bool[] hitRays = new bool[(int)Direction.DirectionCount];
-        Vector3 newPos = new Vector3(); newPos.z = transform.position.z;
+        Vector3 newPos = new Vector3();
+        newPos.x = transform.position.x + direction.x * _boxCollider2D.size.x * _raycastPositionProportion;
+        newPos.y = transform.position.y + direction.y * _boxCollider2D.size.y * _raycastPositionProportion;
+        newPos.z = transform.position.z;
 
-        for (int i = 0; i < (int)Direction.DirectionCount; ++i)
-        {
-            newPos.x = transform.position.x + directionVectors[i].x * _spriteRenderer.size.x * _raycastPositionProportion;
-            newPos.y = transform.position.y + directionVectors[i].y * _spriteRenderer.size.y * _raycastPositionProportion;
-            RaycastHit2D hit = Physics2D.Raycast(newPos, directionVectors[i], vectorLengths[i] * _raycastDistanceProportion);
-            if (hit.collider != null && System.Array.IndexOf(_unMovablesTags, hit.collider.tag) > -1)
-            {
-                Debug.Log(i + " " + hit.collider.tag + hit.GetType());
-                hitRays[i] = true;
-            }
-            if (!hitRays[i] && hit.collider != null)
-                Debug.Log(i + " " + hit.collider.tag + " " + hit.distance + " " + hit.transform.name + " " + hit.point);
-        }
-        return hitRays;
+        RaycastHit2D hitRay = Physics2D.Raycast(newPos, direction, _raycastDistanceProportion);
+        return (hitRay.collider != null && System.Array.IndexOf(_unMovablesTags, hitRay.collider.tag) > -1);
     }
 
     private void OnDrawGizmosSelected()
