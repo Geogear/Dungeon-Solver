@@ -32,6 +32,7 @@ public class Treasure : MonoBehaviour
     {
         int weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[_richnessIndex]);
         float rangeFixer = 0.0f;
+        /* TODO, this is wrong? */
         for(int i = 0; i < weightIndex; ++i)
         {
             rangeFixer += _treasureRichnessWeights[_richnessIndex][i];
