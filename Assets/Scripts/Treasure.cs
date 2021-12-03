@@ -7,9 +7,9 @@ public class Treasure : MonoBehaviour
 
     private static List<int[]> _treasureRichnessWeights = new List<int[]>
     {
-        new int[] { 40, 20, 20, 15, 5 },
-        new int[] { 30, 15, 30, 15, 10 },
-        new int[] { 5, 15, 20, 25, 35 }
+        new int[] { 40, 25, 20, 10, 5 },
+        new int[] { 30, 15, 25, 20, 10 },
+        new int[] { 5, 15, 20, 40, 20 }
     };
     private static float _treasureMultiplierMin = 1.0f;
     private static float _treasureMultiplierMax = 4.0f;
@@ -30,14 +30,8 @@ public class Treasure : MonoBehaviour
 
     private void DetermineActualRichness()
     {
-        int weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[_richnessIndex]);
-        float rangeFixer = 0.0f;
-        /* TODO, this is wrong? */
-        for(int i = 0; i < weightIndex; ++i)
-        {
-            rangeFixer += _treasureRichnessWeights[_richnessIndex][i];
-        }
-        rangeFixer /= 100.0f;
-        _treasureMultiplier += (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer;
+        float weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[_richnessIndex]);
+        float rangeFixer = 1.0f / _treasureRichnessWeights[0].Length;
+        _treasureMultiplier += (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer * weightIndex;
     }
 }
