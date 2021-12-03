@@ -6,6 +6,7 @@ public class LevelGenerator : MonoBehaviour
        KNOWN BUGS
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
        *2 +2 on edges and when doing bg add the camera size?
+       + Exit not found happens. 
        TODO
        + RoomFiller sophistication. Trap puttings should be clever.
        + Proceeding to the next level.
@@ -241,7 +242,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         prefabToPut = _treasurePrefab;
                         pos.y += 0.5f; pos.x += 0.5f;
-                        prefabToPut.GetComponent<Treasure>()._richnessIndex = filledType - (int)FilledType.TreasureLow;
+                        Treasure.AddTreasure(pos, (int)FilledType.TreasureLow);
                     }
                     if (prefabToPut != null)
                     {                      

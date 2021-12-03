@@ -44,7 +44,7 @@ public static class CTP
         {
             for (int j = 0; j < _currentEdges[1]; ++j)
             {
-                _puzzleMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax, _currentColourMax + 1);
+                _puzzleMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax + 1);
             }
         }
     }

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Treasure : MonoBehaviour
+public static class Treasure
 {
-    public int _richnessIndex = -1;
-
+    private static Dictionary<Vector3, TreasureData> _treasures = new Dictionary<Vector3, TreasureData>();
     private static List<int[]> _treasureRichnessWeights = new List<int[]>
     {
         new int[] { 40, 25, 20, 10, 5 },
@@ -14,24 +13,26 @@ public class Treasure : MonoBehaviour
     private static float _treasureMultiplierMin = 1.0f;
     private static float _treasureMultiplierMax = 4.0f;
 
-    private float _treasureMultiplier = _treasureMultiplierMin;
-
-    // Start is called before the first frame update
-    void Start()
+    private static float DetermineActualRichness(int richnessIndex)
     {
-        DetermineActualRichness();
+        float weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[richnessIndex]);
+        float rangeFixer = 1.0f / _treasureRichnessWeights[richnessIndex].Length;
+        return _treasureMultiplierMin +  (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer * weightIndex;
     }
 
-    // Update is called once per frame
-    void Update()
+    public static void Punish(PlayerCharacter playerCharacter, Vector3 treasurePos)
     {
-        
+        /* TODO */
     }
 
-    private void DetermineActualRichness()
+    public static void Reward(PlayerCharacter playerCharacter, Vector3 treasurePos)
     {
-        float weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[_richnessIndex]);
-        float rangeFixer = 1.0f / _treasureRichnessWeights[0].Length;
-        _treasureMultiplier += (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer * weightIndex;
+        /* TODO */
+    }
+
+    public static void AddTreasure(Vector3 treasurePos, int richnessIndex)
+    {
+        float treasureMultipler = DetermineActualRichness(richnessIndex);
+        _treasures.Add(treasurePos, new TreasureData(richnessIndex, treasureMultipler));
     }
 }

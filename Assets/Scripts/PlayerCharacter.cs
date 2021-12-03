@@ -10,7 +10,7 @@ public class PlayerCharacter : Character
 
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
-    private bool _onTreasure = false;
+    private TreasureState _treasureState = TreasureState.TreasureStateCount;
 
     protected override void Awake()
     {
@@ -27,9 +27,9 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
-        if (Input.GetAxis("Fire1") > float.Epsilon && _onTreasure)
+        if (Input.GetAxis("Fire1") > float.Epsilon && _treasureState == TreasureState.EnterTreasure)
         {
-            _onTreasure = false;
+            _treasureState = TreasureState.OnTreasure;
             _puzzleDisplayer.OpenPuzzle();
         }
     }
@@ -109,6 +109,24 @@ public class PlayerCharacter : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        _onTreasure = collision.tag == _unMovablesTags[1];
+        _treasureState = (collision.tag == _unMovablesTags[1])
+            ? TreasureState.EnterTreasure : TreasureState.TreasureStateCount;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.OnTreasure)
+        {
+            _treasureState = TreasureState.ExitTreasure;            
+            if (_puzzleDisplayer.IsSuccess())
+            {
+                Treasure.Reward(this, collision.transform.position);
+            }
+            else
+            {
+                Treasure.Punish(this, collision.transform.position);
+            }
+            _puzzleDisplayer.ClosePuzzle();
+        }
     }
 }

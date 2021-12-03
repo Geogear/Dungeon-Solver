@@ -11,6 +11,8 @@ public class PuzzleDisplayer : MonoBehaviour
         Color.yellow, Color.green, Color.blue,
         Color.red, Color.black, Color.white, Color.magenta,};
 
+    private bool _success = false;
+
     // Start is called before the first frame update
     void Start()
     {  
@@ -43,13 +45,15 @@ public class PuzzleDisplayer : MonoBehaviour
         
     }
 
-    private void ClosePuzzle()
-    {
-        /* TODO Destroy by tag "Puzzle". */
-    }
-
     public void OpenPuzzle()
     {
         OpenCTPPuzzle();
     }
+
+    public void ClosePuzzle()
+    {
+        /* TODO Destroy by tag "Puzzle". */
+    }
+
+    public bool IsSuccess() => _success;
 }

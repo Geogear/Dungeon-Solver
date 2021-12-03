@@ -37,6 +37,26 @@ public enum CTPColours
     CTPCCount = 7
 }
 
+public enum TreasureState
+{
+    EnterTreasure = 0,
+    OnTreasure = 1,
+    ExitTreasure = 2,
+    TreasureStateCount = 3
+}
+
+public struct TreasureData
+{
+    public int _richnessIndex;
+    public float _treasureMultiplier;
+
+    public TreasureData(int richnessIndex, float treasureMultipler)
+    {
+        _richnessIndex = richnessIndex;
+        _treasureMultiplier = treasureMultipler;
+    }
+}
+
 public struct Indexes
 {
     public int j;
