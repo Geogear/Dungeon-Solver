@@ -5,8 +5,12 @@ public class PlayerCharacter : Character
     /* TODO, Attack speed buff, when animation is supposed to be speed up, set a bool on character.
        StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
        Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
+
+    [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
+
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
+    private bool _onTreasure = false;
 
     protected override void Awake()
     {
@@ -23,6 +27,11 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
+        if (Input.GetAxis("Fire1") > float.Epsilon && _onTreasure)
+        {
+            _onTreasure = false;
+            _puzzleDisplayer.OpenPuzzle();
+        }
     }
 
     protected override void FixedUpdate()
@@ -96,5 +105,10 @@ public class PlayerCharacter : Character
     protected override void SetYourProperties()
     {
         base.SetYourProperties();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        _onTreasure = collision.tag == _unMovablesTags[1];
     }
 }

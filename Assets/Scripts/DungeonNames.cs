@@ -32,8 +32,8 @@ public enum CTPColours
     Blue = 2,
     Red = 3,
     Black = 4,
-    Orange = 5,
-    Purple = 6,
+    White = 5,
+    Magenta = 6,
     CTPCCount = 7
 }
 

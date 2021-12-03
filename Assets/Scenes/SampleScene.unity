@@ -199,6 +199,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 514934914728954436, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _cTPTile
+      value: 
+      objectReference: {fileID: 7581139661611923902, guid: 51e02e69c618f4c4f94908039f44e64c, type: 3}
     - target: {fileID: 8817742015899828392, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
