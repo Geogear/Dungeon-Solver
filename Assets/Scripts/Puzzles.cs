@@ -8,6 +8,21 @@ public static class CTP
     private static int[] _currentMinMax;
 
     public static int[,] _puzzleMatrix;
+    public static int[,] _fakeMatrix;
+
+    private static void FillMatrix(bool fake)
+    {
+        int[,] currentMatrix = fake ? _fakeMatrix : _puzzleMatrix;
+
+        /* Put a random colour at each tile. TODO this should be smarter. */
+        for (int i = 0; i < _currentEdges[0]; ++i)
+        {
+            for (int j = 0; j < _currentEdges[1]; ++j)
+            {
+                currentMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax + 1);
+            }
+        }
+    }
 
     public static void InitCTP(int min = 2, int max = 3)
     {
@@ -34,19 +49,19 @@ public static class CTP
 
     public static void InitPuzzleMatrix()
     {
-        /* Get random edge lengths. Init the matrix. */
+        /* Get random edge lengths. Init the matrixes. */
         _currentEdges[0] = LevelGenerator.rand.Next(_currentMinMax[0], _currentMinMax[1] + 1);
         _currentEdges[1] = LevelGenerator.rand.Next(_currentMinMax[0], _currentMinMax[1] + 1);
         _puzzleMatrix = new int[_currentEdges[0], _currentEdges[1]];
+        _fakeMatrix = new int[_currentEdges[0], _currentEdges[1]];
 
-        /* Put a random colour at each tile. TODO this should be smarter. */
-        for (int i = 0; i < _currentEdges[0]; ++i)
-        {
-            for (int j = 0; j < _currentEdges[1]; ++j)
-            {
-                _puzzleMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax + 1);
-            }
-        }
+        FillMatrix(false);
+    }
+
+    public static void FillFakePuzzle()
+    {
+        /* TODO*/
+        FillMatrix(true);
     }
 
     public static int GetEdge(bool width) => (width) ? _currentEdges[1] : _currentEdges[0];
