@@ -199,13 +199,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 482080024773820032, guid: 45b630db58541a14395675790b2d7c82, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 13
+    - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: CTPStartingEdgeMax
+      value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 482080024773820032, guid: 45b630db58541a14395675790b2d7c82, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 7
+    - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: CTPStartingEdgeMin
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8790918137477500360, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_Enabled
