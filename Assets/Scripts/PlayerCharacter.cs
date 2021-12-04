@@ -117,16 +117,12 @@ public class PlayerCharacter : Character
     {
         if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.OnTreasure)
         {
-            _treasureState = TreasureState.ExitTreasure;            
-            if (_puzzleDisplayer.IsSuccess())
+            _treasureState = TreasureState.ExitTreasure;
+            /* Puzzle might be closed because of success or fail. */
+            if (_puzzleDisplayer.IsOpen())
             {
-                Treasure.Reward(this, collision.transform.position);
-            }
-            else
-            {
-                Treasure.Punish(this, collision.transform.position);
-            }
-            _puzzleDisplayer.ClosePuzzle();
+                _puzzleDisplayer.ClosePuzzle();
+            }           
         }
     }
 }
