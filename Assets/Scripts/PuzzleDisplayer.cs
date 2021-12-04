@@ -6,6 +6,9 @@ public class PuzzleDisplayer : MonoBehaviour
 {
     /* TODO instantiated as a child of the player. 
        + have gameobject fields for ctp tiles. */
+
+    public Vector3 _currentTreasurePos;
+
     [SerializeField] private GameObject _cTPTile;
     [SerializeField] private Transform _puzzleOptionsAnchor;
 
@@ -13,20 +16,30 @@ public class PuzzleDisplayer : MonoBehaviour
         Color.yellow, Color.green, Color.blue,
         Color.red, Color.black, Color.white, Color.magenta,};
 
+    private PlayerCharacter _playerCharacter = null;
     private SpriteRenderer _spriteRenderer = null;
 
     private float constantGap = 1.0f;
     private bool _success = false;
+    private bool _open = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        _playerCharacter = GetComponentInParent<PlayerCharacter>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        /* TODO, if displaying puzzle check for ray hit, and call on success for the puzzle on right.
+         * Treasure reward and punish has to be called from here. 
+        if (_spriteRenderer.enabled)
+        {
+            CTP.SolvedSuccessfull();
+        }*/
+
     }
 
     private void OpenCTPPuzzle()
@@ -34,7 +47,7 @@ public class PuzzleDisplayer : MonoBehaviour
         if (!CTP.IsInit())
         {
             CTP.InitCTP();
-        }
+        }        
         CTP.InitPuzzleMatrix();
         SpriteRenderer cTPRenderer = _cTPTile.GetComponent<SpriteRenderer>();
         Vector3 anchorPos = new Vector3(_puzzleOptionsAnchor.transform.position.x,
@@ -73,9 +86,15 @@ public class PuzzleDisplayer : MonoBehaviour
         }
     }
 
+    private void DisplayPieces()
+    {
+
+    }
+
     public void OpenPuzzle()
     {
         OpenCTPPuzzle();
+        _open = true;
     }
 
     public void ClosePuzzle()
@@ -87,7 +106,9 @@ public class PuzzleDisplayer : MonoBehaviour
             Destroy(puzzleObject);
         }
         _spriteRenderer.enabled = false;
+        _open = false;
     }
 
     public bool IsSuccess() => _success;
+    public bool IsOpen() => _open;
 }

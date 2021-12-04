@@ -109,18 +109,23 @@ public class PlayerCharacter : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        _treasureState = (collision.tag == _unMovablesTags[1])
-            ? TreasureState.EnterTreasure : TreasureState.TreasureStateCount;
+        if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.TreasureStateCount)
+        {
+            _treasureState = TreasureState.EnterTreasure;
+            _puzzleDisplayer._currentTreasurePos = collision.transform.position;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.OnTreasure)
+        if (collision.tag == _unMovablesTags[1] && collision.transform.position == _puzzleDisplayer._currentTreasurePos &&
+            (_treasureState == TreasureState.OnTreasure || _treasureState == TreasureState.EnterTreasure))
         {
-            _treasureState = TreasureState.ExitTreasure;
+            _treasureState = TreasureState.TreasureStateCount;
             /* Puzzle might be closed because of success or fail. */
             if (_puzzleDisplayer.IsOpen())
             {
+                Treasure.Punish(this, collision.transform.position);
                 _puzzleDisplayer.ClosePuzzle();
             }           
         }
