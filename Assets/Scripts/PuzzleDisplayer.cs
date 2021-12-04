@@ -68,7 +68,7 @@ public class PuzzleDisplayer : MonoBehaviour
             {
                 cTPRenderer.color = _ctpColours[puzzleMatrix[i, j]];
                 curPos.x = pos.x + j * cTPRenderer.size.x * _cTPTile.transform.lossyScale.x;
-                Instantiate(_cTPTile, curPos, Quaternion.identity);
+                Instantiate(_cTPTile, curPos, Quaternion.identity).transform.parent = transform;
             }
         }
     }
@@ -81,6 +81,11 @@ public class PuzzleDisplayer : MonoBehaviour
     public void ClosePuzzle()
     {
         /* TODO Destroy by tag "Puzzle". */
+        GameObject[] puzzleObjects = GameObject.FindGameObjectsWithTag("Puzzle");
+        foreach(GameObject puzzleObject in puzzleObjects)
+        {
+            Destroy(puzzleObject);
+        }
         _spriteRenderer.enabled = false;
     }
 
