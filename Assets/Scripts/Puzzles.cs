@@ -1,6 +1,8 @@
 public static class CTP
 {
     private static bool _init = false;
+    private static int _exp = 0;
+    private static int _solutionPieces = 2;
     private static int _currentColourMax = 1;
     private static int[] _edgeIncreaseAmount;
     private static int[] _edgeIncreaseAmountWeights;
@@ -60,10 +62,21 @@ public static class CTP
 
     public static void FillFakePuzzle()
     {
-        /* TODO*/
+        /* TODO, check for not same with the actual puzzle. */
         FillMatrix(true);
     }
 
+    public static void SolvedSuccessfully()
+    {
+        /* Increase experience. */
+        _exp += LevelGenerator.rand.Next(1, _currentEdges[LevelGenerator.rand.Next()%2] + 1);
+        if (_exp >= _currentEdges[0] * _currentEdges[0]* 1)
+        {
+            IncreaseEdgeMinMax();
+        }
+    }
+
     public static int GetEdge(bool width) => (width) ? _currentEdges[1] : _currentEdges[0];
+    public static int GetSolutionPieceCount() => _solutionPieces;
     public static bool IsInit() => _init;
 }
