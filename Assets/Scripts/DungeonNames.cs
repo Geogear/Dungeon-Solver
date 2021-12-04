@@ -45,6 +45,12 @@ public enum TreasureState
     TreasureStateCount = 3
 }
 
+public enum PuzzleType
+{
+    ColourTilePuzze = 1,
+    PuzzleTypeCount = 2
+}
+
 public struct TreasureData
 {
     public int _richnessIndex;
