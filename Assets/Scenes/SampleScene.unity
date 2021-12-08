@@ -207,6 +207,10 @@ PrefabInstance:
       propertyPath: CTPStartingEdgeMin
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: CTPStartingColourMax
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8790918137477500360, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_Enabled
       value: 0

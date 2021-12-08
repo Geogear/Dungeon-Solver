@@ -9,6 +9,7 @@ public class PuzzleDisplayer : MonoBehaviour
     public Vector3 _currentTreasurePos;
     public int CTPStartingEdgeMin = 2;
     public int CTPStartingEdgeMax = 3;
+    public int CTPStartingColourMax = 1;
 
     [SerializeField] private GameObject _cTPTile;
     [SerializeField] private Transform _puzzleOptionsAnchor;
@@ -83,7 +84,7 @@ public class PuzzleDisplayer : MonoBehaviour
     {
         if (!CTP.IsInit())
         {
-            CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax);
+            CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax, CTPStartingColourMax);
         }
         /* Set and init needed. */
         SetBGOrigin();
@@ -103,6 +104,7 @@ public class PuzzleDisplayer : MonoBehaviour
             _cTPTile.transform.localScale.z);
 
         /* Display the original. */
+        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "Real";
         int currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
         indexList.Remove(currentIndex);
         anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[currentIndex].x;
@@ -110,6 +112,7 @@ public class PuzzleDisplayer : MonoBehaviour
         DisplayCTPMatrix(anchorPos, CTP._puzzleMatrix, cTPRenderer);
 
         /* Display the fakes. */
+        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "Fake";
         while (indexList.Count > 0)
         {
             /* Get index. Set anchor. */
@@ -122,6 +125,7 @@ public class PuzzleDisplayer : MonoBehaviour
             DisplayCTPMatrix(anchorPos, CTP._fakeMatrix, cTPRenderer);
         }
 
+        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "";
         DisplayCTPSolutionPieces(cTPRenderer);
     }
 
@@ -141,8 +145,8 @@ public class PuzzleDisplayer : MonoBehaviour
                     continue;
                 }
                 cTPRenderer.color = _ctpColours[puzzleMatrix[i, j]];
-                curPos.x = pos.x + j * ctpX + ctpX/2;               
-                Instantiate(_cTPTile, curPos, Quaternion.identity).transform.parent = transform;
+                curPos.x = pos.x + j * ctpX + ctpX/2;
+                Instantiate(_cTPTile, curPos, Quaternion.identity).transform.SetParent(transform);
             }
         }
     }

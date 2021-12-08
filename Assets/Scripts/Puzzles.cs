@@ -1,5 +1,7 @@
 public static class CTP
 {
+    private static readonly int SolutionPiecesMax = 4;
+
     private static bool _init = false;
     private static int _exp = 0;
     private static int _solutionPieces = 2;
@@ -26,13 +28,15 @@ public static class CTP
         }
     }
 
-    public static void InitCTP(int min = 2, int max = 3)
+    public static void InitCTP(int min = 2, int max = 3, int startingColourMax = 1, int solutionPieces = 2)
     {
         _edgeIncreaseAmount = new int[2] { 1, 2 };
         _edgeIncreaseAmountWeights = new int[2] { 80, 20 };
         _currentEdges = new int[2] { LevelGenerator.rand.Next(min, max + 1), LevelGenerator.rand.Next(min, max + 1) };
         _currentMinMax = new int[2] { min, max };
         _puzzleMatrix = null;
+        _currentColourMax = startingColourMax >= (int)CTPColours.CTPCCount ? (int)CTPColours.CTPCCount - 1 : startingColourMax;
+        _solutionPieces = solutionPieces > SolutionPiecesMax ? SolutionPiecesMax : solutionPieces;
         _init = true;
     }
 
