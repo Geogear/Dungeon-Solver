@@ -10,6 +10,7 @@ public class PuzzleDisplayer : MonoBehaviour
     public int CTPStartingEdgeMin = 2;
     public int CTPStartingEdgeMax = 3;
     public int CTPStartingColourMax = 1;
+    public int CTPSolutionPieceCount = 2;
 
     [SerializeField] private GameObject _cTPTile;
     [SerializeField] private Transform _puzzleOptionsAnchor;
@@ -84,7 +85,7 @@ public class PuzzleDisplayer : MonoBehaviour
     {
         if (!CTP.IsInit())
         {
-            CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax, CTPStartingColourMax);
+            CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax, CTPStartingColourMax, CTPSolutionPieceCount);
         }
         /* Set and init needed. */
         SetBGOrigin();
@@ -130,7 +131,7 @@ public class PuzzleDisplayer : MonoBehaviour
     }
 
     private void DisplayCTPMatrix(Vector3 pos, int[,] puzzleMatrix, SpriteRenderer cTPRenderer, bool displayingPieces = false, int displayedValue = -1, int [,] mask = null)
-    {     
+    {
         Vector3 curPos = new Vector3();
         float ctpY = cTPRenderer.size.y * _cTPTile.transform.lossyScale.y,
             ctpX = cTPRenderer.size.x * _cTPTile.transform.lossyScale.x;
@@ -158,10 +159,11 @@ public class PuzzleDisplayer : MonoBehaviour
 
         anchorPos.y = _BGOrigin.y - _cTPDisplaySPCoordY;
         for (int i = 0; i < CTP.GetSolutionPieceCount(); ++i)
-        {
-            anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
+        {            
+            anchorPos.x = _BGOrigin.x + _cTPDisplaySPCoordsX[i];
             DisplayCTPMatrix(anchorPos, CTP._puzzleMatrix, cTPRenderer, true, i, mask);
         }
+
     }
 
     private void SetBGOrigin()

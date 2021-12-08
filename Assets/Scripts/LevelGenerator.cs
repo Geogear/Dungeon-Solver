@@ -6,7 +6,7 @@ public class LevelGenerator : MonoBehaviour
        KNOWN BUGS
        + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
        *2 +2 on edges and when doing bg add the camera size?
-       + Exit not found happens. 
+       + Exit not found happens. Walls going over tiles, still sometimes happen.
        TODO
        + RoomFiller sophistication. Trap puttings should be clever.
        + Proceeding to the next level.

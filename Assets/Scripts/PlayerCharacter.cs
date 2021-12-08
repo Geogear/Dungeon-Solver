@@ -27,10 +27,13 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
-        if (Input.GetAxis("Fire1") > float.Epsilon && _treasureState == TreasureState.EnterTreasure)
+        if (Input.GetAxis("Fire1") > float.Epsilon)
         {
-            _treasureState = TreasureState.OnTreasure;
-            _puzzleDisplayer.OpenPuzzle();
+            if (_treasureState == TreasureState.EnterTreasure)
+            {
+                _treasureState = TreasureState.OnTreasure;
+                _puzzleDisplayer.OpenPuzzle();
+            }
         }
     }
 
