@@ -76,6 +76,94 @@ public static class CTP
         }
     }
 
+    public static int [,] GetSolutionPiecesMask()
+    {
+        int[,] mask = new int[_currentEdges[0], _currentEdges[1]];
+        int nonMarked = _currentEdges[0] * _currentEdges[1], simplePartition = nonMarked / _solutionPieces,
+            amountToMark = 0;
+        nonMarked -= (int)(simplePartition * LevelGenerator.RandomFloat(0.85f, 1.0f));
+
+        for (int p = 1; p < _solutionPieces; ++p)
+        {
+            amountToMark = (simplePartition >= nonMarked) ? nonMarked :
+                (int)(simplePartition * LevelGenerator.RandomFloat(0.85f, 1.0f));
+            nonMarked -= amountToMark;
+
+            /* Select starting index for markings. */
+            Indexes startingIndexes = new Indexes(LevelGenerator.rand.Next(_currentEdges[1]),
+                LevelGenerator.rand.Next(_currentEdges[0]));
+            while (mask[startingIndexes.i, startingIndexes.j] != 0)
+            {
+                startingIndexes.i = LevelGenerator.rand.Next(_currentEdges[0]);
+                startingIndexes.j = LevelGenerator.rand.Next(_currentEdges[1]);
+            }
+            mask[startingIndexes.i, startingIndexes.j] = p;
+            --amountToMark;
+
+            /* Init needed lists. */
+            System.Collections.Generic.List<Indexes> markingOrigins = new System.Collections.Generic.List<Indexes>();
+            System.Collections.Generic.List<Direction> directions = new System.Collections.Generic.List<Direction>();
+
+            for (int i = 0; i < (int)Direction.DirectionCount; ++i)
+            {
+                directions.Add((Direction)i);
+            }
+            markingOrigins.Clear();
+            markingOrigins.Add(startingIndexes);
+            /* Do markings. For every mark, start with the origin, look at 4 directions, in random order
+             if empty, fill and add that point to the origin points list. */
+            while (markingOrigins.Count > 0 && amountToMark > 0)
+            {
+                while (directions.Count > 0 && amountToMark > 0)
+                {
+                    int currentDirectionIndex = LevelGenerator.rand.Next(directions.Count),
+                        differinceI = 0, differinceJ = 0;
+                    switch (directions[currentDirectionIndex])
+                    {
+                        case Direction.Up:
+                            if (markingOrigins[0].i > 0
+                                && mask[markingOrigins[0].i - 1, markingOrigins[0].j] == 0)
+                            {
+                                differinceI = -1;
+                            }
+                            break;
+                        case Direction.Down:
+                            if (markingOrigins[0].i < _currentEdges[0] - 1
+                                && mask[markingOrigins[0].i + 1, markingOrigins[0].j] == 0)
+                            {
+                                differinceI = 1;
+                            }
+                            break;
+                        case Direction.Left:
+                            if (markingOrigins[0].j > 0
+                                && mask[markingOrigins[0].i, markingOrigins[0].j - 1] == 0)
+                            {
+                                differinceJ = -1;
+                            }
+                            break;
+                        case Direction.Right:
+                            if (markingOrigins[0].j < _currentEdges[1] - 1 &&
+                                mask[markingOrigins[0].i, markingOrigins[0].j + 1] == 0)
+                            {
+                                differinceJ = 1;
+                            }
+                            break;
+                    }
+                    if (differinceI != 0 || differinceJ != 0)
+                    {
+                        mask[markingOrigins[0].i + differinceI, markingOrigins[0].j + differinceJ] = p;
+                        markingOrigins.Add(new Indexes(markingOrigins[0].j + differinceJ, markingOrigins[0].i + differinceI));
+                        --amountToMark;
+                    }
+                    directions.RemoveAt(currentDirectionIndex);
+                }
+                markingOrigins.RemoveAt(0);
+            }
+        }
+
+        return mask;
+    }
+
     public static int GetEdge(bool width) => (width) ? _currentEdges[1] : _currentEdges[0];
     public static int GetSolutionPieceCount() => _solutionPieces;
     public static bool IsInit() => _init;

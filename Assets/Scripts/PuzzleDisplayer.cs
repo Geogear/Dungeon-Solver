@@ -110,6 +110,18 @@ public class PuzzleDisplayer : MonoBehaviour
             CTP.FillFakePuzzle();
             DisplayCTPMatrix(anchorPos, CTP._fakeMatrix, cTPRenderer);
         }
+
+        int[,] mask = CTP.GetSolutionPiecesMask();
+        for (int i = 0;  i < CTP.GetEdge(false); ++i)
+        {
+            string str = "";
+            for (int j = 0; j < CTP.GetEdge(true); ++j)
+            {
+                str += mask[i, j];
+                str += " "; 
+            }
+            Debug.Log(str);
+        }
     }
 
     private void DisplayCTPMatrix(Vector3 pos, int[,] puzzleMatrix, SpriteRenderer cTPRenderer)
