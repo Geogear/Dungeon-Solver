@@ -27,11 +27,17 @@ public class PuzzleDisplayer : MonoBehaviour
      * To keep the entire matrix size, same with different tile counts per edge.*/
     private const float TileEdgeUnit = 2.0f;
     /* These coords are in terms of the space with size BGXUnitCount * BGYUnitCount */
-    private readonly Vector2[] CTPDisplayCoords =
+    private Vector2[] _cTPDisplayCoords =
     {
         new Vector2(7, 8), new Vector2(15, 8),
         new Vector2(7, 14), new Vector2(15, 14)
     };
+
+    private float[] _cTPDisplaySPCoordsX =
+{
+        8.0f, 15.0f, 1.0f, 22.0f
+    };
+    private float _cTPDisplaySPCoordY = 2.0f;
 
     private PlayerCharacter _playerCharacter = null;
     private SpriteRenderer _spriteRenderer = null;
@@ -50,10 +56,15 @@ public class PuzzleDisplayer : MonoBehaviour
         /* Set unit lengths. */
         _bGXUnitLen = _spriteRenderer.size.x * transform.lossyScale.x / BGXUnitCount;
         _bGYUnitLen = _spriteRenderer.size.y * transform.lossyScale.y / BGYUnitCount;
-        for(int i = 0; i < CTPDisplayCoords.Length; ++i)
+        for(int i = 0; i < _cTPDisplayCoords.Length; ++i)
         {
-            CTPDisplayCoords[i].x *= _bGXUnitLen; CTPDisplayCoords[i].y *= _bGYUnitLen;
+            _cTPDisplayCoords[i].x *= _bGXUnitLen; _cTPDisplayCoords[i].y *= _bGYUnitLen;
         }
+        for(int i = 0; i < _cTPDisplaySPCoordsX.Length; ++i)
+        {
+            _cTPDisplaySPCoordsX[i] *= _bGXUnitLen;
+        }
+        _cTPDisplaySPCoordY *= _bGYUnitLen;
     }
 
     // Update is called once per frame
@@ -81,7 +92,7 @@ public class PuzzleDisplayer : MonoBehaviour
         Vector3 anchorPos = new Vector3(_BGOrigin.x, _BGOrigin.y, _BGOrigin.z);
         /* Create index list to pull from. */
         List<int> indexList = new List<int>();
-        for (int i = 0; i < CTPDisplayCoords.Length; ++i)
+        for (int i = 0; i < _cTPDisplayCoords.Length; ++i)
         {
             indexList.Add(i);
         }
@@ -94,8 +105,8 @@ public class PuzzleDisplayer : MonoBehaviour
         /* Display the original. */
         int currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
         indexList.Remove(currentIndex);
-        anchorPos.x = _BGOrigin.x + CTPDisplayCoords[currentIndex].x;
-        anchorPos.y = _BGOrigin.y - CTPDisplayCoords[currentIndex].y;
+        anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[currentIndex].x;
+        anchorPos.y = _BGOrigin.y - _cTPDisplayCoords[currentIndex].y;
         DisplayCTPMatrix(anchorPos, CTP._puzzleMatrix, cTPRenderer);
 
         /* Display the fakes. */
@@ -104,27 +115,17 @@ public class PuzzleDisplayer : MonoBehaviour
             /* Get index. Set anchor. */
             currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
             indexList.Remove(currentIndex);
-            anchorPos.x = _BGOrigin.x + CTPDisplayCoords[currentIndex].x;
-            anchorPos.y = _BGOrigin.y - CTPDisplayCoords[currentIndex].y;
+            anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[currentIndex].x;
+            anchorPos.y = _BGOrigin.y - _cTPDisplayCoords[currentIndex].y;
             /* Fill fake then display it. */
             CTP.FillFakePuzzle();
             DisplayCTPMatrix(anchorPos, CTP._fakeMatrix, cTPRenderer);
         }
 
-        int[,] mask = CTP.GetSolutionPiecesMask();
-        for (int i = 0;  i < CTP.GetEdge(false); ++i)
-        {
-            string str = "";
-            for (int j = 0; j < CTP.GetEdge(true); ++j)
-            {
-                str += mask[i, j];
-                str += " "; 
-            }
-            Debug.Log(str);
-        }
+        DisplayCTPSolutionPieces(cTPRenderer);
     }
 
-    private void DisplayCTPMatrix(Vector3 pos, int[,] puzzleMatrix, SpriteRenderer cTPRenderer)
+    private void DisplayCTPMatrix(Vector3 pos, int[,] puzzleMatrix, SpriteRenderer cTPRenderer, bool displayingPieces = false, int displayedValue = -1, int [,] mask = null)
     {     
         Vector3 curPos = new Vector3();
         float ctpY = cTPRenderer.size.y * _cTPTile.transform.lossyScale.y,
@@ -135,10 +136,27 @@ public class PuzzleDisplayer : MonoBehaviour
             curPos.y = pos.y - i * ctpY - ctpY/2;
             for (int j = 0; j < CTP.GetEdge(true); ++j)
             {
+                if (displayingPieces && mask[i, j] != displayedValue)
+                {
+                    continue;
+                }
                 cTPRenderer.color = _ctpColours[puzzleMatrix[i, j]];
                 curPos.x = pos.x + j * ctpX + ctpX/2;               
                 Instantiate(_cTPTile, curPos, Quaternion.identity).transform.parent = transform;
             }
+        }
+    }
+
+    private void DisplayCTPSolutionPieces(SpriteRenderer cTPRenderer)
+    {
+        int[,] mask = CTP.GetSolutionPiecesMask();
+        Vector3 anchorPos = new Vector3(_BGOrigin.x, _BGOrigin.y, _BGOrigin.z);
+
+        anchorPos.y = _BGOrigin.y - _cTPDisplaySPCoordY;
+        for (int i = 0; i < CTP.GetSolutionPieceCount(); ++i)
+        {
+            anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
+            DisplayCTPMatrix(anchorPos, CTP._puzzleMatrix, cTPRenderer, true, i, mask);
         }
     }
 
