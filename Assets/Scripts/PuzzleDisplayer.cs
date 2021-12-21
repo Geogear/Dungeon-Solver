@@ -56,6 +56,8 @@ public class PuzzleDisplayer : MonoBehaviour
     private float _bGYUnitLen = 0.0f;   
     private bool _open = false;
 
+    private PuzzleType _currentPuzzleType = PuzzleType.PuzzleTypeCount;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -99,7 +101,6 @@ public class PuzzleDisplayer : MonoBehaviour
             _cTPTile.transform.localScale.z);
 
         /* Display the original. */
-        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "Real";
         int currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
         _displayMatrixCoordIndexes[0] = currentIndex;
         indexList.Remove(currentIndex);
@@ -108,7 +109,6 @@ public class PuzzleDisplayer : MonoBehaviour
         DisplayCTPMatrix(anchorPos, CTP._puzzleMatrix, cTPRenderer);
 
         /* Display the fakes. */
-        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "Fake";
         while (indexList.Count > 0)
         {
             /* Get index. Set anchor. */
@@ -122,7 +122,6 @@ public class PuzzleDisplayer : MonoBehaviour
             DisplayCTPMatrix(anchorPos, CTP._fakeMatrix, cTPRenderer);
         }
 
-        _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "";
         DisplayCTPSolutionPieces(cTPRenderer);
         DisplayMatrixColliders();
     }
@@ -184,15 +183,55 @@ public class PuzzleDisplayer : MonoBehaviour
         _BGOrigin.z = transform.position.z;
     }
 
-    private void DisplayPieces()
+    private bool CTPDisplaySelection(Vector2 inputPos, ref bool success)
     {
+        Vector3 curPos = new Vector3();
+        Vector2 colliderSize = _displayMatrixCollider.GetComponent<BoxCollider2D>().size;
 
+        /* First for the real. */
+        curPos.x = _BGOrigin.x + _cTPDisplayCoords[0].x;
+        curPos.y = _BGOrigin.y - _cTPDisplayCoords[0].y;
+
+        /* If in bounds return. */
+        if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x /2)
+            && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y / 2))
+        {
+            success = true;
+            return true;
+        }
+
+        /* Check for the fake ones. */
+        success = false;
+        for(int i = 1; i < _displayMatrixCoordIndexes.Length; ++i)
+        {
+            curPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
+            curPos.y = _BGOrigin.y - _cTPDisplayCoords[i].y;
+            if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x / 2)
+                && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y / 2))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /* TODO here set, currentPuzzleType on some random logic. */
+    private void DecideOnPuzzle()
+    {
+        _currentPuzzleType = PuzzleType.ColourTilePuzze;
     }
 
     public void OpenPuzzle()
-    {
-        OpenCTPPuzzle();
+    {      
+        DecideOnPuzzle();
         _open = true;
+        switch(_currentPuzzleType)
+        {
+            case PuzzleType.ColourTilePuzze:
+                OpenCTPPuzzle();
+                break;
+        }
     }
 
     public void ClosePuzzle(bool success)
@@ -206,5 +245,19 @@ public class PuzzleDisplayer : MonoBehaviour
         _spriteRenderer.enabled = false;
         _open = false;
     }
+
+    /* Returns if matches with the display selection, and with the bool success sets if the match is successful. */
+    public bool DisplaySelection(Vector2 inputPos, ref bool success)
+    {
+        bool matched = false;
+        switch(_currentPuzzleType)
+        {
+            case PuzzleType.ColourTilePuzze:
+                matched = CTPDisplaySelection(inputPos, ref success);
+                break;
+        }
+        return matched;
+    }
+
     public bool IsOpen() => _open;
 }

@@ -41,10 +41,16 @@ public class PlayerCharacter : Character
                 {
                     Debug.Log("Inside");
                     Debug.Log(hit.collider.tag);
-                    UnityEngine.UI.Text text = hit.transform.GetComponent<UnityEngine.UI.Text>();
+                    CanvasRenderer cr = hit.transform.GetComponentInParent<CanvasRenderer>();
+                    UnityEngine.UI.Text text = null;
+                    if (cr != null)
+                    {
+                        text = cr.GetComponent<UnityEngine.UI.Text>();
+                    }                 
                     Debug.Log(text);
                     if (text != null)
                     {
+                        Debug.Log(text.text);
                         switch (text.text)
                         {
                             case "Real":
