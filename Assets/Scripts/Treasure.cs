@@ -20,16 +20,15 @@ public static class Treasure
         return _treasureMultiplierMin +  (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer * weightIndex;
     }
 
-    public static void Punish(PlayerCharacter playerCharacter, Vector3 treasurePos)
+    public static void RewardOrPunish(PlayerCharacter playerCharacter, Vector3 treasurePos, bool success)
     {
         /* TODO */
+        if (success)
+        {
+            Debug.Log("Reward");
+            return;
+        }
         Debug.Log("Punish");
-    }
-
-    public static void Reward(PlayerCharacter playerCharacter, Vector3 treasurePos)
-    {
-        /* TODO */
-        Debug.Log("Reward");
     }
 
     public static void AddTreasure(Vector3 treasurePos, int richnessIndex)

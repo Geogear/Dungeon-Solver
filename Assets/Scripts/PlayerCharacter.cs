@@ -27,47 +27,7 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
-        if (Input.GetAxis("Fire1") > float.Epsilon)
-        {
-            if (_treasureState == TreasureState.EnterTreasure)
-            {
-                _treasureState = TreasureState.OnTreasure;
-                _puzzleDisplayer.OpenPuzzle();
-            }else if (_treasureState == TreasureState.OnTreasure)
-            {
-                Debug.Log("Mouse: " + Input.mousePosition + "Ray: " + Camera.main.ScreenPointToRay(Input.mousePosition) + "World: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (hit)
-                {
-                    Debug.Log("Inside");
-                    Debug.Log(hit.collider.tag);
-                    CanvasRenderer cr = hit.transform.GetComponentInParent<CanvasRenderer>();
-                    UnityEngine.UI.Text text = null;
-                    if (cr != null)
-                    {
-                        text = cr.GetComponent<UnityEngine.UI.Text>();
-                    }                 
-                    Debug.Log(text);
-                    if (text != null)
-                    {
-                        Debug.Log(text.text);
-                        switch (text.text)
-                        {
-                            case "Real":
-                                _treasureState = TreasureState.TreasureStateCount;
-                                Treasure.Reward(this, _puzzleDisplayer._currentTreasurePos);
-                                _puzzleDisplayer.ClosePuzzle(true);
-                                break;
-                            case "Fake":
-                                _treasureState = TreasureState.TreasureStateCount;
-                                Treasure.Punish(this, _puzzleDisplayer._currentTreasurePos);
-                                _puzzleDisplayer.ClosePuzzle(false);
-                                break;
-                        }
-                    }                    
-                }
-            }
-        }
+        TreasureInteraction();
     }
 
     protected override void FixedUpdate()
@@ -161,9 +121,30 @@ public class PlayerCharacter : Character
             /* Puzzle might be closed because of success or fail. So need to check if open. */
             if (_puzzleDisplayer.IsOpen())
             {
-                Treasure.Punish(this, collision.transform.position);
+                Treasure.RewardOrPunish(this, collision.transform.position, false);
                 _puzzleDisplayer.ClosePuzzle(false);
             }           
+        }
+    }
+
+    private void TreasureInteraction()
+    {
+        /* Display if interacted. */
+        if(Input.GetAxis("Fire1") > float.Epsilon && _treasureState == TreasureState.EnterTreasure)
+        {
+            _treasureState = TreasureState.OnTreasure;
+            _puzzleDisplayer.OpenPuzzle();
+        }/* If diplayed and interacted. */
+        else if (Input.GetAxis("Fire3") > float.Epsilon && _treasureState == TreasureState.OnTreasure)
+        {
+            bool success = false,
+            matched = _puzzleDisplayer.MatchedDisplaySelection(Camera.main.ScreenToWorldPoint(Input.mousePosition), ref success);
+            if (matched)
+            {
+                Treasure.RewardOrPunish(this, _puzzleDisplayer._currentTreasurePos, success);
+                _treasureState = TreasureState.TreasureStateCount;
+                _puzzleDisplayer.ClosePuzzle(success);
+            }
         }
     }
 }

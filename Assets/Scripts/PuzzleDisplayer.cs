@@ -193,8 +193,8 @@ public class PuzzleDisplayer : MonoBehaviour
         curPos.y = _BGOrigin.y - _cTPDisplayCoords[0].y;
 
         /* If in bounds return. */
-        if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x /2)
-            && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y / 2))
+        if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x)
+            && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y))
         {
             success = true;
             return true;
@@ -206,8 +206,8 @@ public class PuzzleDisplayer : MonoBehaviour
         {
             curPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
             curPos.y = _BGOrigin.y - _cTPDisplayCoords[i].y;
-            if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x / 2)
-                && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y / 2))
+            if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x)
+                && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y))
             {
                 return true;
             }
@@ -216,7 +216,7 @@ public class PuzzleDisplayer : MonoBehaviour
         return false;
     }
 
-    /* TODO here set, currentPuzzleType on some random logic. */
+    /* TODO here set currentPuzzleType, with some random logic. */
     private void DecideOnPuzzle()
     {
         _currentPuzzleType = PuzzleType.ColourTilePuzze;
@@ -247,7 +247,7 @@ public class PuzzleDisplayer : MonoBehaviour
     }
 
     /* Returns if matches with the display selection, and with the bool success sets if the match is successful. */
-    public bool DisplaySelection(Vector2 inputPos, ref bool success)
+    public bool MatchedDisplaySelection(Vector2 inputPos, ref bool success)
     {
         bool matched = false;
         switch(_currentPuzzleType)
