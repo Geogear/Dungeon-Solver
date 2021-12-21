@@ -189,8 +189,8 @@ public class PuzzleDisplayer : MonoBehaviour
         Vector2 colliderSize = _displayMatrixCollider.GetComponent<BoxCollider2D>().size;
 
         /* First for the real. */
-        curPos.x = _BGOrigin.x + _cTPDisplayCoords[0].x;
-        curPos.y = _BGOrigin.y - _cTPDisplayCoords[0].y;
+        curPos.x = _BGOrigin.x + _cTPDisplayCoords[_displayMatrixCoordIndexes[0]].x;
+        curPos.y = _BGOrigin.y - _cTPDisplayCoords[_displayMatrixCoordIndexes[0]].y;
 
         /* If in bounds return. */
         if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x)
@@ -204,8 +204,8 @@ public class PuzzleDisplayer : MonoBehaviour
         success = false;
         for(int i = 1; i < _displayMatrixCoordIndexes.Length; ++i)
         {
-            curPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
-            curPos.y = _BGOrigin.y - _cTPDisplayCoords[i].y;
+            curPos.x = _BGOrigin.x + _cTPDisplayCoords[_displayMatrixCoordIndexes[i]].x;
+            curPos.y = _BGOrigin.y - _cTPDisplayCoords[_displayMatrixCoordIndexes[i]].y;
             if ((inputPos.x >= curPos.x && inputPos.x <= curPos.x + colliderSize.x)
                 && (inputPos.y <= curPos.y && inputPos.y >= curPos.y - colliderSize.y))
             {

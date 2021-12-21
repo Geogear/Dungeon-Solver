@@ -108,16 +108,16 @@ public static class CTP
             System.Collections.Generic.List<Indexes> markingOrigins = new System.Collections.Generic.List<Indexes>();
             System.Collections.Generic.List<Direction> directions = new System.Collections.Generic.List<Direction>();
 
-            for (int i = 0; i < (int)Direction.DirectionCount; ++i)
-            {
-                directions.Add((Direction)i);
-            }
             markingOrigins.Clear();
             markingOrigins.Add(startingIndexes);
             /* Do markings. For every mark, start with the origin, look at 4 directions, in random order
              if empty, fill and add that point to the origin points list. */
             while (markingOrigins.Count > 0 && amountToMark > 0)
             {
+                for (int i = 0; i < (int)Direction.DirectionCount; ++i)
+                {
+                    directions.Add((Direction)i);
+                }
                 while (directions.Count > 0 && amountToMark > 0)
                 {
                     int currentDirectionIndex = LevelGenerator.rand.Next(directions.Count),
