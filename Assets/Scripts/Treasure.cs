@@ -23,11 +23,13 @@ public static class Treasure
     public static void Punish(PlayerCharacter playerCharacter, Vector3 treasurePos)
     {
         /* TODO */
+        Debug.Log("Punish");
     }
 
     public static void Reward(PlayerCharacter playerCharacter, Vector3 treasurePos)
     {
         /* TODO */
+        Debug.Log("Reward");
     }
 
     public static void AddTreasure(Vector3 treasurePos, int richnessIndex)

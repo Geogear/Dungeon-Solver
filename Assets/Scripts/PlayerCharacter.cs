@@ -33,6 +33,33 @@ public class PlayerCharacter : Character
             {
                 _treasureState = TreasureState.OnTreasure;
                 _puzzleDisplayer.OpenPuzzle();
+            }else if (_treasureState == TreasureState.OnTreasure)
+            {
+                Debug.Log("Mouse: " + Input.mousePosition + "Ray: " + Camera.main.ScreenPointToRay(Input.mousePosition) + "World: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                if (hit)
+                {
+                    Debug.Log("Inside");
+                    Debug.Log(hit.collider.tag);
+                    UnityEngine.UI.Text text = hit.transform.GetComponent<UnityEngine.UI.Text>();
+                    Debug.Log(text);
+                    if (text != null)
+                    {
+                        switch (text.text)
+                        {
+                            case "Real":
+                                _treasureState = TreasureState.TreasureStateCount;
+                                Treasure.Reward(this, _puzzleDisplayer._currentTreasurePos);
+                                _puzzleDisplayer.ClosePuzzle(true);
+                                break;
+                            case "Fake":
+                                _treasureState = TreasureState.TreasureStateCount;
+                                Treasure.Punish(this, _puzzleDisplayer._currentTreasurePos);
+                                _puzzleDisplayer.ClosePuzzle(false);
+                                break;
+                        }
+                    }                    
+                }
             }
         }
     }
@@ -125,11 +152,11 @@ public class PlayerCharacter : Character
             (_treasureState == TreasureState.OnTreasure || _treasureState == TreasureState.EnterTreasure))
         {
             _treasureState = TreasureState.TreasureStateCount;
-            /* Puzzle might be closed because of success or fail. */
+            /* Puzzle might be closed because of success or fail. So need to check if open. */
             if (_puzzleDisplayer.IsOpen())
             {
                 Treasure.Punish(this, collision.transform.position);
-                _puzzleDisplayer.ClosePuzzle();
+                _puzzleDisplayer.ClosePuzzle(false);
             }           
         }
     }

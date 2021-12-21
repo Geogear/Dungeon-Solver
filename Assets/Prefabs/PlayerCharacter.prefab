@@ -28,8 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 13, y: 9, z: 1}
-  m_Children:
-  - {fileID: 4743898709445758936}
+  m_Children: []
   m_Father: {fileID: 8817742015899828395}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -97,8 +96,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentTreasurePos: {x: 0, y: 0, z: 0}
+  CTPStartingEdgeMin: 2
+  CTPStartingEdgeMax: 3
+  CTPStartingColourMax: 1
+  CTPSolutionPieceCount: 2
   _cTPTile: {fileID: 7581139661611923902, guid: 51e02e69c618f4c4f94908039f44e64c, type: 3}
-  _puzzleOptionsAnchor: {fileID: 4743898709445758936}
+  _displayMatrixCollider: {fileID: 3342127531908949277, guid: 975850b9b2ab59a44850b7d5967dbfff, type: 3}
 --- !u!1 &2238516526310197092
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,36 +131,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8817742015899828395}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7663169761652674069
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4743898709445758936}
-  m_Layer: 7
-  m_Name: Anchor1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4743898709445758936
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7663169761652674069}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.223, y: 0.089, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 482080024773820032}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8817742015899828392
 GameObject:

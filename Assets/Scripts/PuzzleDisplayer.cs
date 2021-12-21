@@ -13,7 +13,7 @@ public class PuzzleDisplayer : MonoBehaviour
     public int CTPSolutionPieceCount = 2;
 
     [SerializeField] private GameObject _cTPTile;
-    [SerializeField] private Transform _puzzleOptionsAnchor;
+    [SerializeField] private GameObject _displayMatrixCollider;
 
     private Color[] _ctpColours = {
         Color.yellow, Color.green, Color.blue,
@@ -35,6 +35,13 @@ public class PuzzleDisplayer : MonoBehaviour
         new Vector2(7, 14), new Vector2(15, 14)
     };
 
+    /* 0th one is for the real display matrix. */
+    private int[] _displayMatrixCoordIndexes = { -1, -1, -1, 1 };
+
+    /*private Vector2[] _cTPDisplayMatrixMinCoords = { };
+
+    private Vector2[] _cTPDisplayMatrixMaxCoords = { };*/
+
     private float[] _cTPDisplaySPCoordsX =
 {
         8.0f, 15.0f, 1.0f, 22.0f
@@ -46,8 +53,7 @@ public class PuzzleDisplayer : MonoBehaviour
     private Vector3 _BGOrigin = new Vector3();
 
     private float _bGXUnitLen = 0.0f;
-    private float _bGYUnitLen = 0.0f;
-    private bool _success = false;
+    private float _bGYUnitLen = 0.0f;   
     private bool _open = false;
 
     // Start is called before the first frame update
@@ -67,18 +73,6 @@ public class PuzzleDisplayer : MonoBehaviour
             _cTPDisplaySPCoordsX[i] *= _bGXUnitLen;
         }
         _cTPDisplaySPCoordY *= _bGYUnitLen;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /* TODO, if displaying puzzle check for ray hit, and call on success for the puzzle on right.
-         * Treasure reward and punish has to be called from here. 
-        if (_spriteRenderer.enabled)
-        {
-            CTP.SolvedSuccessfull();
-        }*/
-
     }
 
     private void OpenCTPPuzzle()
@@ -107,6 +101,7 @@ public class PuzzleDisplayer : MonoBehaviour
         /* Display the original. */
         _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "Real";
         int currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
+        _displayMatrixCoordIndexes[0] = currentIndex;
         indexList.Remove(currentIndex);
         anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[currentIndex].x;
         anchorPos.y = _BGOrigin.y - _cTPDisplayCoords[currentIndex].y;
@@ -118,6 +113,7 @@ public class PuzzleDisplayer : MonoBehaviour
         {
             /* Get index. Set anchor. */
             currentIndex = indexList[LevelGenerator.rand.Next(indexList.Count)];
+            _displayMatrixCoordIndexes[indexList.Count] = currentIndex;
             indexList.Remove(currentIndex);
             anchorPos.x = _BGOrigin.x + _cTPDisplayCoords[currentIndex].x;
             anchorPos.y = _BGOrigin.y - _cTPDisplayCoords[currentIndex].y;
@@ -128,6 +124,7 @@ public class PuzzleDisplayer : MonoBehaviour
 
         _cTPTile.GetComponent<UnityEngine.UI.Text>().text = "";
         DisplayCTPSolutionPieces(cTPRenderer);
+        DisplayMatrixColliders();
     }
 
     private void DisplayCTPMatrix(Vector3 pos, int[,] puzzleMatrix, SpriteRenderer cTPRenderer, bool displayingPieces = false, int displayedValue = -1, int [,] mask = null)
@@ -166,6 +163,19 @@ public class PuzzleDisplayer : MonoBehaviour
 
     }
 
+    private void DisplayMatrixColliders()
+    {
+        Vector3 curPos = new Vector3();
+        Vector2 colliderSize = _displayMatrixCollider.GetComponent<BoxCollider2D>().size;
+        for (int i = 0; i < _displayMatrixCoordIndexes.Length; ++i)
+        {
+            curPos.x = _BGOrigin.x + _cTPDisplayCoords[i].x;
+            curPos.y = _BGOrigin.y - _cTPDisplayCoords[i].y;
+            curPos.x += colliderSize.x / 2; curPos.y -= colliderSize.y / 2;
+            Instantiate(_displayMatrixCollider, curPos, Quaternion.identity).transform.SetParent(transform);
+        }
+    }
+
     private void SetBGOrigin()
     {
         /* Set origin. */
@@ -185,9 +195,9 @@ public class PuzzleDisplayer : MonoBehaviour
         _open = true;
     }
 
-    public void ClosePuzzle()
+    public void ClosePuzzle(bool success)
     {
-        /* TODO Destroy by tag "Puzzle". */
+        /* TODO puzzle leveling here. */
         GameObject[] puzzleObjects = GameObject.FindGameObjectsWithTag("Puzzle");
         foreach(GameObject puzzleObject in puzzleObjects)
         {
@@ -196,7 +206,5 @@ public class PuzzleDisplayer : MonoBehaviour
         _spriteRenderer.enabled = false;
         _open = false;
     }
-
-    public bool IsSuccess() => _success;
     public bool IsOpen() => _open;
 }
