@@ -242,7 +242,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         prefabToPut = _treasurePrefab;
                         pos.y += 0.5f; pos.x += 0.5f;
-                        Treasure.AddTreasure(pos, (int)FilledType.TreasureLow);
+                        Treasure.AddTreasure(pos, filledType);
                     }
                     if (prefabToPut != null)
                     {                      

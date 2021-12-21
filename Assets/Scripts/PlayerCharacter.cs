@@ -105,7 +105,8 @@ public class PlayerCharacter : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.TreasureStateCount)
+        if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.TreasureStateCount
+            && !Treasure.IsOpened(collision.transform.position))
         {
             _treasureState = TreasureState.EnterTreasure;
             _puzzleDisplayer._currentTreasurePos = collision.transform.position;

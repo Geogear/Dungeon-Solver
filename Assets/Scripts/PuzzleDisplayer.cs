@@ -212,7 +212,6 @@ public class PuzzleDisplayer : MonoBehaviour
                 return true;
             }
         }
-
         return false;
     }
 

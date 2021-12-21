@@ -55,11 +55,13 @@ public struct TreasureData
 {
     public int _richnessIndex;
     public float _treasureMultiplier;
+    public bool _opened;
 
     public TreasureData(int richnessIndex, float treasureMultipler)
     {
         _richnessIndex = richnessIndex;
         _treasureMultiplier = treasureMultipler;
+        _opened = false;
     }
 }
 
