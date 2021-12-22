@@ -3,13 +3,14 @@ using UnityEngine;
 
 public static class Treasure
 {
-    private static Dictionary<Vector3, TreasureData> _treasures = new Dictionary<Vector3, TreasureData>();
-    private static List<int[]> _treasureRichnessWeights = new List<int[]>
+    public static readonly List<int[]> _treasureRichnessWeights = new List<int[]>
     {
         new int[] { 40, 25, 20, 10, 5 },
         new int[] { 30, 15, 25, 20, 10 },
         new int[] { 5, 15, 20, 40, 20 }
     };
+
+    private static Dictionary<Vector3, TreasureData> _treasures = new Dictionary<Vector3, TreasureData>();
     private static float _treasureMultiplierMin = 1.0f;
     private static float _treasureMultiplierMax = 4.0f;
 
@@ -53,4 +54,6 @@ public static class Treasure
         }
         return td._opened;
     }
+
+    public static TreasureData GetTreasureData(Vector3 treasurePos) => _treasures[treasurePos];
 }

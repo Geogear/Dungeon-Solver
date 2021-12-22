@@ -130,12 +130,12 @@ public class PlayerCharacter : Character
 
     private void TreasureInteraction()
     {
-        /* Display if interacted. */
+        /* Display if collided. */
         if(Input.GetAxis("Fire1") > float.Epsilon && _treasureState == TreasureState.EnterTreasure)
         {
             _treasureState = TreasureState.OnTreasure;
             _puzzleDisplayer.OpenPuzzle();
-        }/* If diplayed and interacted. */
+        }/* If diplayed and collided, let it interact. */
         else if (Input.GetAxis("Fire3") > float.Epsilon && _treasureState == TreasureState.OnTreasure)
         {
             bool success = false,

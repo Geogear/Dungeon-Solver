@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class PuzzleDisplayer : MonoBehaviour
 {
-    /* TODO as the ctp tiles increase, starting point of the matrixes go down. */
-
     public Vector3 _currentTreasurePos;
     public int CTPStartingEdgeMin = 2;
     public int CTPStartingEdgeMax = 3;
-    public int CTPStartingColourMax = 1;
-    public int CTPSolutionPieceCount = 2;
+    public int CTPStartingColourMax = 2;
 
     [SerializeField] private GameObject _cTPTile;
     [SerializeField] private GameObject _displayMatrixCollider;
@@ -38,13 +35,9 @@ public class PuzzleDisplayer : MonoBehaviour
     /* 0th one is for the real display matrix. */
     private int[] _displayMatrixCoordIndexes = { -1, -1, -1, 1 };
 
-    /*private Vector2[] _cTPDisplayMatrixMinCoords = { };
-
-    private Vector2[] _cTPDisplayMatrixMaxCoords = { };*/
-
     private float[] _cTPDisplaySPCoordsX =
 {
-        8.0f, 15.0f, 1.0f, 22.0f
+        7.0f, 15.0f, 1.0f, 21.0f
     };
     private float _cTPDisplaySPCoordY = 2.0f;
 
@@ -75,17 +68,14 @@ public class PuzzleDisplayer : MonoBehaviour
             _cTPDisplaySPCoordsX[i] *= _bGXUnitLen;
         }
         _cTPDisplaySPCoordY *= _bGYUnitLen;
+        CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax, CTPStartingColourMax);
     }
 
     private void OpenCTPPuzzle()
     {
-        if (!CTP.IsInit())
-        {
-            CTP.InitCTP(CTPStartingEdgeMin, CTPStartingEdgeMax, CTPStartingColourMax, CTPSolutionPieceCount);
-        }
         /* Set and init needed. */
         SetBGOrigin();
-        CTP.InitPuzzleMatrix();
+        CTP.InitPuzzleMatrix(Treasure.GetTreasureData(_currentTreasurePos));
         SpriteRenderer cTPRenderer = _cTPTile.GetComponent<SpriteRenderer>();       
         Vector3 anchorPos = new Vector3(_BGOrigin.x, _BGOrigin.y, _BGOrigin.z);
         /* Create index list to pull from. */
@@ -235,7 +225,17 @@ public class PuzzleDisplayer : MonoBehaviour
 
     public void ClosePuzzle(bool success)
     {
-        /* TODO puzzle leveling here. */
+        /* Puzzle leveling called and puzzle objects destroyed here. */
+        if (success)
+        {
+            switch(_currentPuzzleType)
+            {
+                case PuzzleType.ColourTilePuzze:
+                    CTP.SolvedSuccessfully();
+                    break;
+            }
+        }
+        
         GameObject[] puzzleObjects = GameObject.FindGameObjectsWithTag("Puzzle");
         foreach(GameObject puzzleObject in puzzleObjects)
         {

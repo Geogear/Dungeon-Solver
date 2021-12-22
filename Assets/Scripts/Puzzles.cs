@@ -1,11 +1,9 @@
 public static class CTP
 {
-    private static readonly int SolutionPiecesMax = 4;
-
-    private static bool _init = false;
+    private static TreasureData _currrentTD;
+    private static float _expDividerForColour = 1.0f;
     private static int _exp = 0;
-    private static int _solutionPieces = 2;
-    private static int _currentColourMax = 1;
+    private static int _currentColourMax = 2;
     private static int[] _edgeIncreaseAmount;
     private static int[] _edgeIncreaseAmountWeights;
     private static int[] _currentEdges;
@@ -23,21 +21,50 @@ public static class CTP
         {
             for (int j = 0; j < _currentEdges[1]; ++j)
             {
-                currentMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax + 1);
+                /* If the last index is selected, It's giving a plus one. */
+                int plusOne = LevelGenerator.GetWeightedRandom(Treasure._treasureRichnessWeights[_currrentTD._richnessIndex]);
+                plusOne = (plusOne == Treasure._treasureRichnessWeights[_currrentTD._richnessIndex].Length - 1) ? 1 : 0;
+                currentMatrix[i, j] = LevelGenerator.rand.Next(_currentColourMax + plusOne);
             }
         }
     }
 
-    public static void InitCTP(int min = 2, int max = 3, int startingColourMax = 1, int solutionPieces = 2)
+    private static void SetExpDividerForColour()
+    {
+        float multiplier = LevelGenerator.rand.Next(_currentColourMax);
+        if (multiplier == 0)
+        {
+            multiplier = _currentColourMax / 10;
+        }
+        _expDividerForColour = _currentEdges[0] * _currentEdges[1] + multiplier * _currentEdges[0] * _currentEdges[1];
+    }
+
+    private static bool FakeAndRealSame()
+    {
+        for (int i = 0; i < _currentEdges[0]; ++i)
+        {
+            for(int j = 0; j < _currentEdges[1]; ++j)
+            {
+                if (_puzzleMatrix[i, j] != _fakeMatrix[i, j])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static int GetCurrentExperienceCap() => _currentEdges[0] * _currentEdges[1]; 
+
+    public static void InitCTP(int min = 2, int max = 3, int startingColourMax = 2)
     {
         _edgeIncreaseAmount = new int[2] { 1, 2 };
         _edgeIncreaseAmountWeights = new int[2] { 80, 20 };
         _currentEdges = new int[2] { LevelGenerator.rand.Next(min, max + 1), LevelGenerator.rand.Next(min, max + 1) };
         _currentMinMax = new int[2] { min, max };
         _puzzleMatrix = null;
-        _currentColourMax = startingColourMax >= (int)CTPColours.CTPCCount ? (int)CTPColours.CTPCCount - 1 : startingColourMax;
-        _solutionPieces = solutionPieces > SolutionPiecesMax ? SolutionPiecesMax : solutionPieces;
-        _init = true;
+        _currentColourMax = startingColourMax >= (int)CTPColours.CTPCCount ? (int)CTPColours.CTPCCount-1 : startingColourMax;
+        SetExpDividerForColour();
     }
 
     public static void IncreaseEdgeMinMax()
@@ -53,41 +80,52 @@ public static class CTP
         }
     }
 
-    public static void InitPuzzleMatrix()
+    public static void InitPuzzleMatrix(TreasureData treasureData)
     {
         /* Get random edge lengths. Init the matrixes. */
         _currentEdges[0] = LevelGenerator.rand.Next(_currentMinMax[0], _currentMinMax[1] + 1);
         _currentEdges[1] = LevelGenerator.rand.Next(_currentMinMax[0], _currentMinMax[1] + 1);
         _puzzleMatrix = new int[_currentEdges[0], _currentEdges[1]];
         _fakeMatrix = new int[_currentEdges[0], _currentEdges[1]];
+        _currrentTD = treasureData;
 
         FillMatrix(false);
     }
 
     public static void FillFakePuzzle()
-    {
-        /* TODO, check for not same with the actual puzzle. */
-        FillMatrix(true);
+    {   
+        do
+        {
+            FillMatrix(true);
+        } while (FakeAndRealSame());
     }
 
     public static void SolvedSuccessfully()
     {
         /* Increase experience. */
-        _exp += LevelGenerator.rand.Next(1, _currentEdges[LevelGenerator.rand.Next()%2] + 1);
-        if (_exp >= _currentEdges[0] * _currentEdges[0]* 1)
+        int currentMinEdge = (_currentEdges[0] > _currentEdges[1]) ? _currentEdges[1] : _currentEdges[0];
+        _exp += LevelGenerator.rand.Next(_currentMinMax[0], currentMinEdge+1);
+
+        if (_exp > GetCurrentExperienceCap())
         {
             IncreaseEdgeMinMax();
+            /* Have to check with CTPCount-1 because of possible plusOne */
+            if ((_exp / _expDividerForColour) +2 > _currentColourMax && _currentColourMax != (int)CTPColours.CTPCCount-1)
+            {
+                ++_currentColourMax;
+                SetExpDividerForColour();
+            }
         }
     }
 
     public static int [,] GetSolutionPiecesMask()
     {
         int[,] mask = new int[_currentEdges[0], _currentEdges[1]];
-        int nonMarked = _currentEdges[0] * _currentEdges[1], simplePartition = nonMarked / _solutionPieces,
+        int nonMarked = _currentEdges[0] * _currentEdges[1], simplePartition = nonMarked / GetSolutionPieceCount(),
             amountToMark = 0;
         nonMarked -= (int)(simplePartition * LevelGenerator.RandomFloat(0.85f, 1.0f));
 
-        for (int p = 1; p < _solutionPieces; ++p)
+        for (int p = 1; p < GetSolutionPieceCount(); ++p)
         {
             amountToMark = (simplePartition >= nonMarked) ? nonMarked :
                 (int)(simplePartition * LevelGenerator.RandomFloat(0.85f, 1.0f));
@@ -168,7 +206,7 @@ public static class CTP
         return mask;
     }
 
-    public static int GetEdge(bool width) => (width) ? _currentEdges[1] : _currentEdges[0];
-    public static int GetSolutionPieceCount() => _solutionPieces;
-    public static bool IsInit() => _init;
+    public static int GetSolutionPieceCount() => _currrentTD._richnessIndex + 2;
+
+    public static int GetEdge(bool width) => (width) ? _currentEdges[1] : _currentEdges[0];   
 }

@@ -132,11 +132,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: CTPStartingEdgeMax
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: CTPStartingEdgeMin
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4780814748487695130, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: CTPStartingColourMax
