@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PuzzleDisplayer : MonoBehaviour
 {
+    public Sprite _openTreasureSprite;
     public Vector3 _currentTreasurePos;
     public int CTPStartingEdgeMin = 2;
     public int CTPStartingEdgeMax = 3;

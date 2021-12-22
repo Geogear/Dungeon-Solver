@@ -7,6 +7,7 @@ public class PlayerCharacter : Character
        Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
 
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
+    private Collider2D _currentTreasureCollision;
 
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
@@ -110,6 +111,7 @@ public class PlayerCharacter : Character
         {
             _treasureState = TreasureState.EnterTreasure;
             _puzzleDisplayer._currentTreasurePos = collision.transform.position;
+            _currentTreasureCollision = collision;
         }
     }
 
@@ -124,7 +126,7 @@ public class PlayerCharacter : Character
             {
                 Treasure.RewardOrPunish(this, collision.transform.position, false);
                 _puzzleDisplayer.ClosePuzzle(false);
-            }           
+            }          
         }
     }
 
@@ -145,6 +147,11 @@ public class PlayerCharacter : Character
                 Treasure.RewardOrPunish(this, _puzzleDisplayer._currentTreasurePos, success);
                 _treasureState = TreasureState.TreasureStateCount;
                 _puzzleDisplayer.ClosePuzzle(success);
+                if (success)
+                {
+                    _currentTreasureCollision.GetComponent<SpriteRenderer>().sprite = _puzzleDisplayer._openTreasureSprite;
+                }
+                _currentTreasureCollision = null;
             }
         }
     }

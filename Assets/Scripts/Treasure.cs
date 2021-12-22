@@ -13,6 +13,7 @@ public static class Treasure
     private static Dictionary<Vector3, TreasureData> _treasures = new Dictionary<Vector3, TreasureData>();
     private static float _treasureMultiplierMin = 1.0f;
     private static float _treasureMultiplierMax = 4.0f;
+    private static int _openedTreasures = 0;
 
     private static float DetermineActualRichness(int richnessIndex)
     {
@@ -31,6 +32,7 @@ public static class Treasure
             {
                 Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
             }
+            ++_openedTreasures;
             td._opened = true;
             _treasures[treasurePos] = td;
             Debug.Log("Reward richness: " + td._richnessIndex + " multiplier: " + td._treasureMultiplier);
@@ -53,6 +55,12 @@ public static class Treasure
             Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
         }
         return td._opened;
+    }
+
+    public static void CleanData()
+    {
+        _openedTreasures = 0;
+        _treasures = new Dictionary<Vector3, TreasureData>();
     }
 
     public static TreasureData GetTreasureData(Vector3 treasurePos) => _treasures[treasurePos];
