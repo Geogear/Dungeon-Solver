@@ -19,6 +19,8 @@ public class LevelGenerator : MonoBehaviour
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
+    private static readonly string[] TagsToDestroy =
+        { "Enemy", "Treasure", "LevelExit" };
 
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
@@ -31,15 +33,17 @@ public class LevelGenerator : MonoBehaviour
     public GameObject _levelExitPrefab;
     public GameObject _background;
 
-    [SerializeField]private int _currentMaxEdge = 100;
-    [SerializeField]private int _currentMinEdge = 100;
-    [SerializeField] private int _customSeed = 0;
+    public PlayerCharacter player;
+
+    [SerializeField]private int _currentMaxEdge = 5;
+    [SerializeField]private int _currentMinEdge = 3;
+    [SerializeField]private int _customSeed = 0;  
 
     public static System.Random rand = null;
-
     private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
+    private static int _currentLevel = 0;
     private static int[,] _dungeonMatrix = null;
     private static Indexes _dungeonSize = new Indexes(0, 0);
     private static Indexes _XYMax = new Indexes(0, 0);
@@ -55,8 +59,7 @@ public class LevelGenerator : MonoBehaviour
         }
         Debug.Log("Seed:" + _currentSeed);
         rand = new System.Random(_currentSeed);
-        /* TODO, Only place where, GenerateLevel is not called with AmplifyEdges
-         TODO, Dont forget assigning new values to static properties on each progressed level, if needed. */
+        /* Only place where, GenerateLevel is not called with AmplifyEdges. */
         GenerateLevel();
         PrintDungeonMatrix(false);
         VisualizeDungeon();
@@ -69,6 +72,9 @@ public class LevelGenerator : MonoBehaviour
 
     public void GenerateLevel()
     {
+        /* Keep track. */
+        ++_currentLevel;
+
         /* Calculating min total tile required for this generation */
         _currentDungeonHeight = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
         _currentDungeonWidth = rand.Next(_currentMinEdge, _currentMaxEdge + 1);
@@ -183,6 +189,16 @@ public class LevelGenerator : MonoBehaviour
         return randomFloat;
     }
 
+    public void GenerateNextLevel()
+    {
+        ClearLevel();
+        AmplifyEdges();
+        GenerateLevel();
+        PrintDungeonMatrix(false);
+        VisualizeDungeon();
+        player.SetToStartPos();
+    }
+
     public static int GetCurSeed() => _currentSeed;
     public static int GetCurHeight() => _currentDungeonHeight;
     public static int GetCurWidth() => _currentDungeonWidth;
@@ -253,7 +269,7 @@ public class LevelGenerator : MonoBehaviour
             }
         }
         Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
-        /* TODO, after visualizing the tiles, it should put the monsters, doors, treasures etc. */
+
         SetBG();
     }
 
@@ -470,7 +486,20 @@ public class LevelGenerator : MonoBehaviour
 
     private void ClearLevel()
     {
-        /* TODO, get gameobects by tag and destroy them. */
-        
+        _tileMap.ClearAllTiles();
+        Room.ClearData();
+        Treasure.ClearData();
+        /* Get gameobects by tag and destroy them. 
+         +destroy traps
+         +destroy other? */
+        for (int i = 0; i < TagsToDestroy.Length; ++i)
+        {
+            GameObject[] objects = GameObject.FindGameObjectsWithTag(TagsToDestroy[i]);
+            foreach(GameObject obj in objects)
+            {
+                Destroy(obj);
+            }
+        }      
     }
+
 }

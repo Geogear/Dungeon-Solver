@@ -57,7 +57,7 @@ public static class Treasure
         return td._opened;
     }
 
-    public static void CleanData()
+    public static void ClearData()
     {
         _openedTreasures = 0;
         _treasures = new Dictionary<Vector3, TreasureData>();

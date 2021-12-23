@@ -16,7 +16,7 @@ public static class CTP
     {
         int[,] currentMatrix = fake ? _fakeMatrix : _puzzleMatrix;
 
-        /* Put a random colour at each tile. TODO this should be smarter. */
+        /* Put a random colour at each tile. */
         for (int i = 0; i < _currentEdges[0]; ++i)
         {
             for (int j = 0; j < _currentEdges[1]; ++j)

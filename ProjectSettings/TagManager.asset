@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Treasure
   - Puzzle
+  - LevelExit
   layers:
   - Default
   - TransparentFX

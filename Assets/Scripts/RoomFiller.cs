@@ -8,14 +8,14 @@ public static class RoomFiller
      * determines the range of the random number. 
        Using the difficulty range for both monsters and also for the
        richness degree of the treasures in that level. */
-    private static float[] _difficultyRanges = { 0.3f, 0.5f, 0.2f };
-    private static float[] _treasureAmountRange = { 0.2f, 0.5f, 0.3f };
-    private static float _minMonsterNumDivider = 7.0f;
-    private static float _maxMonsterNumDivider = 4.0f;
-    private static float _minTreasureNumDivider = 15.0f;
-    private static float _maxTreasureNumDivider = 11.0f;
-    private static int[] _difficultyWeights = { 30, 55, 15 };
-    private static List<int[]> _treasureRichnessLevelWeights = new List<int[]>
+    private static readonly float[] DifficultyRanges = { 0.3f, 0.5f, 0.2f };
+    private static readonly float[] TreasureAmountRange = { 0.2f, 0.5f, 0.3f };
+    private static readonly float MinMonsterNumDivider = 7.0f;
+    private static readonly float MaxMonsterNumDivider = 4.0f;
+    private static readonly float MinTreasureNumDivider = 15.0f;
+    private static readonly float MaxTreasureNumDivider = 11.0f;
+    private static readonly int[] DifficultyWeights = { 30, 55, 15 };
+    private static readonly List<int[]> TreasureRichnessLevelWeights = new List<int[]>
     {
         new int[] {50, 35, 15},
         new int[] {30, 50, 20},
@@ -28,31 +28,31 @@ public static class RoomFiller
     {
         float roomTileCount = roomEdges.j * roomEdges.i;
         /* Set variables for monster generation. */
-        int difficultyIndex = LevelGenerator.GetWeightedRandom(_difficultyWeights);
-        float minBoundry = roomTileCount / _minMonsterNumDivider,
-        maxBoundry = roomTileCount / _maxMonsterNumDivider,
+        int difficultyIndex = LevelGenerator.GetWeightedRandom(DifficultyWeights);
+        float minBoundry = roomTileCount / MinMonsterNumDivider,
+        maxBoundry = roomTileCount / MaxMonsterNumDivider,
         rangeFixer = 0.0f, difference = maxBoundry - minBoundry;
 
         /* Determining range fixer for min boundary. */
-        rangeFixer = DetermineRangeFixer(_difficultyRanges, difficultyIndex, true);
+        rangeFixer = DetermineRangeFixer(DifficultyRanges, difficultyIndex, true);
         minBoundry += difference * rangeFixer;
 
         /* Determining range fixer for max boundary. */
-        rangeFixer = DetermineRangeFixer(_difficultyRanges, difficultyIndex, false);
+        rangeFixer = DetermineRangeFixer(DifficultyRanges, difficultyIndex, false);
         maxBoundry -= difference * rangeFixer;
 
         /* Determine monster count. */
         float monsterCount = LevelGenerator.RandomFloat(minBoundry, maxBoundry);
 
         /* Set variables for treasure generation. */
-        minBoundry = roomTileCount / _minTreasureNumDivider;
-        maxBoundry = roomTileCount / _maxTreasureNumDivider;
+        minBoundry = roomTileCount / MinTreasureNumDivider;
+        maxBoundry = roomTileCount / MaxTreasureNumDivider;
         difference = maxBoundry - minBoundry;
 
-        rangeFixer = DetermineRangeFixer(_treasureAmountRange, difficultyIndex, true);
+        rangeFixer = DetermineRangeFixer(TreasureAmountRange, difficultyIndex, true);
         minBoundry += difference * rangeFixer;
 
-        rangeFixer = DetermineRangeFixer(_treasureAmountRange, difficultyIndex, false);
+        rangeFixer = DetermineRangeFixer(TreasureAmountRange, difficultyIndex, false);
         minBoundry += difference * rangeFixer;
 
         int treasureCount = Mathf.RoundToInt(LevelGenerator.RandomFloat(minBoundry, maxBoundry));
@@ -91,7 +91,7 @@ public static class RoomFiller
             {
                 break;
             }
-            treasureType = (int)FilledType.TreasureLow + LevelGenerator.GetWeightedRandom(_treasureRichnessLevelWeights[difficultyIndex]);
+            treasureType = (int)FilledType.TreasureLow + LevelGenerator.GetWeightedRandom(TreasureRichnessLevelWeights[difficultyIndex]);
             _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = treasureType;
             allIndexes.RemoveAt(randIndex);
         }

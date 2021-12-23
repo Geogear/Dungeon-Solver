@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class Room
 {
-    /* TODO, there are edge cases with the visualizer, and there might be some not because of the
-       visualizer but becaues how rooms are generated, two room will never collide but that doesn't mean,
-       there will be space for walls. Can create rooms with walls in mind, this would simplify the visualizer
-       very much, it would speed up the creation of the dungeon.*/
-
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
@@ -16,10 +11,10 @@ public class Room
     private static readonly int RoomWidthMax = 23;
     private static readonly float ExitRoomLimitMax = 0.8f;
     private static readonly float ExitRoomLimitMin = 0.4f;
+    private static readonly float ExitRoomLimitDecrease = 0.02f;
 
     public static int _minTilesRequired = 0;
     private static float _exitRoomLimitCur = ExitRoomLimitMax;
-    private static float _exitRoomLimitDecrease = 0.02f;
     private static int _numOfRooms = 0;
     private static bool _exitRoomExists = false;
     private static int _totalTileCreated = 0;   
@@ -110,7 +105,7 @@ public class Room
     {
         if (_exitRoomLimitCur > ExitRoomLimitMin)
         {
-            _exitRoomLimitCur -= _exitRoomLimitDecrease;
+            _exitRoomLimitCur -= ExitRoomLimitDecrease;
         }       
     }
 
@@ -258,7 +253,6 @@ public class Room
         Indexes ix = DetermineDoorIndexes(_roomHeight, _roomWidth, direction);
         Vector2 vec2 = CalcCoordinates(ix.i, ix.j);
 
-        /* TODO, must be updated after multi-layered tile structure is implemented. */
         _leadingDoorIndexes.Add(new Indexes(ix.j, ix.i));
 
         switch (direction)
@@ -535,5 +529,17 @@ public class Room
         height = LevelGenerator.rand.Next(2, upperHeightLimit + 1);
 
         return new Indexes((int)width, (int)height);
+    }
+
+    public static void ClearData()
+    {
+        _minTilesRequired = 0;
+        _exitRoomLimitCur = ExitRoomLimitMax;
+        _numOfRooms = 0;
+        _exitRoomExists = false;
+        _totalTileCreated = 0;
+        _tileUnit = 1f;
+        _existingEdges = new Dictionary<Vector2, bool>();
+        _existingWalls = new Dictionary<Vector2, bool>();
     }
 }

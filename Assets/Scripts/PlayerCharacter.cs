@@ -6,12 +6,21 @@ public class PlayerCharacter : Character
        StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
        Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
 
+    public static Vector3 _startingPos;
+    public LevelGenerator _levelgenerator;
+
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
     private Collider2D _currentTreasureCollision;
 
+    private bool _onLevelExit = false;
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
     private TreasureState _treasureState = TreasureState.TreasureStateCount;
+
+    public void SetToStartPos()
+    {
+        transform.position = new Vector3(_startingPos.x, _startingPos.y, _startingPos.z);
+    }
 
     protected override void Awake()
     {
@@ -22,6 +31,7 @@ public class PlayerCharacter : Character
     protected override void Start()
     {
         base.Start();
+        _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
 
     // Update is called once per frame
@@ -29,6 +39,7 @@ public class PlayerCharacter : Character
     {
         base.Update();
         TreasureInteraction();
+        LevelExitInteraction();
     }
 
     protected override void FixedUpdate()
@@ -112,7 +123,9 @@ public class PlayerCharacter : Character
             _treasureState = TreasureState.EnterTreasure;
             _puzzleDisplayer._currentTreasurePos = collision.transform.position;
             _currentTreasureCollision = collision;
+            return;
         }
+        _onLevelExit = collision.tag == "LevelExit";
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -126,7 +139,10 @@ public class PlayerCharacter : Character
             {
                 Treasure.RewardOrPunish(this, collision.transform.position, false);
                 _puzzleDisplayer.ClosePuzzle(false);
-            }          
+            }
+        }else if (collision.tag == "LevelExit")
+        {
+            _onLevelExit = false;
         }
     }
 
@@ -153,6 +169,14 @@ public class PlayerCharacter : Character
                 }
                 _currentTreasureCollision = null;
             }
+        }
+    }
+
+    private void LevelExitInteraction()
+    {
+        if(Input.GetAxis("Fire1") > float.Epsilon && _onLevelExit)
+        {
+            _levelgenerator.GenerateNextLevel();
         }
     }
 }
