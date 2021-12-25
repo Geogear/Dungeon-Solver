@@ -8,6 +8,7 @@ public class PlayerCharacter : Character
 
     public static Vector3 _startingPos;
     public LevelGenerator _levelgenerator;
+    public Canvas _canvas;
 
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
     private Collider2D _currentTreasureCollision;

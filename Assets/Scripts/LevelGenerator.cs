@@ -33,7 +33,8 @@ public class LevelGenerator : MonoBehaviour
     public GameObject _levelExitPrefab;
     public GameObject _background;
 
-    public PlayerCharacter player;
+    public GameObject _playerObject;
+    private PlayerCharacter _playerScript;
 
     [SerializeField]private int _currentMaxEdge = 5;
     [SerializeField]private int _currentMinEdge = 3;
@@ -63,6 +64,8 @@ public class LevelGenerator : MonoBehaviour
         GenerateLevel();
         PrintDungeonMatrix(false);
         VisualizeDungeon();
+        _playerObject.SetActive(true);
+        _playerScript = _playerObject.GetComponent<PlayerCharacter>();
     }
 
     // Update is called once per frame
@@ -196,7 +199,7 @@ public class LevelGenerator : MonoBehaviour
         GenerateLevel();
         PrintDungeonMatrix(false);
         VisualizeDungeon();
-        player.SetToStartPos();
+        _playerScript.SetToStartPos();
     }
 
     public static int GetCurSeed() => _currentSeed;

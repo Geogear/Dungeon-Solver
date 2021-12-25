@@ -230,6 +230,6 @@ MonoBehaviour:
   _levelExitPrefab: {fileID: 4099739057069359962, guid: 36632a08ce3120444b7077af4dfbde53, type: 3}
   _background: {fileID: 8113622058849453991, guid: 7a6b926fe13e074429ef651c69e1b696, type: 3}
   player: {fileID: 0}
-  _currentMaxEdge: 10
-  _currentMinEdge: 10
+  _currentMaxEdge: 5
+  _currentMinEdge: 3
   _customSeed: 0
