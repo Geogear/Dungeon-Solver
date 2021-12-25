@@ -52,7 +52,7 @@ public abstract class Character : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (_died)
+        if (_died || GameController.IsPaused())
         {
             return;
         }

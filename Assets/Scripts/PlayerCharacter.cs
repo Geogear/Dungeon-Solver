@@ -8,9 +8,9 @@ public class PlayerCharacter : Character
 
     public static Vector3 _startingPos;
     public LevelGenerator _levelgenerator;
-    public Canvas _canvas;
 
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
+    [SerializeField] private Canvas _canvas;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -177,7 +177,21 @@ public class PlayerCharacter : Character
     {
         if(Input.GetAxis("Fire1") > float.Epsilon && _onLevelExit)
         {
-            _levelgenerator.GenerateNextLevel();
+            StartCoroutine(CleanerCoroutine());
         }
+    }
+
+    System.Collections.IEnumerator CleanerCoroutine()
+    {
+        const float wait = 2.0f;
+
+        UnityEngine.UI.Image loadingScreen = _canvas.GetComponentInChildren<UnityEngine.UI.Image>();
+        loadingScreen.enabled = true;
+        _levelgenerator.GenerateNextLevel();
+
+        GameController.PasueOrResume(false);
+        yield return new WaitForSeconds(wait);
+        GameController.PasueOrResume(false);
+        loadingScreen.enabled = false;
     }
 }

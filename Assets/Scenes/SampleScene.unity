@@ -432,6 +432,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _canvas
+      value: 
+      objectReference: {fileID: 194872528}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: _levelgenerator
       value: 
       objectReference: {fileID: 80233823990731508}
@@ -518,11 +522,11 @@ PrefabInstance:
       objectReference: {fileID: 1324484741}
     - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
       propertyPath: _currentMaxEdge
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 80233824468084895, guid: 2c5e85bc543ae484492194db3c227237, type: 3}
       propertyPath: _currentMinEdge
-      value: 10
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c5e85bc543ae484492194db3c227237, type: 3}

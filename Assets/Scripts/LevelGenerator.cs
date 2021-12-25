@@ -35,6 +35,7 @@ public class LevelGenerator : MonoBehaviour
 
     public GameObject _playerObject;
     private PlayerCharacter _playerScript;
+    private GameObject _instantiatedBG;
 
     [SerializeField]private int _currentMaxEdge = 5;
     [SerializeField]private int _currentMinEdge = 3;
@@ -61,11 +62,12 @@ public class LevelGenerator : MonoBehaviour
         Debug.Log("Seed:" + _currentSeed);
         rand = new System.Random(_currentSeed);
         /* Only place where, GenerateLevel is not called with AmplifyEdges. */
+        _instantiatedBG = Instantiate(_background, new Vector3(transform.position.x, transform.position.y, 1), Quaternion.identity);
         GenerateLevel();
         PrintDungeonMatrix(false);
         VisualizeDungeon();
         _playerObject.SetActive(true);
-        _playerScript = _playerObject.GetComponent<PlayerCharacter>();
+        _playerScript = _playerObject.GetComponent<PlayerCharacter>();       
     }
 
     // Update is called once per frame
@@ -483,8 +485,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void SetBG()
     {
-        _background.transform.localScale = new Vector3(_dungeonSize.j, _dungeonSize.i, 1);
-        Instantiate(_background, new Vector3(transform.position.x, transform.position.y, 1), Quaternion.identity);
+        _instantiatedBG.transform.localScale = new Vector3(_dungeonSize.j, _dungeonSize.i, 1);
     }
 
     private void ClearLevel()
