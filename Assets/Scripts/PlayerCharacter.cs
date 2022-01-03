@@ -11,6 +11,7 @@ public class PlayerCharacter : Character
 
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
     [SerializeField] private Canvas _canvas;
+    [SerializeField] private ParticleSystem _treasurePS;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -154,7 +155,7 @@ public class PlayerCharacter : Character
         {
             _treasureState = TreasureState.OnTreasure;
             _puzzleDisplayer.OpenPuzzle();
-        }/* If diplayed and collided, let it interact. */
+        }/* If displayed and collided, let it interact. */
         else if (Input.GetAxis("Fire3") > float.Epsilon && _treasureState == TreasureState.OnTreasure)
         {
             bool success = false,
@@ -166,7 +167,15 @@ public class PlayerCharacter : Character
                 _puzzleDisplayer.ClosePuzzle(success);
                 if (success)
                 {
+                    /* Open chest. */
                     _currentTreasureCollision.GetComponent<SpriteRenderer>().sprite = _puzzleDisplayer._openTreasureSprite;
+                    /* Pop the effects. */
+                    var emission = _treasurePS.emission;
+                    emission.enabled = true;
+                    _treasurePS.transform.position = new Vector3(_puzzleDisplayer._currentTreasurePos.x,
+                        _puzzleDisplayer._currentTreasurePos.y - 0.2f, _treasurePS.transform.position.z);
+                    _treasurePS.Play();
+
                 }
                 _currentTreasureCollision = null;
             }

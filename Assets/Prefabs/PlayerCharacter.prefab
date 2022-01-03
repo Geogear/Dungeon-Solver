@@ -269,7 +269,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _attackLocation: {fileID: 2149717467512497153}
+  _levelgenerator: {fileID: 0}
   _puzzleDisplayer: {fileID: 4780814748487695130}
+  _canvas: {fileID: 0}
+  _treasurePS: {fileID: 0}
 --- !u!95 &8817742015899828397
 Animator:
   serializedVersion: 3
