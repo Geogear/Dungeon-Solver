@@ -34,6 +34,7 @@ public class PlayerCharacter : Character
     {
         base.Start();
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        GameController.SetPMObject();
     }
 
     // Update is called once per frame
@@ -42,6 +43,7 @@ public class PlayerCharacter : Character
         base.Update();
         TreasureInteraction();
         LevelExitInteraction();
+        GameController.CheckForPause();
     }
 
     protected override void FixedUpdate()
@@ -103,7 +105,7 @@ public class PlayerCharacter : Character
 
     protected override void AttackCharacter()
     {
-        if (!_attacked && Input.GetAxis("Fire2") > float.Epsilon && _leftAttackCD < float.Epsilon)
+        if (!_attacked && Input.GetButtonDown("Fire2") && _leftAttackCD < float.Epsilon)
         {
             _attacked = true;
             _running = false;
@@ -151,12 +153,12 @@ public class PlayerCharacter : Character
     private void TreasureInteraction()
     {
         /* Display if collided. */
-        if(Input.GetAxis("Fire1") > float.Epsilon && _treasureState == TreasureState.EnterTreasure)
+        if(Input.GetButtonDown("Fire1") && _treasureState == TreasureState.EnterTreasure)
         {
             _treasureState = TreasureState.OnTreasure;
             _puzzleDisplayer.OpenPuzzle();
         }/* If displayed and collided, let it interact. */
-        else if (Input.GetAxis("Fire3") > float.Epsilon && _treasureState == TreasureState.OnTreasure)
+        else if (Input.GetButtonDown("Fire3") && _treasureState == TreasureState.OnTreasure)
         {
             bool success = false,
             matched = _puzzleDisplayer.MatchedDisplaySelection(Camera.main.ScreenToWorldPoint(Input.mousePosition), ref success);
@@ -184,7 +186,7 @@ public class PlayerCharacter : Character
 
     private void LevelExitInteraction()
     {
-        if(Input.GetAxis("Fire1") > float.Epsilon && _onLevelExit)
+        if(Input.GetButtonDown("Fire1") && _onLevelExit)
         {
             StartCoroutine(CleanerCoroutine());
         }
@@ -203,4 +205,16 @@ public class PlayerCharacter : Character
         GameController.PasueOrResume(false);
         loadingScreen.enabled = false;
     }
+
+    /* To Use GameController with game components. */
+    public void GC_POR()
+    {
+        GameController.PasueOrResume(true, true);
+    }
+
+    public void GC_QFMM()
+    {
+        GameController.QuitForMainMenu();
+    }
+
 }

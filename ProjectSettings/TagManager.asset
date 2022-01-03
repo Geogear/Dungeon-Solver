@@ -9,6 +9,7 @@ TagManager:
   - Treasure
   - Puzzle
   - LevelExit
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

@@ -37,6 +37,8 @@ public class LevelGenerator : MonoBehaviour
     private PlayerCharacter _playerScript;
     private GameObject _instantiatedBG;
 
+    [SerializeField] private UnityEngine.UI.Text _seedText;
+
     [SerializeField]private int _currentMaxEdge = 5;
     [SerializeField]private int _currentMinEdge = 3;
     [SerializeField]private int _customSeed = 0;  
@@ -67,7 +69,8 @@ public class LevelGenerator : MonoBehaviour
         PrintDungeonMatrix(false);
         VisualizeDungeon();
         _playerObject.SetActive(true);
-        _playerScript = _playerObject.GetComponent<PlayerCharacter>();       
+        _playerScript = _playerObject.GetComponent<PlayerCharacter>();
+        _seedText.text = "Seed:" + _currentSeed;
     }
 
     // Update is called once per frame
@@ -505,5 +508,5 @@ public class LevelGenerator : MonoBehaviour
             }
         }      
     }
-
+   
 }
