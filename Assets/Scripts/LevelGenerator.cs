@@ -57,7 +57,7 @@ public class LevelGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (_customSeed != 0)
+        if (_customSeed > 0)
         {
             _currentSeed = _customSeed;
         }
@@ -195,6 +195,20 @@ public class LevelGenerator : MonoBehaviour
             randomFloat = maxBoundary;
         }
         return randomFloat;
+    }
+
+    public static void ClearLGData()
+    {
+        rand = null;
+        _currentSeed = new System.Random().Next();
+        _currentDungeonHeight = -1;
+        _currentDungeonWidth = -1;
+        _currentLevel = 0;
+        _dungeonMatrix = null;
+        _dungeonSize = new Indexes(0, 0);
+        _XYMax = new Indexes(0, 0);
+        _XYMin = new Indexes(0, 0);
+        _enteringRoom = null;
     }
 
     public void GenerateNextLevel()
@@ -508,5 +522,4 @@ public class LevelGenerator : MonoBehaviour
             }
         }      
     }
-   
 }

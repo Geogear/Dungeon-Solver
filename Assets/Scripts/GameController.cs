@@ -2,6 +2,7 @@ using UnityEngine;
 
 public static class GameController
 {
+    private static bool _onLoading = false;
     private static bool _paused = false;
     private static GameObject _pauseMenu;
 
@@ -17,6 +18,10 @@ public static class GameController
         {
             _pauseMenu.SetActive(_paused);
         }
+        else
+        {
+            _onLoading = _paused;
+        }
     }
 
     public static void SetPMObject()
@@ -27,7 +32,10 @@ public static class GameController
 
     public static void CheckForPause()
     {
-        
+        if(_onLoading)
+        {
+            return;
+        }
         if(Input.GetButtonDown("Pause"))
         {
             PasueOrResume(true, true);
@@ -36,7 +44,11 @@ public static class GameController
 
     public static void QuitForMainMenu()
     {
-        Debug.Log("Quit For Main Menu.");
+        Room.ClearData();
+        Treasure.ClearData();
+        LevelGenerator.ClearLGData();
+        _paused = false; Time.timeScale = 1;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
     public static bool IsPaused() => _paused;
