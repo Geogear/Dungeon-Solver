@@ -4,8 +4,17 @@ public class Spikes : MonoBehaviour
 {
     private static readonly string SpriteName = "spike-3";
 
+    private static float _baseDamage = 2.0f;
+
+    private float _damageMultiplier = 1.0f;
     private SpriteRenderer _spriteRenderer;
     private BoxCollider2D _boxCollider2D;
+
+    public int SendDamage()
+    {
+        return Mathf.RoundToInt(_baseDamage * _damageMultiplier);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,4 +38,5 @@ public class Spikes : MonoBehaviour
             _boxCollider2D.enabled = false;
         }
     }
+
 }

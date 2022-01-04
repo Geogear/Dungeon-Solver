@@ -119,8 +119,9 @@ public class PlayerCharacter : Character
         base.SetYourProperties();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
+        base.OnTriggerEnter2D(collision);
         if (collision.tag == _unMovablesTags[1] && _treasureState == TreasureState.TreasureStateCount
             && !Treasure.IsOpened(collision.transform.position))
         {
@@ -129,11 +130,12 @@ public class PlayerCharacter : Character
             _currentTreasureCollision = collision;
             return;
         }
-        _onLevelExit = collision.tag == "LevelExit";
+        _onLevelExit = (collision.tag == "LevelExit");
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    protected override void OnTriggerExit2D(Collider2D collision)
     {
+        base.OnTriggerExit2D(collision);
         if (collision.tag == _unMovablesTags[1] && collision.transform.position == _puzzleDisplayer._currentTreasurePos &&
             (_treasureState == TreasureState.OnTreasure || _treasureState == TreasureState.EnterTreasure))
         {

@@ -2,12 +2,14 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
+    protected static readonly string TrapTag = "Trap";
+
     [SerializeField] protected string _characterName = "";
     [SerializeField] protected float _moveSpeed = 7.0f;
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
     [SerializeField] protected float _attackCD = 1.0f;
-    [SerializeField] protected float _hitPoints = 15.0f;
+    [SerializeField] protected int _hitPoints = 15;
     [SerializeField] protected LayerMask _targetLayer;
     [SerializeField] protected Transform _attackLocation;
 
@@ -30,6 +32,7 @@ public abstract class Character : MonoBehaviour
     protected bool _attacked = false;
     protected bool _invincible = false;
     protected bool _died = false;
+    protected bool _onTrap = false;
 
     protected static string[] _unMovablesTags = 
         {"Wall", "Treasure"};
@@ -77,7 +80,7 @@ public abstract class Character : MonoBehaviour
     {
         if (!_invincible)
         {
-            _hitPoints -= damage;
+            _hitPoints -= Mathf.RoundToInt(damage);
             if (_hitPoints < float.Epsilon)
             {
                 _animator.SetTrigger("Death");
@@ -150,6 +153,24 @@ public abstract class Character : MonoBehaviour
 
         RaycastHit2D hitRay = Physics2D.Raycast(newPos, direction, _raycastDistanceProportion);
         return (hitRay.collider != null && System.Array.IndexOf(_unMovablesTags, hitRay.collider.tag) > -1);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == TrapTag)
+        {
+            _onTrap = true;
+            _hitPoints -= collision.GetComponent<Spikes>().SendDamage();
+            return;
+        }
+    }
+
+    protected virtual void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == TrapTag)
+        {
+            _onTrap = false;
+        }
     }
 
     private void OnDrawGizmosSelected()
