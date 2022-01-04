@@ -20,7 +20,7 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
     private static readonly string[] TagsToDestroy =
-        { "Enemy", "Treasure", "LevelExit" };
+        { "Enemy", "Treasure", "LevelExit", "Trap" };
 
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
@@ -30,6 +30,7 @@ public class LevelGenerator : MonoBehaviour
 
     public GameObject _goblinPrefab;
     public GameObject _treasurePrefab;
+    public GameObject _trapPrefab;
     public GameObject _levelExitPrefab;
     public GameObject _background;
 
@@ -281,6 +282,12 @@ public class LevelGenerator : MonoBehaviour
                         prefabToPut = _treasurePrefab;
                         pos.y += 0.5f; pos.x += 0.5f;
                         Treasure.AddTreasure(pos, filledType);
+                    }
+                    else if (filledType >= (int)FilledType.TrapLow && filledType <= (int)FilledType.TrapHigh)
+                    {
+                        prefabToPut = _trapPrefab;
+                        pos.y += 0.65f; pos.x += 0.5f;
+                        Spikes.SetDamageMultiplierForNext((FilledType)filledType);
                     }
                     if (prefabToPut != null)
                     {                      
