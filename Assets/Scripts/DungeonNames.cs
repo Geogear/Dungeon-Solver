@@ -22,7 +22,9 @@ public enum FilledType
     TreasureLow = 2,
     TreasureMid = 3,
     TreasureHigh = 4,
-    Trap1 = 5
+    TrapLow = 5,
+    TrapMid = 6,
+    TrapHigh = 7
 }
 
 public enum CTPColours

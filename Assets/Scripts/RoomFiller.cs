@@ -56,6 +56,21 @@ public static class RoomFiller
         minBoundry += difference * rangeFixer;
 
         int treasureCount = Mathf.RoundToInt(LevelGenerator.RandomFloat(minBoundry, maxBoundry));
+        /* Using the same treasure boundry with the traps, but making it a little bit deadlier. */
+        int trapCount = Mathf.RoundToInt(LevelGenerator.RandomFloat(minBoundry, maxBoundry));
+        if (trapCount == 0)
+        {
+            if (treasureCount > 0)
+            {
+                /* If zero traps in a room with treasure, give it another chance. */
+                trapCount = Mathf.RoundToInt(LevelGenerator.RandomFloat(minBoundry, maxBoundry));
+            }
+            else
+            {
+                /* if no traps and treasures in the room, put a trap with %20 chance. */
+                trapCount = (LevelGenerator.rand.Next() % 10 > 7) ? 1 : 0; 
+            }
+        }
 
         /* Record all existing indexes for the room to pull with rand. */
         monsterCount = Mathf.RoundToInt(monsterCount);
@@ -70,10 +85,25 @@ public static class RoomFiller
 
         /* Fill treasures. */
         _filledTypes = new int[roomEdges.i, roomEdges.j];
-        int randIndex = 0, treasureType = 0;
-        bool exitLoop = true;
-        for (; treasureCount > 0 && allIndexes.Count > 0; --treasureCount)
+        int randIndex = 0, filledType = 0, totalCount = treasureCount + trapCount,
+            richness = 0;
+        bool exitLoop = true, fillTrap = false;
+        for (; totalCount > 0 && allIndexes.Count > 0; --totalCount)
         {
+            /* Select trap or treasure to fill. */
+            if(trapCount == 0)
+            {
+                fillTrap = false;
+            }
+            else if(treasureCount == 0)
+            {
+                fillTrap = true;
+            }
+            else
+            {
+                fillTrap = !fillTrap;
+            }
+
             /* Currently, mathematically not possible for a treasure to not find a suitable position inside a room. 
              But better safe than sorry. */
             exitLoop = true;
@@ -91,8 +121,20 @@ public static class RoomFiller
             {
                 break;
             }
-            treasureType = (int)FilledType.TreasureLow + LevelGenerator.GetWeightedRandom(TreasureRichnessLevelWeights[difficultyIndex]);
-            _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = treasureType;
+
+            /* Put trap or treasure into the selected index. */
+            richness = LevelGenerator.GetWeightedRandom(TreasureRichnessLevelWeights[difficultyIndex]);
+            if (fillTrap)
+            {
+                filledType = (int)FilledType.TrapLow + richness;
+                --trapCount;
+            }
+            else
+            {
+                filledType = (int)FilledType.TreasureLow + richness;
+                --treasureCount;
+            }           
+            _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = filledType;
             allIndexes.RemoveAt(randIndex);
         }
         /* Fill goblins. */

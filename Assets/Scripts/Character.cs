@@ -161,6 +161,7 @@ public abstract class Character : MonoBehaviour
         {
             _onTrap = true;
             _hitPoints -= collision.GetComponent<Spikes>().SendDamage();
+            Debug.Log("Character Name: " + _characterName + " took trap damage, current hp: " + _hitPoints);
             return;
         }
     }
