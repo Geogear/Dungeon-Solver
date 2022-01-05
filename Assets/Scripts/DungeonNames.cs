@@ -53,6 +53,13 @@ public enum PuzzleType
     PuzzleTypeCount = 2
 }
 
+public enum IconType
+{
+    HP = 0,
+    AttackDamage = 1,
+    IconTypeCount = 2
+}
+
 public struct TreasureData
 {
     public int _richnessIndex;

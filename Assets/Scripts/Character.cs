@@ -9,6 +9,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
     [SerializeField] protected float _attackCD = 1.0f;
+    [SerializeField] protected int _maxHitPoints = 15;
     [SerializeField] protected int _hitPoints = 15;
     [SerializeField] protected LayerMask _targetLayer;
     [SerializeField] protected Transform _attackLocation;
@@ -160,7 +161,7 @@ public abstract class Character : MonoBehaviour
         if (collision.tag == TrapTag)
         {
             _onTrap = true;
-            _hitPoints -= collision.GetComponent<Spikes>().SendDamage();
+            TakeDamage(collision.GetComponent<Spikes>().SendDamage());
             Debug.Log("Character Name: " + _characterName + " took trap damage, current hp: " + _hitPoints);
             return;
         }
@@ -172,6 +173,11 @@ public abstract class Character : MonoBehaviour
         {
             _onTrap = false;
         }
+    }
+
+    protected virtual void TakeDamage(int damage)
+    {
+        _hitPoints -= damage;
     }
 
     private void OnDrawGizmosSelected()

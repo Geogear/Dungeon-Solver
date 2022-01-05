@@ -12,6 +12,8 @@ public class PlayerCharacter : Character
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
     [SerializeField] private Canvas _canvas;
     [SerializeField] private ParticleSystem _treasurePS;
+    [SerializeField] private UnityEngine.UI.Text _hpText;
+    [SerializeField] private UnityEngine.UI.Text _attackDamageText;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -35,6 +37,7 @@ public class PlayerCharacter : Character
         base.Start();
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         GameController.SetPMObject();
+        SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage);
     }
 
     // Update is called once per frame
@@ -152,6 +155,12 @@ public class PlayerCharacter : Character
         }
     }
 
+    protected override void TakeDamage(int damage)
+    {
+        _hitPoints -= damage;
+        SetIconTexts(IconType.HP);
+    }
+
     private void TreasureInteraction()
     {
         /* Display if collided. */
@@ -194,18 +203,46 @@ public class PlayerCharacter : Character
         }
     }
 
+    private void SetIconTexts(IconType it)
+    {
+        switch(it)
+        {
+            case IconType.HP:
+                _hpText.text = _hitPoints.ToString();
+                break;
+            case IconType.AttackDamage:
+                _attackDamageText.text = ((int)_attackDamage).ToString();
+                break;
+        }
+    }
+
     System.Collections.IEnumerator CleanerCoroutine()
     {
         const float wait = 2.0f;
 
+        /* Disable icons. */
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Icon");
+        foreach (GameObject go in objects)
+        {
+            go.SetActive(false);
+        }
+
+        /* Enable loading screen, and generate the next level.*/
         UnityEngine.UI.Image loadingScreen = _canvas.GetComponentInChildren<UnityEngine.UI.Image>();
         loadingScreen.enabled = true;
         _levelgenerator.GenerateNextLevel();
 
+        /* Wait for some time to  create loading effect. Then disable loading screen. */
         GameController.PasueOrResume(false);
         yield return new WaitForSeconds(wait);
         GameController.PasueOrResume(false);
         loadingScreen.enabled = false;
+
+        /* Enable icons. */
+        foreach (GameObject go in objects)
+        {
+            go.SetActive(true);
+        }
     }
 
     /* To Use GameController with game components. */
