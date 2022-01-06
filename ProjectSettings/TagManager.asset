@@ -12,6 +12,7 @@ TagManager:
   - PauseMenu
   - Trap
   - Icon
+  - HealingStatue
   layers:
   - Default
   - TransparentFX
