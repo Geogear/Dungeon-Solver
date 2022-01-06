@@ -25,7 +25,9 @@ public class Spikes : MonoBehaviour
 
     public int SendDamage()
     {
-        return Mathf.RoundToInt(_baseDamage * _damageMultiplier);
+        return (_spriteRenderer.sprite.name == SpriteName) ?
+            Mathf.RoundToInt(_baseDamage * _damageMultiplier)
+        : 0;
     }
 
     // Start is called before the first frame update
@@ -46,19 +48,6 @@ public class Spikes : MonoBehaviour
             _waitTime -= Time.deltaTime;
             _animator.enabled = _waitTime <= float.Epsilon;
             return;
-        }
-
-        if(!_boxCollider2D.enabled &&
-            _spriteRenderer.sprite.name == SpriteName)
-        {
-            _boxCollider2D.enabled = true;
-            return;
-        }
-
-        if(_boxCollider2D.enabled &&
-            _spriteRenderer.sprite.name != SpriteName)
-        {
-            _boxCollider2D.enabled = false;
         }
     }
 

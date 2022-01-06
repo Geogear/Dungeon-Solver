@@ -19,6 +19,7 @@ public abstract class Character : MonoBehaviour
     protected AnimationClip _hurtAnim = null;
     protected SpriteRenderer _spriteRenderer = null;
     protected BoxCollider2D _boxCollider2D = null;
+    protected Spikes _currentSpikeTrap = null; 
    
     protected string _attackAnimName = "";
     protected string _hurtAnimName = "";
@@ -33,7 +34,7 @@ public abstract class Character : MonoBehaviour
     protected bool _attacked = false;
     protected bool _invincible = false;
     protected bool _died = false;
-    protected bool _onTrap = false;
+    protected bool _tookTrapDamage = false;
 
     protected static string[] _unMovablesTags = 
         {"Wall", "Treasure"};
@@ -68,6 +69,7 @@ public abstract class Character : MonoBehaviour
             return;
         }
 
+        TrapInteraction();
         AttackAnimCountDown();
         MoveCharacter();
         AttackCharacter();
@@ -160,24 +162,45 @@ public abstract class Character : MonoBehaviour
     {
         if (collision.tag == TrapTag)
         {
-            _onTrap = true;
-            TakeDamage(collision.GetComponent<Spikes>().SendDamage());
-            Debug.Log("Character Name: " + _characterName + " took trap damage, current hp: " + _hitPoints);
+            _currentSpikeTrap = collision.GetComponent<Spikes>();
             return;
         }
+    }
+
+    protected virtual void OnTriggerStay2D(Collider2D collision)
+    {
     }
 
     protected virtual void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == TrapTag)
         {
-            _onTrap = false;
+            _currentSpikeTrap = null;
+            _tookTrapDamage = false;
+            return;
         }
     }
 
     protected virtual void TakeDamage(int damage)
     {
         _hitPoints -= damage;
+    }
+
+    protected virtual void TrapInteraction()
+    {
+        if (_currentSpikeTrap != null)
+        {
+            int damage = _currentSpikeTrap.SendDamage();
+            if(damage == 0 && _tookTrapDamage)
+            {
+                _tookTrapDamage = false;
+            }
+            else if(damage > 0 && !_tookTrapDamage)
+            {
+                TakeDamage(damage);
+                _tookTrapDamage = true;
+            }        
+        }
     }
 
     private void OnDrawGizmosSelected()
