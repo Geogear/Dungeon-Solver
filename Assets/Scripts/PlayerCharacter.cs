@@ -14,6 +14,7 @@ public class PlayerCharacter : Character
     [SerializeField] private ParticleSystem _treasurePS;
     [SerializeField] private UnityEngine.UI.Text _hpText;
     [SerializeField] private UnityEngine.UI.Text _attackDamageText;
+    [SerializeField] private UnityEngine.UI.Text _levelNumberText;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -37,7 +38,7 @@ public class PlayerCharacter : Character
         base.Start();
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         GameController.SetPMObject();
-        SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage);
+        SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage); SetIconTexts(IconType.LevelNumber);
     }
 
     // Update is called once per frame
@@ -213,6 +214,9 @@ public class PlayerCharacter : Character
             case IconType.AttackDamage:
                 _attackDamageText.text = ((int)_attackDamage).ToString();
                 break;
+            case IconType.LevelNumber:
+                _levelNumberText.text = "Level: " + LevelGenerator.GetCurrentLvl();
+                break;
         }
     }
 
@@ -237,6 +241,7 @@ public class PlayerCharacter : Character
         yield return new WaitForSeconds(wait);
         GameController.PasueOrResume(false);
         loadingScreen.enabled = false;
+        SetIconTexts(IconType.LevelNumber);
 
         /* Enable icons. */
         foreach (GameObject go in objects)

@@ -225,6 +225,7 @@ public class LevelGenerator : MonoBehaviour
     public static int GetCurSeed() => _currentSeed;
     public static int GetCurHeight() => _currentDungeonHeight;
     public static int GetCurWidth() => _currentDungeonWidth;
+    public static int GetCurrentLvl() => _currentLevel;
     public static int IncreaseX() => ++_XYMax.j;
     public static int IncreaseY() => ++_XYMax.i;
 

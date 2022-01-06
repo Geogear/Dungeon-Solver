@@ -57,7 +57,8 @@ public enum IconType
 {
     HP = 0,
     AttackDamage = 1,
-    IconTypeCount = 2
+    LevelNumber = 2,
+    IconTypeCount = 3
 }
 
 public struct TreasureData
