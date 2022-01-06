@@ -7,10 +7,14 @@ public class Spikes : MonoBehaviour
 
     private static float _nextTrapMultiplier = 1.0f;
     private static float _baseDamage = 2.0f;
+    private static float _waitTimeMin = 1f;
+    private static float _waitTimeMax = 4f;
 
     private float _damageMultiplier = 1.0f;
+    private float _waitTime = 0.0f;
     private SpriteRenderer _spriteRenderer;
     private BoxCollider2D _boxCollider2D;
+    private Animator _animator;
 
     static public void SetDamageMultiplierForNext(FilledType ft)
     {
@@ -29,12 +33,21 @@ public class Spikes : MonoBehaviour
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
+        _animator = GetComponent<Animator>();
         _damageMultiplier = _nextTrapMultiplier;
+        _waitTime = LevelGenerator.RandomFloat(_waitTimeMin, _waitTimeMax);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!_animator.enabled)
+        {
+            _waitTime -= Time.deltaTime;
+            _animator.enabled = _waitTime <= float.Epsilon;
+            return;
+        }
+
         if(!_boxCollider2D.enabled &&
             _spriteRenderer.sprite.name == SpriteName)
         {
