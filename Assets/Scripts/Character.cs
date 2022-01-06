@@ -37,7 +37,7 @@ public abstract class Character : MonoBehaviour
     protected bool _tookTrapDamage = false;
 
     protected static string[] _unMovablesTags = 
-        {"Wall", "Treasure"};
+        {"Wall", "Treasure", "HealingStatue"};
 
     protected virtual void Awake()
     {
@@ -184,6 +184,12 @@ public abstract class Character : MonoBehaviour
     protected virtual void TakeDamage(int damage)
     {
         _hitPoints -= damage;
+    }
+
+    protected virtual void TakeHeal(int heal)
+    {
+        _hitPoints += heal;
+        _hitPoints = (_hitPoints > _maxHitPoints) ? _maxHitPoints : _hitPoints;
     }
 
     protected virtual void TrapInteraction()

@@ -32,6 +32,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject _treasurePrefab;
     public GameObject _trapPrefab;
     public GameObject _levelExitPrefab;
+    public GameObject _healingStatuePrefab;
     public GameObject _background;
 
     public GameObject _playerObject;
@@ -290,6 +291,12 @@ public class LevelGenerator : MonoBehaviour
                         pos.y += 0.65f; pos.x += 0.5f;
                         Spikes.SetDamageMultiplierForNext((FilledType)filledType);
                     }
+                    else if(filledType == (int)FilledType.HealingStatue)
+                    {
+                        prefabToPut = _healingStatuePrefab;
+                        pos.y += 0.80f; pos.x += 0.45f;
+                    }
+
                     if (prefabToPut != null)
                     {                      
                         Instantiate(prefabToPut, pos, Quaternion.identity);
@@ -416,8 +423,31 @@ public class LevelGenerator : MonoBehaviour
                 if (notOnFirstRoom)
                 {
                     _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] += RoomFiller._filledTypes[i, j] * 10;
-                }               
+                }              
             }
+        }
+
+        /* Place healing statue in the first room only. */
+        if(!notOnFirstRoom && CanPutHealingStatute())
+        {
+            int tmpI = -1, tmpJ = -1;
+            switch(room.GetChildDoorDirections()[0])
+            {
+                case Direction.Up:
+                    tmpI = 1; tmpJ = 2;
+                    break;
+                case Direction.Down:
+                    tmpI = 1;
+                    tmpJ = (room.GetChildDoorIndexes()[0].j == 0) ? 2 : 0;
+                    break;
+                case Direction.Left:
+                    tmpI = 2; tmpJ = 1;
+                    break;
+                case Direction.Right:
+                    tmpI = 2; tmpJ = 0;
+                    break;
+            }
+            _dungeonMatrix[newOrigin.i + tmpI, newOrigin.j + tmpJ] += (int)FilledType.HealingStatue * 10;
         }
 
         /* Surround with walls. */
@@ -529,5 +559,11 @@ public class LevelGenerator : MonoBehaviour
                 Destroy(obj);
             }
         }      
+    }
+
+    private bool CanPutHealingStatute()
+    {
+        return (_currentLevel > 10) ? _currentLevel % 2 == 0
+            : _currentLevel % 4 == 0;
     }
 }

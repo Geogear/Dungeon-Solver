@@ -18,6 +18,8 @@ public class PlayerCharacter : Character
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
+    private bool _onHF = false;
+    private bool _healingStatueUsed = false;
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
     private TreasureState _treasureState = TreasureState.TreasureStateCount;
@@ -47,6 +49,7 @@ public class PlayerCharacter : Character
         base.Update();
         TreasureInteraction();
         LevelExitInteraction();
+        HealingStatueInteraction();
         GameController.CheckForPause();
     }
 
@@ -133,8 +136,13 @@ public class PlayerCharacter : Character
             _puzzleDisplayer._currentTreasurePos = collision.transform.position;
             _currentTreasureCollision = collision;
             return;
+        }else if(collision.tag == "LevelExit")
+        {
+            _onLevelExit = true;
+        }else if(collision.tag == "HealingStatue")
+        {
+            _onHF = true;
         }
-        _onLevelExit = (collision.tag == "LevelExit");
     }
 
     protected override void OnTriggerExit2D(Collider2D collision)
@@ -153,12 +161,21 @@ public class PlayerCharacter : Character
         }else if (collision.tag == "LevelExit")
         {
             _onLevelExit = false;
+        }else if (collision.tag == "HealingStatue")
+        {
+            _onHF = false;
         }
     }
 
     protected override void TakeDamage(int damage)
     {
         _hitPoints -= damage;
+        SetIconTexts(IconType.HP);
+    }
+
+    protected override void TakeHeal(int heal)
+    {
+        base.TakeHeal(heal);
         SetIconTexts(IconType.HP);
     }
 
@@ -220,6 +237,15 @@ public class PlayerCharacter : Character
         }
     }
 
+    private void HealingStatueInteraction()
+    {
+        if (Input.GetButtonDown("Fire2") && !_healingStatueUsed)
+        {
+            TakeHeal(_maxHitPoints);
+            _healingStatueUsed = true;
+        }
+    }
+
     System.Collections.IEnumerator CleanerCoroutine()
     {
         const float wait = 2.0f;
@@ -241,13 +267,15 @@ public class PlayerCharacter : Character
         yield return new WaitForSeconds(wait);
         GameController.PasueOrResume(false);
         loadingScreen.enabled = false;
-        SetIconTexts(IconType.LevelNumber);
 
+        SetIconTexts(IconType.LevelNumber);
         /* Enable icons. */
         foreach (GameObject go in objects)
         {
             go.SetActive(true);
         }
+
+        _healingStatueUsed = false;
     }
 
     /* To Use GameController with game components. */

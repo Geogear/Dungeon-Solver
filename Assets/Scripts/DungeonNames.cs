@@ -24,7 +24,8 @@ public enum FilledType
     TreasureHigh = 4,
     TrapLow = 5,
     TrapMid = 6,
-    TrapHigh = 7
+    TrapHigh = 7,
+    HealingStatue = 8
 }
 
 public enum CTPColours

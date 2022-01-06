@@ -229,6 +229,7 @@ MonoBehaviour:
   _treasurePrefab: {fileID: 2094785687004538110, guid: ec49a13e19c50ad43b2a951a5ff4e6e2, type: 3}
   _trapPrefab: {fileID: 7902331492991391775, guid: 3d04ebb8d78427a4d83621e80ddd1819, type: 3}
   _levelExitPrefab: {fileID: 4099739057069359962, guid: 36632a08ce3120444b7077af4dfbde53, type: 3}
+  _healingStatuePrefab: {fileID: 43682241326667530, guid: cce86dbf7b4ce234d802639fe3113c37, type: 3}
   _background: {fileID: 8113622058849453991, guid: 7a6b926fe13e074429ef651c69e1b696, type: 3}
   _playerObject: {fileID: 0}
   _seedText: {fileID: 0}
