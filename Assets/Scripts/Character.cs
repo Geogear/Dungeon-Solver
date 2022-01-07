@@ -86,9 +86,10 @@ public abstract class Character : MonoBehaviour
             _hitPoints -= Mathf.RoundToInt(damage);
             if (_hitPoints < float.Epsilon)
             {
-                _animator.SetTrigger("Death");
+                _animator.SetBool("Death", true);
                 _died = _invincible = true;
-                return;
+                _boxCollider2D.enabled = false;
+                this.enabled = false;
             }
             _animator.SetTrigger("Hurt");
             _leftHurtCD = _hurtAnim.length;
