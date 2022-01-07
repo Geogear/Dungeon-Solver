@@ -115,7 +115,8 @@ public struct FlickerData
         _flick = true;
     }
 
-    public void Flicker()
+    /* Returns _flickering for convenience. */
+    public bool Flicker()
     {
         if (_flickering)
         {
@@ -138,8 +139,8 @@ public struct FlickerData
                     _flick = !_flick;
                 }
             }
-
         }
+        return _flickering;
     }
 
     public void TriggerFlick()

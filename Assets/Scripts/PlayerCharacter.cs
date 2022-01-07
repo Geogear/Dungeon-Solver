@@ -52,7 +52,7 @@ public class PlayerCharacter : Character
         TreasureInteraction();
         LevelExitInteraction();
         HealingStatueInteraction();
-        _flickerData.Flicker();
+        _invincible = _flickerData.Flicker();
         GameController.CheckForPause();
     }
 
@@ -172,9 +172,12 @@ public class PlayerCharacter : Character
 
     protected override void TakeDamage(int damage)
     {
-        _hitPoints -= damage;
-        SetIconTexts(IconType.HP);
-        _flickerData.TriggerFlick();
+        if(!_invincible)
+        {
+            _hitPoints -= damage;
+            SetIconTexts(IconType.HP);
+            _flickerData.TriggerFlick();
+        }
     }
 
     protected override void TakeHeal(int heal)
