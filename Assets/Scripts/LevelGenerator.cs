@@ -20,7 +20,7 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int[] EdgeIncreaseAmountWeights =
         {20, 50, 20, 10};
     private static readonly string[] TagsToDestroy =
-        { "Enemy", "Treasure", "LevelExit", "Trap" };
+        { "Enemy", "Treasure", "LevelExit", "Trap", "HealingStatue" };
 
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
@@ -563,6 +563,7 @@ public class LevelGenerator : MonoBehaviour
 
     private bool CanPutHealingStatute()
     {
+        Debug.Log("lvl: " +_currentLevel);
         return (_currentLevel > 10) ? _currentLevel % 2 == 0
             : _currentLevel % 4 == 0;
     }

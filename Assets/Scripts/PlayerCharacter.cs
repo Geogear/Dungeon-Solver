@@ -246,7 +246,7 @@ public class PlayerCharacter : Character
 
     private void HealingStatueInteraction()
     {
-        if (Input.GetButtonDown("Fire1") && !_healingStatueUsed)
+        if (_onHF && Input.GetButtonDown("Fire1") && !_healingStatueUsed)
         {
             TakeHeal(_maxHitPoints);
             _healingStatueUsed = true;
