@@ -115,7 +115,7 @@ public class PlayerCharacter : Character
 
     protected override void AttackCharacter()
     {
-        if (!_attacked && Input.GetButtonDown("Fire2") && _leftAttackCD < float.Epsilon)
+        if (!_attacked && Input.GetButtonDown("Fire2") && Time.time >= _nextAttackTime)
         {
             _attacked = true;
             _running = false;

@@ -8,7 +8,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected float _moveSpeed = 7.0f;
     [SerializeField] protected float _attackDamage = 3.0f;
     [SerializeField] protected float _attackRange = 0.35f;
-    [SerializeField] protected float _attackCD = 1.0f;
+    [SerializeField] protected float _attackRate = 1.0f;
     [SerializeField] protected int _maxHitPoints = 15;
     [SerializeField] protected int _hitPoints = 15;
     [SerializeField] protected LayerMask _targetLayer;
@@ -25,10 +25,10 @@ public abstract class Character : MonoBehaviour
     protected string _hurtAnimName = "";
     protected string _dyingAnimName = "";
     protected float _animCounter = 0.0f;
-    protected float _leftAttackCD = -1.0f;
     protected float _leftHurtCD = -1.0f;
     protected float _raycastDistanceProportion = 0.1f;
     protected float _raycastPositionProportion = 0.55f;
+    protected float _nextAttackTime = 0.0f;
     protected bool _running = false;
     protected bool _facingRight = true;
     protected bool _attacked = false;
@@ -121,9 +121,8 @@ public abstract class Character : MonoBehaviour
 
     protected void AttackAnimCountDown()
     {
-        if (_leftAttackCD > float.Epsilon)
+        if (Time.time < _nextAttackTime)
         {
-            _leftAttackCD -= Time.deltaTime;
             return;
         }
 
@@ -133,8 +132,8 @@ public abstract class Character : MonoBehaviour
             _attacked = _animCounter > float.Epsilon;
             if (!_attacked)
             {
-                MeleeAttack();               
-                _leftAttackCD = _attackCD;
+                MeleeAttack();
+                _nextAttackTime = Time.time + 1f / _attackRate;
             }
         }
     }
