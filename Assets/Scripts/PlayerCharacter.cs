@@ -23,6 +23,7 @@ public class PlayerCharacter : Character
     private float _horizontalInput = 0.0f;
     private float _verticalInput = 0.0f;
     private TreasureState _treasureState = TreasureState.TreasureStateCount;
+    private FlickerData _flickerData;
 
     public void SetToStartPos()
     {
@@ -41,6 +42,7 @@ public class PlayerCharacter : Character
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         GameController.SetPMObject();
         SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage); SetIconTexts(IconType.LevelNumber);
+        _flickerData = new FlickerData(_spriteRenderer);
     }
 
     // Update is called once per frame
@@ -50,6 +52,7 @@ public class PlayerCharacter : Character
         TreasureInteraction();
         LevelExitInteraction();
         HealingStatueInteraction();
+        _flickerData.Flicker();
         GameController.CheckForPause();
     }
 
@@ -171,6 +174,7 @@ public class PlayerCharacter : Character
     {
         _hitPoints -= damage;
         SetIconTexts(IconType.HP);
+        _flickerData.TriggerFlick();
     }
 
     protected override void TakeHeal(int heal)

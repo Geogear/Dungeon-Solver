@@ -87,3 +87,66 @@ public struct Indexes
         i = y;
     }
 }
+
+public struct FlickerData
+{
+    public UnityEngine.Color _color;
+    public UnityEngine.SpriteRenderer _spriteRenderer;
+    public float _baseFlickerTime;
+    public float _currentFlickerTime;
+    public float _baseFlickTime;
+    public float _currentFlickTime;
+    public float _flickerAlpha;
+    public bool _flickering;
+    public bool _flick;
+
+    public FlickerData(UnityEngine.SpriteRenderer spriteRenderer, float baseFlickerTime = 1.3f, float baseFlickTime = 0.1f,
+        float flickerAlpha = 0.5f)
+    {
+        _color = new UnityEngine.Color(spriteRenderer.color.r, spriteRenderer.color.g,
+            spriteRenderer.color.b, spriteRenderer.color.a);
+        _spriteRenderer = spriteRenderer;
+        _baseFlickerTime = baseFlickerTime;
+        _currentFlickerTime = 0.0f;
+        _baseFlickTime = baseFlickTime;
+        _currentFlickTime = 0.0f;
+        _flickerAlpha = flickerAlpha;
+        _flickering = false;
+        _flick = true;
+    }
+
+    public void Flicker()
+    {
+        if (_flickering)
+        {
+            _currentFlickerTime -= UnityEngine.Time.deltaTime;
+            if (_currentFlickerTime <= float.Epsilon)
+            {
+                _flickering = false;
+                _flick = true;
+                _color.a = 1.0f;
+                _spriteRenderer.color = _color;
+            }
+            else
+            {
+                _currentFlickTime -= UnityEngine.Time.deltaTime;
+                if (_currentFlickTime <= float.Epsilon)
+                {
+                    _currentFlickTime = _baseFlickTime;
+                    _color.a = _flick ? _flickerAlpha : 1.0f;
+                    _spriteRenderer.color = _color;
+                    _flick = !_flick;
+                }
+            }
+
+        }
+    }
+
+    public void TriggerFlick()
+    {
+        _flickering = true;
+        _flick = true;
+        _currentFlickTime = 0.0f;
+        _currentFlickerTime = _baseFlickerTime;
+    }
+}
