@@ -78,6 +78,14 @@ public class EnemyCharacter : Character
                         continue;
                     }
 
+                    /* Skip a cutting corner. */
+                    if((l != 0 && k != 0) &&
+                        (obstacleMap[currentPoint.i, currentPoint.j + l] ||
+                        obstacleMap[currentPoint.i + k, currentPoint.j]))
+                    {
+                        continue;
+                    }
+
                     /* Check if in closedList. */
                     dontPut = false;
                     foreach (Node node in closedList)
@@ -170,7 +178,5 @@ public class EnemyCharacter : Character
                 }
             }
         }
-        
-        /* TODO, add handling cutting corner exception. */
     }
 }
