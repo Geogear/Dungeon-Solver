@@ -62,6 +62,13 @@ public enum IconType
     IconTypeCount = 3
 }
 
+public enum PFState
+{
+    Wait = 0,
+    OnRoute = 1,
+    PFStateCount = 2
+}
+
 public struct TreasureData
 {
     public int _richnessIndex;

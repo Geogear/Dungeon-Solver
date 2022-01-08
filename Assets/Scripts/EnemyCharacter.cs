@@ -2,6 +2,19 @@ using UnityEngine;
 
 public class EnemyCharacter : Character
 {
+    public static UnityEngine.Tilemaps.Tilemap _tileMap = null;
+    public static Transform _playerTransform = null;
+
+    [SerializeField] protected float _chaseRange = 3.0f;
+
+    protected System.Collections.Generic.List<Indexes> _pathToLatestTarget = null;
+    protected PFState _PFState = PFState.Wait;
+    protected Vector3 _targetPos = new Vector3();
+    protected Vector3 _startPos = new Vector3();
+    protected float _targetDistance = 0.0f;
+    protected float _lerpTime = 1f;
+    protected float _currentLerpTime = 0.0f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -17,6 +30,8 @@ public class EnemyCharacter : Character
     protected override void Update()
     {
         base.Update();
+        ChasePlayer();
+        LerpToCurrentTarget();
     }
 
     protected override void FixedUpdate()
@@ -37,6 +52,85 @@ public class EnemyCharacter : Character
     protected override void SetYourProperties()
     {
         base.SetYourProperties();
+    }
+
+    protected void GoToTarget()
+    {
+        Indexes targetIndexes = _pathToLatestTarget[0];
+        _targetPos = _tileMap.GetCellCenterWorld(new Vector3Int(targetIndexes.j, targetIndexes.i, 0));
+        _targetDistance = Vector3.Distance(_startPos, _targetPos);
+
+        _pathToLatestTarget.RemoveAt(0);
+    }
+
+    protected void LerpToCurrentTarget()
+    {
+        if(PFState.Wait == _PFState)
+        {
+            return;
+        }
+
+        _currentLerpTime += Time.deltaTime;
+        if(_currentLerpTime > _lerpTime)
+        {
+            _currentLerpTime -= _lerpTime;
+            if(0 == _pathToLatestTarget.Count)
+            {
+                _PFState = PFState.Wait;
+                return;
+            }
+            _startPos = _targetPos;
+            GoToTarget();
+        }
+
+        float perc = _currentLerpTime / _lerpTime;
+        transform.position = Vector3.Lerp(_startPos, _targetPos, perc);
+
+        if(transform.position == _targetPos)
+        {      
+            if (0 == _pathToLatestTarget.Count)
+            {
+                _PFState = PFState.Wait;
+                return;
+            }
+            _startPos = transform.position;
+            _currentLerpTime = 0.0f;
+            GoToTarget();   
+        }
+    }
+
+    protected void ChasePlayer()
+    {
+        /* Chase if in range and waiting. */
+        if ((PFState.Wait == _PFState &&
+            Vector3.Distance(transform.position, _playerTransform.position) <= _chaseRange)
+            || PFState.Wait != _PFState)
+        {
+            return;
+        }
+
+        Indexes dungeonDif = LevelGenerator.GetDifIndex();
+
+        /* Get your cell pos, from your world pos. */
+        Vector3Int tmp = _tileMap.WorldToCell(transform.position);
+        Indexes start = new Indexes(tmp.x, tmp.y);
+
+        start.i += dungeonDif.i; start.j += dungeonDif.j;
+
+        /* Get player cell pos, from player world pos. */
+        tmp = _tileMap.WorldToCell(_playerTransform.position);
+        Indexes target = new Indexes(tmp.x, tmp.y);
+
+        target.i += dungeonDif.i; target.j += dungeonDif.j;
+
+        /* If path available, set the needed variables. */
+        if(PathFind(start, target))
+        {
+            _PFState = PFState.OnRoute;
+            _startPos = transform.position;
+            _currentLerpTime = 0.0f;
+            GoToTarget();
+        }
     }
 
     public static void PathFind()
@@ -150,7 +244,7 @@ public class EnemyCharacter : Character
                 pathFound = true;
                 break;
             }
-            else if(0 == closedList.Count)
+            else if(0 == openList.Count)
             {
                 break;
             }
@@ -180,5 +274,152 @@ public class EnemyCharacter : Character
                 }
             }
         }
+    }
+
+    public bool PathFind(Indexes start, Indexes target)
+    {
+        System.Collections.Generic.List<Indexes> openList = new System.Collections.Generic.List<Indexes>();
+        System.Collections.Generic.List<Indexes> closedList = new System.Collections.Generic.List<Indexes>();
+        /* Keys are children, values are parents. */
+        System.Collections.Generic.Dictionary<Indexes, Indexes> parents = new System.Collections.Generic.Dictionary<Indexes, Indexes>();
+        Indexes currentPoint = new Indexes(start.j, start.i);
+        int i = 0, lowestScoreIndex = 0, minF = 0,
+        maxI = LevelGenerator._dungeonSize.i - 1,
+        maxJ = LevelGenerator._dungeonSize.j - 1;
+        bool dontPut = false, pathFound = false;
+
+        Cell[,] dungeonMatrix = LevelGenerator._dungeonMatrix;
+
+        /* Add the starting point with parents -1,-1 */
+        parents.Add(start, new Indexes(-1, -1));
+
+        closedList.Add(currentPoint);
+
+        while (true)
+        {
+            /* Check all adjacents, add to the openlist if not added, ignore if on the closedlist or not walkable. */
+            for (int k = -1; k < 2; ++k)
+            {
+                for (int l = -1; l < 2; ++l)
+                {
+                    /* Skip yourself or out of bounds. */
+                    if ((l == 0 && k == 0)
+                        || currentPoint.j + l < 0 || currentPoint.j + l > maxJ
+                        || currentPoint.i + k < 0 || currentPoint.i + k > maxI)
+                    {
+                        continue;
+                    }
+
+                    /* Skip a cutting corner. */
+                    if ((l != 0 && k != 0) &&
+                        (!dungeonMatrix[currentPoint.i, currentPoint.j + l]._walkable ||
+                        !dungeonMatrix[currentPoint.i + k, currentPoint.j]._walkable))
+                    {
+                        continue;
+                    }
+
+                    /* Check if in closedList. */
+                    dontPut = false;
+                    foreach (Indexes index in closedList)
+                    {
+                        if (index.j == currentPoint.j + l && index.i == currentPoint.i + k)
+                        {
+                            dontPut = true;
+                            break;
+                        }
+                    }
+
+                    /* Put in openlist if walkable and not in closedList. */
+                    if (!(dontPut || !dungeonMatrix[currentPoint.i + k, currentPoint.j + l]._walkable))
+                    {
+                        /* If adjacent is on the open list and new cost is lower,
+                         * change the cost and the parent values for the adjacent. */
+                        int currentCost = (k == 0 || l == 0) ? Cell._normalCost : Cell._diagonalCost;
+                        foreach (Indexes index in openList)
+                        {
+                            if (index.j == currentPoint.j + l && index.i == currentPoint.i + k)
+                            {
+                                dontPut = true;
+                                if (dungeonMatrix[index.i, index.j]._gCost >
+                                    dungeonMatrix[currentPoint.i, currentPoint.j]._gCost + currentCost)
+                                {
+                                    dungeonMatrix[index.i, index.j]._gCost = dungeonMatrix[currentPoint.i, currentPoint.j]._gCost + currentCost;
+                                    var foundIndex = parents[index];
+                                    foundIndex.j = currentPoint.j; foundIndex.i = currentPoint.i;
+                                }
+                                break;
+                            }
+                        }
+                        if (!dontPut)
+                        {
+                            openList.Add(new Indexes(currentPoint.j + l, currentPoint.i + k));
+                            parents.Add(openList[openList.Count - 1], new Indexes(currentPoint.j, currentPoint.i));
+                            dungeonMatrix[currentPoint.i + k, currentPoint.j + l]._gCost = dungeonMatrix[currentPoint.i, currentPoint.j]._gCost + currentCost;
+                        }
+                    }
+                }
+            }
+
+            /* Select the node from openlist with lowest F cost as the current node.
+            * Remove it from the openList and add to the closed list.*/
+            lowestScoreIndex = -1;
+            if(openList.Count != 0)
+            {
+                minF = dungeonMatrix[openList[0].i, openList[0].j].CalculateF(openList[0].j, openList[0].i, target);
+                lowestScoreIndex = 0;
+            }
+            for (i = 1; i < openList.Count; ++i)
+            {
+                if (minF > dungeonMatrix[openList[i].i, openList[i].j].
+                    CalculateF(openList[i].j, openList[i].i, target))
+                {
+                    lowestScoreIndex = i;
+                    minF = dungeonMatrix[openList[i].i, openList[i].j].
+                        CalculateF(openList[i].j, openList[i].i, target);
+                }
+            }
+
+            if(lowestScoreIndex != -1)
+            {
+                closedList.Add(openList[lowestScoreIndex]);
+                currentPoint = openList[lowestScoreIndex];
+                openList.RemoveAt(lowestScoreIndex);
+            }
+
+            /* Drop from the open list, add to the closed list. */
+            if (target.i == currentPoint.i && target.j == currentPoint.j)
+            {
+                pathFound = true;
+                break;
+            }
+            else if (0 == openList.Count)
+            {
+                break;
+            }
+        }
+
+        /* Create the path. */
+        if (pathFound)
+        {
+            _pathToLatestTarget = new System.Collections.Generic.List<Indexes>();
+            while(currentPoint.i != -1)
+            {
+                _pathToLatestTarget.Insert(0, currentPoint);
+                currentPoint = parents[currentPoint];
+            }
+        }
+
+        /* Clear gCosts. */
+        foreach (Indexes index in openList)
+        {
+            dungeonMatrix[index.i, index.j]._gCost = 0;
+        }
+
+        foreach(Indexes index in closedList)
+        {
+            dungeonMatrix[index.i, index.j]._gCost = 0;
+        }
+
+        return pathFound;
     }
 }

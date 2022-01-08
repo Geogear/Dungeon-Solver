@@ -39,7 +39,7 @@ public class PlayerCharacter : Character
         GameController.SetPMObject();
         SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage); SetIconTexts(IconType.LevelNumber);
         _flickerData = new FlickerData(_spriteRenderer);
-        EnemyCharacter.PathFind();
+        EnemyCharacter._playerTransform = gameObject.transform;
     }
 
     // Update is called once per frame

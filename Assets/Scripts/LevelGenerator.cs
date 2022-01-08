@@ -33,12 +33,14 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]private int _customSeed = 0;  
 
     public static System.Random rand = null;
+    public static Indexes _dungeonSize = new Indexes(0, 0);
+    public static Cell[,] _dungeonMatrix = null;
     private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
     private static int _currentLevel = 0;
-    private static Cell[,] _dungeonMatrix = null;
-    private static Indexes _dungeonSize = new Indexes(0, 0);
+    private static int _differenceY = 0;
+    private static int _differenceX = 0;
     private static Indexes _XYMax = new Indexes(0, 0);
     private static Indexes _XYMin = new Indexes(0, 0);
     private static Room _enteringRoom = null;
@@ -60,6 +62,7 @@ public class LevelGenerator : MonoBehaviour
         _playerObject.SetActive(true);
         _playerScript = _playerObject.GetComponent<PlayerCharacter>();
         _seedText.text = "Seed:" + _currentSeed;
+        EnemyCharacter._tileMap = _tileMap;
     }
 
     // Update is called once per frame
@@ -200,6 +203,8 @@ public class LevelGenerator : MonoBehaviour
         _enteringRoom = null;
     }
 
+    public static Indexes GetDifIndex() => new Indexes(_differenceX, _differenceY);
+
     public void GenerateNextLevel()
     {
         ClearLevel();
@@ -223,17 +228,17 @@ public class LevelGenerator : MonoBehaviour
         Vector3Int originCell = _tileMap.WorldToCell(transform.position);
         /* This makes the 0,0 point of the entrance tile, (_dungeon.Size.i-1 and
          * _dungeonSize.j-1 on the dungeon matrix)to be on the originCell. */
-        int differenceY = _dungeonSize.i/2 - 1 - originCell.y;
-        int differenceX = _dungeonSize.j/2 - 1 - originCell.x;
+        _differenceY = _dungeonSize.i/2 - 1 - originCell.y;
+        _differenceX = _dungeonSize.j/2 - 1 - originCell.x;
         bool exitFound = false;
         UnityEngine.Tilemaps.Tile tileToPut = null;
         GameObject prefabToPut = null;
          for (int i = 0; i < _dungeonSize.i; ++i)
         {
-            curCell.y = i - differenceY;
+            curCell.y = i - _differenceY;
             for (int j = 0; j < _dungeonSize.j; ++j)
             {
-                curCell.x = j - differenceX;
+                curCell.x = j - _differenceX;
                 if (_dungeonMatrix[i, j]._tileType != -1)
                 {
                     switch (_dungeonMatrix[i, j]._tileType%10)
