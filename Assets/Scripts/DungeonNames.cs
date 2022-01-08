@@ -156,15 +156,15 @@ public struct Node
 {
     public static int normalCost = 10;
     public static int diagonalCost = 14;
-    public int gCost;
+    public int _gCost;
     public Indexes _coord;
     public Indexes _parent;
 
-    public Node(int coordX, int coordY, int parentX = -1, int parentY = -1)
+    public Node(int coordX, int coordY, int parentX = -1, int parentY = -1, int gCost = 0)
     {
         _coord = new Indexes(coordX, coordY);
         _parent = new Indexes(parentX, parentY);
-        gCost = 0;
+        _gCost = gCost;
     }
 
     public bool SameByCoord(int x, int y) => _coord.j == x && _coord.i == y;
@@ -180,7 +180,7 @@ public struct Node
         return difI * normalCost + difJ * normalCost;
     }
 
-    public int CalculateF(Indexes target) => gCost + CalculateH(target);
+    public int CalculateF(Indexes target) => _gCost + CalculateH(target);
 }
 
 public struct Cell

@@ -101,24 +101,24 @@ public class EnemyCharacter : Character
                     if (!(dontPut || obstacleMap[currentPoint.i + k, currentPoint.j + l]))
                     {
                         /* If adjacent is on the open list and new cost is lower,
-                         * change the cost and the parent values for the adjacent.*/
+                         * change the cost and the parent values for the adjacent. */
                         int currentCost = (k == 0 || l == 0) ? Node.normalCost : Node.diagonalCost;
                         foreach (Node node in openList)
                         {
                             if (node.SameByCoord(currentPoint.j + l, currentPoint.i + k)
-                                && node.gCost > currentNode.gCost + currentCost)
+                                && node._gCost > currentNode._gCost + currentCost)
                             {
                                 var tmpNode = node;
                                 tmpNode._parent.i = currentPoint.i;
                                 tmpNode._parent.j = currentPoint.j;
-                                tmpNode.gCost = currentNode.gCost + currentCost;
+                                tmpNode._gCost = currentNode._gCost + currentCost;
                                 dontPut = true;
                                 break;
                             }
                         }
                         if (!dontPut)
                         {
-                            openList.Add(new Node(currentPoint.j + l, currentPoint.i + k, currentPoint.j, currentPoint.i));
+                            openList.Add(new Node(currentPoint.j + l, currentPoint.i + k, currentPoint.j, currentPoint.i, currentCost));
                         }
                     }
                 }
