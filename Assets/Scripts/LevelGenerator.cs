@@ -2,19 +2,6 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
-    /* NOTE, 1000x1000 caused stackoverflow, lel. 100x100 is a good max, I think. 
-       KNOWN BUGS
-       + Dungeon-matrix is too small. - Make it so that there is a minimum limit for the dungeon matrix. 
-       *2 +2 on edges and when doing bg add the camera size?
-       + Exit not found happens. Walls going over tiles, still sometimes happen.
-       TODO
-       + RoomFiller sophistication. Trap puttings should be clever.
-       + Proceeding to the next level.
-       + Enemy AI.
-       + Keep play time and score, display them at the end.
-       + According to the treasure richness, a puzzle should display with chance
-       and its difficulty relative to the richness.
-       + Make non-walkable areas. */
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
@@ -50,7 +37,7 @@ public class LevelGenerator : MonoBehaviour
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
     private static int _currentLevel = 0;
-    private static int[,] _dungeonMatrix = null;
+    private static Cell[,] _dungeonMatrix = null;
     private static Indexes _dungeonSize = new Indexes(0, 0);
     private static Indexes _XYMax = new Indexes(0, 0);
     private static Indexes _XYMin = new Indexes(0, 0);
@@ -110,7 +97,7 @@ public class LevelGenerator : MonoBehaviour
                 string str = "";
                 for (int j = 0; j < _dungeonSize.j; ++j)
                 {
-                    switch (_dungeonMatrix[i, j])
+                    switch (_dungeonMatrix[i, j]._tileType)
                     {
                         case -1:
                             str += 'E';
@@ -247,9 +234,9 @@ public class LevelGenerator : MonoBehaviour
             for (int j = 0; j < _dungeonSize.j; ++j)
             {
                 curCell.x = j - differenceX;
-                if (_dungeonMatrix[i, j] != -1)
+                if (_dungeonMatrix[i, j]._tileType != -1)
                 {
-                    switch (_dungeonMatrix[i, j]%10)
+                    switch (_dungeonMatrix[i, j]._tileType%10)
                     {
                         case (int)Tile.Normal:
                             tileToPut = _normalTile;
@@ -267,7 +254,7 @@ public class LevelGenerator : MonoBehaviour
                     }                    
                     _tileMap.SetTile(curCell, tileToPut);
 
-                    int filledType = _dungeonMatrix[i, j] / 10;
+                    int filledType = _dungeonMatrix[i, j]._tileType / 10;
                     Vector3 pos = _tileMap.CellToWorld(curCell);
                     if (tileToPut == _exitTile)
                     {
@@ -335,8 +322,8 @@ public class LevelGenerator : MonoBehaviour
 
         if (increaseI == 1 && decreaseI == 1)
         {
-            if ((_dungeonMatrix[i + increaseI, j] == (int)tile && _dungeonMatrix[i - decreaseI, j] == oppositeTile)
-                || (_dungeonMatrix[i + increaseI, j] == oppositeTile && _dungeonMatrix[i - decreaseI, j] == (int)tile))
+            if ((_dungeonMatrix[i + increaseI, j]._tileType == (int)tile && _dungeonMatrix[i - decreaseI, j]._tileType == oppositeTile)
+                || (_dungeonMatrix[i + increaseI, j]._tileType == oppositeTile && _dungeonMatrix[i - decreaseI, j]._tileType == (int)tile))
             {
                 return true;
             }
@@ -344,8 +331,8 @@ public class LevelGenerator : MonoBehaviour
 
         if (increaseJ == 1 && decreaseJ == 1)
         {
-            if ((_dungeonMatrix[i, j + increaseJ] == (int)tile && _dungeonMatrix[i, j - decreaseJ] == oppositeTile)
-                || (_dungeonMatrix[i, j + increaseJ] == oppositeTile && _dungeonMatrix[i, j - decreaseJ] == (int)tile))
+            if ((_dungeonMatrix[i, j + increaseJ]._tileType == (int)tile && _dungeonMatrix[i, j - decreaseJ]._tileType == oppositeTile)
+                || (_dungeonMatrix[i, j + increaseJ]._tileType == oppositeTile && _dungeonMatrix[i, j - decreaseJ]._tileType == (int)tile))
             {
                 return true;
             }
@@ -377,11 +364,11 @@ public class LevelGenerator : MonoBehaviour
             increaseJ = 0;
         }
 
-        return ((_dungeonMatrix[i, j - decreaseJ] == (int)tile || _dungeonMatrix[i, j + increaseJ] == (int)tile
-            || _dungeonMatrix[i + increaseI, j] == (int)tile || _dungeonMatrix[i - decreaseI, j] == (int)tile)
+        return ((_dungeonMatrix[i, j - decreaseJ]._tileType == (int)tile || _dungeonMatrix[i, j + increaseJ]._tileType == (int)tile
+            || _dungeonMatrix[i + increaseI, j]._tileType == (int)tile || _dungeonMatrix[i - decreaseI, j]._tileType == (int)tile)
             || (!fourNeighbourMode && (
-            _dungeonMatrix[i + increaseI, j - decreaseJ] == (int)tile || _dungeonMatrix[i + increaseI, j + increaseJ] == (int)tile
-            || _dungeonMatrix[i - decreaseI, j - decreaseJ] == (int)tile || _dungeonMatrix[i - decreaseI, j + increaseJ] == (int)tile)));
+            _dungeonMatrix[i + increaseI, j - decreaseJ]._tileType == (int)tile || _dungeonMatrix[i + increaseI, j + increaseJ]._tileType == (int)tile
+            || _dungeonMatrix[i - decreaseI, j - decreaseJ]._tileType == (int)tile || _dungeonMatrix[i - decreaseI, j + increaseJ]._tileType == (int)tile)));
     }
 
     private void CreateDungeonMatrix()
@@ -390,12 +377,12 @@ public class LevelGenerator : MonoBehaviour
         _dungeonSize.i *= 4; _dungeonSize.j *= 4;
         Indexes firstRoomIndexes = new Indexes(_dungeonSize.j/2, _dungeonSize.i/2);
 
-        _dungeonMatrix = new int[_dungeonSize.i, _dungeonSize.j];
+        _dungeonMatrix = new Cell[_dungeonSize.i, _dungeonSize.j];
         for (int i = 0; i < _dungeonSize.i; ++i)
         {
             for (int j = 0; j < _dungeonSize.j; ++j)
             {
-                _dungeonMatrix[i, j] = -1;
+                _dungeonMatrix[i, j] = new Cell(-1);
             }
         }
 
@@ -419,10 +406,10 @@ public class LevelGenerator : MonoBehaviour
         {
             for (int j = 0; j < room.GetRoomWidth(); ++j)
             {
-                _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] = roomMatrix[i, j];
+                _dungeonMatrix[newOrigin.i + i, newOrigin.j + j]._tileType = roomMatrix[i, j];
                 if (notOnFirstRoom)
                 {
-                    _dungeonMatrix[newOrigin.i + i, newOrigin.j + j] += RoomFiller._filledTypes[i, j] * 10;
+                    _dungeonMatrix[newOrigin.i + i, newOrigin.j + j]._tileType += RoomFiller._filledTypes[i, j] * 10;
                 }              
             }
         }
@@ -447,37 +434,37 @@ public class LevelGenerator : MonoBehaviour
                     tmpI = 2; tmpJ = 0;
                     break;
             }
-            _dungeonMatrix[newOrigin.i + tmpI, newOrigin.j + tmpJ] += (int)FilledType.HealingStatue * 10;
+            _dungeonMatrix[newOrigin.i + tmpI, newOrigin.j + tmpJ]._tileType += (int)FilledType.HealingStatue * 10;
         }
 
         /* Surround with walls. */
         for (int j = -1; j <= room.GetRoomWidth(); ++j)
         {
-            _dungeonMatrix[newOrigin.i -1, newOrigin.j + j] = (int)Tile.WallTile;
-            _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j] = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i -1, newOrigin.j + j]._tileType = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j]._tileType = (int)Tile.WallTile;
         }
 
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
-            _dungeonMatrix[newOrigin.i + i, newOrigin.j - 1] = (int)Tile.WallTile;
-            _dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()] = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i + i, newOrigin.j - 1]._tileType = (int)Tile.WallTile;
+            _dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()]._tileType = (int)Tile.WallTile;
         }
 
         /* Switch the doortile to its correct place. */
-        _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.Normal;
+        _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j]._tileType = (int)Tile.Normal;
         switch (room.GetEnteringDoorDirection())
         {
             case Direction.Up:
-                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i-1, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.DoorTile;
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i-1, newOrigin.j + enteringDoorIndexesRoom.j]._tileType = (int)Tile.DoorTile;
                 break;
             case Direction.Down:
-                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i+1, newOrigin.j + enteringDoorIndexesRoom.j] = (int)Tile.DoorTile;
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i+1, newOrigin.j + enteringDoorIndexesRoom.j]._tileType = (int)Tile.DoorTile;
                 break;
             case Direction.Left:
-                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j-1] = (int)Tile.DoorTile;
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j-1]._tileType = (int)Tile.DoorTile;
                 break;
             case Direction.Right:
-                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j+1] = (int)Tile.DoorTile;
+                _dungeonMatrix[newOrigin.i + enteringDoorIndexesRoom.i, newOrigin.j + enteringDoorIndexesRoom.j+1]._tileType = (int)Tile.DoorTile;
                 break;
         }
 

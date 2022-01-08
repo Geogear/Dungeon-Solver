@@ -182,3 +182,32 @@ public struct Node
 
     public int CalculateF(Indexes target) => gCost + CalculateH(target);
 }
+
+public struct Cell
+{
+    public static int _normalCost = 10;
+    public static int _diagonalCost = 14;
+    public int _tileType;
+    public int _gCost;
+    public bool _walkable;
+
+    public Cell(int tileType, int gCost = 0, bool walkable = false)
+    {
+        _tileType = tileType;
+        _gCost = gCost;    
+        _walkable = walkable;
+    }
+
+    public int CalculateH(int x, int y, Indexes target)
+    {
+        int difI = target.i - y;
+        int difJ = target.j - x;
+
+        difI = (difI < 0) ? -difI : difI;
+        difJ = (difJ < 0) ? -difJ : difJ;
+
+        return difI * _normalCost + difJ * _normalCost;
+    }
+
+    public int CalculateF(int x, int y, Indexes target) => _gCost + CalculateH(x, y, target);
+}

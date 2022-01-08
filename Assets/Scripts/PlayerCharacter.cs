@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
-    /* TODO, Attack speed buff, when animation is supposed to be speed up, set a bool on character.
-       StateMachineBehavior looks at that bool at each state exit, if true, increases speed.
-       Will the animation clip length will increase? OR can do actual attack at the end of attack anim!!*/
-
     public static Vector3 _startingPos;
     public LevelGenerator _levelgenerator;
 
