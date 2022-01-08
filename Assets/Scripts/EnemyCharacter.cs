@@ -105,20 +105,22 @@ public class EnemyCharacter : Character
                         int currentCost = (k == 0 || l == 0) ? Node.normalCost : Node.diagonalCost;
                         foreach (Node node in openList)
                         {
-                            if (node.SameByCoord(currentPoint.j + l, currentPoint.i + k)
-                                && node._gCost > currentNode._gCost + currentCost)
+                            if(node.SameByCoord(currentPoint.j + l, currentPoint.i + k))
                             {
-                                var tmpNode = node;
-                                tmpNode._parent.i = currentPoint.i;
-                                tmpNode._parent.j = currentPoint.j;
-                                tmpNode._gCost = currentNode._gCost + currentCost;
                                 dontPut = true;
+                                if(node._gCost > currentNode._gCost + currentCost)
+                                {
+                                    var tmpNode = node;
+                                    tmpNode._parent.i = currentPoint.i;
+                                    tmpNode._parent.j = currentPoint.j;
+                                    tmpNode._gCost = currentNode._gCost + currentCost;
+                                }
                                 break;
                             }
                         }
                         if (!dontPut)
                         {
-                            openList.Add(new Node(currentPoint.j + l, currentPoint.i + k, currentPoint.j, currentPoint.i, currentCost));
+                            openList.Add(new Node(currentPoint.j + l, currentPoint.i + k, currentPoint.j, currentPoint.i, currentNode._gCost + currentCost));
                         }
                     }
                 }
