@@ -245,13 +245,16 @@ public class LevelGenerator : MonoBehaviour
                     {
                         case (int)Tile.Normal:
                             tileToPut = _normalTile;
+                            _dungeonMatrix[i, j]._walkable = true;
                             break;
                         case (int)Tile.DoorTile:
                             tileToPut = _doorTile;
+                            _dungeonMatrix[i, j]._walkable = true;
                             break;
                         case (int)Tile.ExitTile:
                             exitFound = true;
                             tileToPut = _exitTile;
+                            _dungeonMatrix[i, j]._walkable = true;
                             break;
                         case (int)Tile.WallTile:
                             tileToPut = _genericWallTile;
@@ -276,6 +279,7 @@ public class LevelGenerator : MonoBehaviour
                         prefabToPut = _treasurePrefab;
                         pos.y += 0.5f; pos.x += 0.5f;
                         Treasure.AddTreasure(pos, filledType);
+                        _dungeonMatrix[i, j]._walkable = false;
                     }
                     else if (filledType >= (int)FilledType.TrapLow && filledType <= (int)FilledType.TrapHigh)
                     {
@@ -287,6 +291,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         prefabToPut = _healingStatuePrefab;
                         pos.y += 0.80f; pos.x += 0.45f;
+                        _dungeonMatrix[i, j]._walkable = false;
                     }
 
                     if (prefabToPut != null)

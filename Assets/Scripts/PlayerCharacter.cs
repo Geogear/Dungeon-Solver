@@ -29,6 +29,7 @@ public class PlayerCharacter : Character
     protected override void Awake()
     {
         base.Awake();
+        EnemyCharacter._playerTransform = transform;
     }
 
     // Start is called before the first frame update
@@ -39,7 +40,6 @@ public class PlayerCharacter : Character
         GameController.SetPMObject();
         SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage); SetIconTexts(IconType.LevelNumber);
         _flickerData = new FlickerData(_spriteRenderer);
-        EnemyCharacter._playerTransform = gameObject.transform;
     }
 
     // Update is called once per frame
