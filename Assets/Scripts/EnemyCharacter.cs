@@ -47,6 +47,11 @@ public class EnemyCharacter : Character
     {
         if (PFState.Wait == _PFState)
         {
+            if(_running)
+            {
+                _animator.SetTrigger("Idle");
+                _running = false;
+            }           
             return;
         }
 
@@ -208,6 +213,11 @@ public class EnemyCharacter : Character
         bool dontPut = false, pathFound = false;
 
         Cell[,] dungeonMatrix = LevelGenerator._dungeonMatrix;
+
+        if(dungeonMatrix == null)
+        {
+            return false;
+        }
 
         /* Add the starting point with parents -1,-1 */
         parents.Add(start, new Indexes(-1, -1));
