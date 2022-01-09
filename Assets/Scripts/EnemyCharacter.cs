@@ -101,14 +101,9 @@ public class EnemyCharacter : Character
         /* Calc distance between positions to translate. */
         _targetDistance = Vector3.Distance(_startPos, _targetPos);
 
-        Debug.Log("SC: " + _startTileCell.j + "," + _startTileCell.i + " TC: " +
-            _targetTileCell.j + "," + _targetTileCell.i + " TD: " + _targetDistance + " TP: " + _targetPos + " SP: " + _startPos);
-
         /* Set direction vector. */
-        _moveDirection.x = _targetTileCell.j - _startTileCell.j;
-        _moveDirection.y = _targetTileCell.i - _startTileCell.i;
-
-        Debug.Log("MD: " + _moveDirection.x + "," + _moveDirection.y);
+        _moveDirection.x = _targetPos.x - _startPos.x;
+        _moveDirection.y = _targetPos.y - _startPos.y;
 
         _pathToLatestTarget.RemoveAt(0);
     }
