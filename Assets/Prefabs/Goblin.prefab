@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 6193623427436133987}
   - component: {fileID: -5670159073656178940}
   - component: {fileID: 4122427934224431002}
+  - component: {fileID: 1964414316770347067}
   m_Layer: 6
   m_Name: Goblin
   m_TagString: Enemy
@@ -126,7 +127,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.042288065, y: -0.060486972}
@@ -158,12 +159,14 @@ MonoBehaviour:
   _moveSpeed: 7
   _attackDamage: 3
   _attackRange: 0.35
-  _attackCD: 1
+  _attackRate: 1
+  _maxHitPoints: 15
   _hitPoints: 15
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
   _attackLocation: {fileID: 3690120912640957459}
+  _chaseRange: 3
 --- !u!95 &4122427934224431002
 Animator:
   serializedVersion: 3
@@ -183,3 +186,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!50 &1964414316770347067
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5646927135974474903}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

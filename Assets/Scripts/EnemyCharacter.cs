@@ -50,18 +50,31 @@ public class EnemyCharacter : Character
         }
 
         transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
-        if (_startTileCell.i == _targetTileCell.i 
-            && _startTileCell.j == _targetTileCell.j)
+        Vector3Int currentTile = _tileMap.WorldToCell(transform.position);
+        if (currentTile.y == _targetTileCell.i && currentTile.x == _targetTileCell.j)
         {
             Debug.Log("changed direction");
+            /* Reached target. */
             if (0 == _pathToLatestTarget.Count)
             {
                 _PFState = PFState.Wait;
                 return;
             }
+
+            /* Keep chasing to the new pos, if player moved. */
+            Indexes dungeonDif = LevelGenerator.GetDifIndex();
+            Indexes lastTarget = _pathToLatestTarget[_pathToLatestTarget.Count-1];
+            lastTarget.i -= dungeonDif.i; lastTarget.j -= dungeonDif.j;
+
+            Vector3Int playerTile = _tileMap.WorldToCell(_playerTransform.position);
+            if(playerTile.y != lastTarget.i || playerTile.x != lastTarget.j)
+            {
+                ChasePlayer(true);
+                return;
+            }
+
             _startPos = transform.position;
-            Vector3Int tmp = _tileMap.WorldToCell(transform.position);
-            _startTileCell.i = tmp.y; _startTileCell.j = tmp.x;
+            _startTileCell.i = currentTile.y; _startTileCell.j = currentTile.x;
             GoToTarget();
         }
     }
@@ -83,15 +96,19 @@ public class EnemyCharacter : Character
         Indexes dungeonDif = LevelGenerator.GetDifIndex();
         /* DM coord to tilemap coord. */
         _targetTileCell.i -= dungeonDif.i; _targetTileCell.j -= dungeonDif.j;
+        /* Get targetpos from target tilemap coord. */
         _targetPos = _tileMap.GetCellCenterWorld(new Vector3Int(_targetTileCell.j, _targetTileCell.i, 0));
+        /* Calc distance between positions to translate. */
         _targetDistance = Vector3.Distance(_startPos, _targetPos);
 
         Debug.Log("SC: " + _startTileCell.j + "," + _startTileCell.i + " TC: " +
             _targetTileCell.j + "," + _targetTileCell.i + " TD: " + _targetDistance + " TP: " + _targetPos + " SP: " + _startPos);
 
         /* Set direction vector. */
-        _moveDirection.x = _targetPos.x - _startPos.x;
-        _moveDirection.y = _targetPos.y - _startPos.y;
+        _moveDirection.x = _targetTileCell.j - _startTileCell.j;
+        _moveDirection.y = _targetTileCell.i - _startTileCell.i;
+
+        Debug.Log("MD: " + _moveDirection.x + "," + _moveDirection.y);
 
         _pathToLatestTarget.RemoveAt(0);
     }
@@ -132,12 +149,14 @@ public class EnemyCharacter : Character
         }
     }
 
-    protected void ChasePlayer()
+    protected void ChasePlayer(bool chase = false)
     {
         /* Chase if in range and waiting. */
-        if ((PFState.Wait == _PFState &&
+        if (!chase &&
+            ((PFState.Wait == _PFState &&
             Vector3.Distance(transform.position, _playerTransform.position) > _chaseRange)
             || PFState.Wait != _PFState)
+            )
         {
             return;
         }

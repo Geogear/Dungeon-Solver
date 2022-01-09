@@ -205,7 +205,7 @@ public abstract class Character : MonoBehaviour
             {
                 TakeDamage(damage);
                 _tookTrapDamage = true;
-            }        
+            }
         }
     }
 
