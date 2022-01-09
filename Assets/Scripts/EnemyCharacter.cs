@@ -12,6 +12,8 @@ public class EnemyCharacter : Character
     protected Vector3 _targetPos = new Vector3();
     protected Vector3 _startPos = new Vector3();
     protected Vector3 _moveDirection = new Vector3();
+    protected Indexes _startTileCell = new Indexes();
+    protected Indexes _targetTileCell = new Indexes();
     protected float _targetDistance = 0.0f;
     protected float _lerpTime = 1f;
     protected float _currentLerpTime = 0.0f;
@@ -48,7 +50,8 @@ public class EnemyCharacter : Character
         }
 
         transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
-        if (transform.position == _targetPos)
+        if (_startTileCell.i == _targetTileCell.i 
+            && _startTileCell.j == _targetTileCell.j)
         {
             Debug.Log("changed direction");
             if (0 == _pathToLatestTarget.Count)
@@ -57,6 +60,8 @@ public class EnemyCharacter : Character
                 return;
             }
             _startPos = transform.position;
+            Vector3Int tmp = _tileMap.WorldToCell(transform.position);
+            _startTileCell.i = tmp.y; _startTileCell.j = tmp.x;
             GoToTarget();
         }
     }
@@ -69,18 +74,20 @@ public class EnemyCharacter : Character
     protected override void SetYourProperties()
     {
         base.SetYourProperties();
+        _moveSpeed = 1.0f;
     }
 
     protected void GoToTarget()
     {
-        Indexes targetIndexes = _pathToLatestTarget[0];
+        _targetTileCell = _pathToLatestTarget[0];
         Indexes dungeonDif = LevelGenerator.GetDifIndex();
         /* DM coord to tilemap coord. */
-        targetIndexes.i -= dungeonDif.i; targetIndexes.j -= dungeonDif.j;
-        _targetPos = _tileMap.GetCellCenterWorld(new Vector3Int(targetIndexes.j, targetIndexes.i, 0));
+        _targetTileCell.i -= dungeonDif.i; _targetTileCell.j -= dungeonDif.j;
+        _targetPos = _tileMap.GetCellCenterWorld(new Vector3Int(_targetTileCell.j, _targetTileCell.i, 0));
         _targetDistance = Vector3.Distance(_startPos, _targetPos);
 
-        Debug.Log("TD: " + _targetDistance + " TP: " + _targetPos + " SP: " + _startPos);
+        Debug.Log("SC: " + _startTileCell.j + "," + _startTileCell.i + " TC: " +
+            _targetTileCell.j + "," + _targetTileCell.i + " TD: " + _targetDistance + " TP: " + _targetPos + " SP: " + _startPos);
 
         /* Set direction vector. */
         _moveDirection.x = _targetPos.x - _startPos.x;
@@ -140,6 +147,7 @@ public class EnemyCharacter : Character
         /* Get your cell pos, from your world pos. */
         Vector3Int tmp = _tileMap.WorldToCell(transform.position);
         Indexes start = new Indexes(tmp.x, tmp.y);
+        _startTileCell.j = tmp.x; _startTileCell.i = tmp.y;
 
         start.i += dungeonDif.i; start.j += dungeonDif.j;
 
@@ -290,6 +298,9 @@ public class EnemyCharacter : Character
                 _pathToLatestTarget.Insert(0, currentPoint);
                 currentPoint = parents[currentPoint];
             }
+
+            /* Remove first point, bceause it's the start pos. */
+            _pathToLatestTarget.RemoveAt(0);
         }
 
         /* Clear gCosts. */
