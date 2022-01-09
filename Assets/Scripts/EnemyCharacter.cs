@@ -35,7 +35,6 @@ public class EnemyCharacter : Character
     {
         base.Update();
         ChasePlayer();
-        //LerpToCurrentTarget();
     }
 
     protected override void FixedUpdate()
@@ -106,7 +105,6 @@ public class EnemyCharacter : Character
     protected override void SetYourProperties()
     {
         base.SetYourProperties();
-        _moveSpeed = 1.0f;
     }
 
     protected void GoToTarget()
@@ -125,42 +123,6 @@ public class EnemyCharacter : Character
         _moveDirection.y = _targetPos.y - _startPos.y;
 
         _pathToLatestTarget.RemoveAt(0);
-    }
-
-    protected void LerpToCurrentTarget()
-    {
-        if(PFState.Wait == _PFState)
-        {
-            return;
-        }
-
-        _currentLerpTime += Time.deltaTime;
-        if(_currentLerpTime > _lerpTime)
-        {
-            _currentLerpTime -= _lerpTime;
-            if(0 == _pathToLatestTarget.Count)
-            {
-                _PFState = PFState.Wait;
-                return;
-            }
-            _startPos = _targetPos;
-            GoToTarget();
-        }
-
-        float perc = _currentLerpTime / _lerpTime;
-        transform.position = Vector3.Lerp(_startPos, _targetPos, perc);
-
-        if(transform.position == _targetPos)
-        {      
-            if (0 == _pathToLatestTarget.Count)
-            {
-                _PFState = PFState.Wait;
-                return;
-            }
-            _startPos = transform.position;
-            _currentLerpTime = 0.0f;
-            GoToTarget();   
-        }
     }
 
     protected void ChasePlayer(bool chase = false)
