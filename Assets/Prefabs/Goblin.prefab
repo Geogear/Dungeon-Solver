@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterName: Goblin
-  _moveSpeed: 7
+  _moveSpeed: 1.5
   _attackDamage: 3
   _attackRange: 0.35
   _attackRate: 1
