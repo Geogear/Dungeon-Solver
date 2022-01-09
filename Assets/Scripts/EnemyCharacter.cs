@@ -50,13 +50,14 @@ public class EnemyCharacter : Character
         }
 
         transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
+        _spriteRenderer.flipX = _moveDirection.x < 0.0f;
         Vector3Int currentTile = _tileMap.WorldToCell(transform.position);
         if (currentTile.y == _targetTileCell.i && currentTile.x == _targetTileCell.j)
         {
-            Debug.Log("changed direction");
             /* Reached target. */
             if (0 == _pathToLatestTarget.Count)
             {
+                /* TODO, attack. */
                 _PFState = PFState.Wait;
                 return;
             }
@@ -65,7 +66,6 @@ public class EnemyCharacter : Character
             Indexes dungeonDif = LevelGenerator.GetDifIndex();
             Indexes lastTarget = _pathToLatestTarget[_pathToLatestTarget.Count-1];
             lastTarget.i -= dungeonDif.i; lastTarget.j -= dungeonDif.j;
-
             Vector3Int playerTile = _tileMap.WorldToCell(_playerTransform.position);
             if(playerTile.y != lastTarget.i || playerTile.x != lastTarget.j)
             {
