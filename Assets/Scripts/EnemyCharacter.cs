@@ -5,7 +5,7 @@ public class EnemyCharacter : Character
     public static UnityEngine.Tilemaps.Tilemap _tileMap = null;
     public static Transform _playerTransform = null;
 
-    [SerializeField] protected float _chaseRange = 3.0f;
+    [SerializeField] protected float _chaseRange = 1.0f;
 
     protected System.Collections.Generic.List<Indexes> _pathToLatestTarget = null;
     protected PFState _PFState = PFState.Wait;
@@ -57,6 +57,9 @@ public class EnemyCharacter : Character
     protected void GoToTarget()
     {
         Indexes targetIndexes = _pathToLatestTarget[0];
+        Indexes dungeonDif = LevelGenerator.GetDifIndex();
+        /* DM coord to tilemap coord. */
+        targetIndexes.i -= dungeonDif.i; targetIndexes.j -= dungeonDif.j;
         _targetPos = _tileMap.GetCellCenterWorld(new Vector3Int(targetIndexes.j, targetIndexes.i, 0));
         _targetDistance = Vector3.Distance(_startPos, _targetPos);
 
