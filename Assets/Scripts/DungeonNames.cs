@@ -159,37 +159,6 @@ public struct FlickerData
     }
 }
 
-public struct Node
-{
-    public static int normalCost = 10;
-    public static int diagonalCost = 14;
-    public int _gCost;
-    public Indexes _coord;
-    public Indexes _parent;
-
-    public Node(int coordX, int coordY, int parentX = -1, int parentY = -1, int gCost = 0)
-    {
-        _coord = new Indexes(coordX, coordY);
-        _parent = new Indexes(parentX, parentY);
-        _gCost = gCost;
-    }
-
-    public bool SameByCoord(int x, int y) => _coord.j == x && _coord.i == y;
-
-    public int CalculateH(Indexes target)
-    {
-        int difI = target.i - _coord.i;
-        int difJ = target.j - _coord.j;
-
-        difI = (difI < 0) ? -difI : difI;
-        difJ = (difJ < 0) ? -difJ : difJ;
-
-        return difI * normalCost + difJ * normalCost;
-    }
-
-    public int CalculateF(Indexes target) => _gCost + CalculateH(target);
-}
-
 public struct Cell
 {
     public static int _normalCost = 10;
