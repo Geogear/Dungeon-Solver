@@ -17,6 +17,7 @@ public class EnemyCharacter : Character
     protected float _targetDistance = 0.0f;
     protected float _lerpTime = 1f;
     protected float _currentLerpTime = 0.0f;
+    protected bool _continuousAttack = false;
 
     protected override void Awake()
     {
@@ -49,15 +50,22 @@ public class EnemyCharacter : Character
             return;
         }
 
+        /* Move, flip and run animation. */
         transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
         _spriteRenderer.flipX = _moveDirection.x < 0.0f;
+        if(!_running)
+        {
+            _animator.SetTrigger("Running");
+            _running = true;
+        }
+
         Vector3Int currentTile = _tileMap.WorldToCell(transform.position);
         if (currentTile.y == _targetTileCell.i && currentTile.x == _targetTileCell.j)
         {
             /* Reached target. */
             if (0 == _pathToLatestTarget.Count)
             {
-                /* TODO, attack. */
+                _continuousAttack = true;
                 _PFState = PFState.Wait;
                 return;
             }
@@ -81,7 +89,13 @@ public class EnemyCharacter : Character
 
     protected override void AttackCharacter()
     {
-        /* TODO */
+        if (!_attacked && _continuousAttack && Time.time >= _nextAttackTime)
+        {
+            _attacked = true;
+            _running = false;
+            _animator.SetTrigger("Attack");
+            _animCounter = _attackAnim.length;
+        }
     }
 
     protected override void SetYourProperties()

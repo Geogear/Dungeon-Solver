@@ -79,7 +79,7 @@ public abstract class Character : MonoBehaviour
     {
     }
 
-    public void GetHit(float damage)
+    public virtual void GetHit(float damage)
     {
         if (!_invincible)
         {
@@ -130,6 +130,7 @@ public abstract class Character : MonoBehaviour
         {
             _animCounter -= Time.deltaTime;
             _attacked = _animCounter > float.Epsilon;
+            /* Deal the damage at the end of the attack anim. */
             if (!_attacked)
             {
                 MeleeAttack();

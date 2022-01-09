@@ -282,6 +282,11 @@ public class PlayerCharacter : Character
         _healingStatueUsed = false;
     }
 
+    public override void GetHit(float damage)
+    {
+        TakeDamage(Mathf.RoundToInt(damage));
+    }
+
     /* To Use GameController with game components. */
     public void GC_POR()
     {
