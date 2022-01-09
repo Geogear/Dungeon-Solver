@@ -21,6 +21,13 @@ public static class RoomFiller
         new int[] {30, 50, 20},
         new int[] {20, 40, 40}
     };
+    private static readonly FilledType[] MonstersToSpawn =
+        { FilledType.MonsterGoblin, FilledType.MonsterOrc, FilledType.MonsterOgre };
+    private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 11 };
+    private static readonly int SpawnRateChanger = 8;
+
+    private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0 };
+    private static int _currentSRC = SpawnRateChanger;
 
     public static int [,] _filledTypes = null;
 
@@ -160,6 +167,32 @@ public static class RoomFiller
             rangeFixer += difficultyRanges[i];
         }
         return rangeFixer;
+    }
+
+    public static void SetMonsterSpawnRates(int currentLevel)
+    {
+        for(int i = 0; i < MonsterSpawnLevelCaps.Length; ++i)
+        {
+            if(MonsterSpawnLevelCaps[i] == currentLevel)
+            {
+                _currentSRC *= 2;
+                break;
+            }
+        }
+        /* TODO */
+        /* if yc <= cap, decrease yourself once and increase others till the first one that yc > cap, increase that one as well. */
+        for(int i = 0; i < MonsterSpawnLevelCaps.Length-1; ++i)
+        {
+            if(MonsterSpawnLevelCaps[i] > currentLevel)
+            {
+                break;
+            }
+
+            for(int j = i+1; j < MonsterSpawnLevelCaps.Length; ++j)
+            {
+
+            }
+        }
     }
 
     private static void FillWith(List<Indexes> allIndexes, FilledType typeToFill, int amountToFill)

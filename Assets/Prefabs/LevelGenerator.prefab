@@ -226,6 +226,7 @@ MonoBehaviour:
   _genericWallTile: {fileID: 11400000, guid: 0561f07a8c787f84abef475e1e3bcd58, type: 2}
   _tileMap: {fileID: 80233822873461019}
   _goblinPrefab: {fileID: 5646927135974474903, guid: a451ec3c0f395fd4b8ddc6374f545303, type: 3}
+  _ogrePrefab: {fileID: 2296937063791205835, guid: 9829b4511ddd0254fae4002700a3270b, type: 3}
   _treasurePrefab: {fileID: 2094785687004538110, guid: ec49a13e19c50ad43b2a951a5ff4e6e2, type: 3}
   _trapPrefab: {fileID: 7902331492991391775, guid: 3d04ebb8d78427a4d83621e80ddd1819, type: 3}
   _levelExitPrefab: {fileID: 4099739057069359962, guid: 36632a08ce3120444b7077af4dfbde53, type: 3}

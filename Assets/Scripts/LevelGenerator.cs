@@ -8,6 +8,7 @@ public class LevelGenerator : MonoBehaviour
         {20, 50, 20, 10};
     private static readonly string[] TagsToDestroy =
         { "Enemy", "Treasure", "LevelExit", "Trap", "HealingStatue" };
+    public static readonly int MaxLevel = 20;
 
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
@@ -16,6 +17,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
     public GameObject _goblinPrefab;
+    public GameObject _ogrePrefab;
     public GameObject _treasurePrefab;
     public GameObject _trapPrefab;
     public GameObject _levelExitPrefab;
