@@ -54,7 +54,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoblinDying
+  m_Name: OrcDying
   m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions: []
@@ -67,7 +67,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1626e68ebd43ed54db964cd1f67a8cb2, type: 2}
+  m_Motion: {fileID: 7400000, guid: 142bf2b62090ac24cabf4e6fc880f2f8, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -80,7 +80,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoblinIdle
+  m_Name: OrcIdle
   m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
@@ -95,7 +95,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4d7ddbca5f28cd34babbde8467d0e9e1, type: 2}
+  m_Motion: {fileID: 7400000, guid: 00d00157ca8efa549aec8bdea49fb221, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -204,7 +204,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Goblin
+  m_Name: Orc
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Idle
@@ -317,7 +317,7 @@ AnimatorStateMachine:
     m_Position: {x: 370, y: 350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7252902523994557131}
-    m_Position: {x: 40, y: 80, z: 0}
+    m_Position: {x: 10, y: 50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7058387324902819946}
     m_Position: {x: 60, y: 280, z: 0}
@@ -441,7 +441,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoblinHurt
+  m_Name: OrcHurt
   m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
@@ -456,7 +456,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 219db01afa401b04b8a308d1a3e5cb97, type: 2}
+  m_Motion: {fileID: 7400000, guid: c024dc4a797042147bd6195f231a0eeb, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -469,7 +469,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoblinAttack
+  m_Name: OrcAttack
   m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
@@ -485,7 +485,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4d12e49a70d490a4db28051205256e37, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2f985165c09029c42b34a34066e186da, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -498,7 +498,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoblinRun
+  m_Name: OrcRun
   m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
@@ -514,7 +514,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ebe120b4b445ed341830d61d6d5a30f6, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6ed8cbbbaa46763458775c4ea5c30c1a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
