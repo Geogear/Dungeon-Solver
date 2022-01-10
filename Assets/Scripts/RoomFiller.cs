@@ -24,7 +24,7 @@ public static class RoomFiller
     private static readonly FilledType[] MonstersToSpawn =
         { FilledType.MonsterGoblin, FilledType.MonsterOrc, FilledType.MonsterOgre };
     private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 11 };
-    private static readonly int SpawnRateChanger = 8;
+    private static readonly int SpawnRateChanger = 4;
 
     private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0 };
     private static int _currentSRC = SpawnRateChanger;
@@ -171,6 +171,8 @@ public static class RoomFiller
 
     public static void SetMonsterSpawnRates(int currentLevel)
     {
+        int changeAmount = 0;
+        /* Update current spawn rate changer if needed. Which is when a new cap level has been achieved. */
         for(int i = 0; i < MonsterSpawnLevelCaps.Length; ++i)
         {
             if(MonsterSpawnLevelCaps[i] == currentLevel)
@@ -179,19 +181,19 @@ public static class RoomFiller
                 break;
             }
         }
-        /* TODO */
-        /* if yc <= cap, decrease yourself once and increase others till the first one that yc > cap, increase that one as well. */
-        for(int i = 0; i < MonsterSpawnLevelCaps.Length-1; ++i)
+        /* Loop until the last element, or until the first element that spawn level cap exceeds the cuerrent level. */
+        for(int i = 0; i < MonsterSpawnLevelCaps.Length-1 && MonsterSpawnLevelCaps[i] <= currentLevel; ++i)
         {
-            if(MonsterSpawnLevelCaps[i] > currentLevel)
+            /* If less or equal to current spawn rate changer, skip it. */
+            if(_monsterSpawnRates[i] <= _currentSRC)
             {
-                break;
+                continue;
             }
-
-            for(int j = i+1; j < MonsterSpawnLevelCaps.Length; ++j)
-            {
-
-            }
+            /* Set the change amount in a decreased manner with the ith power of 2. First decrease yourself. */
+            changeAmount = _currentSRC / (int)Mathf.Pow(2, i);
+            _monsterSpawnRates[i] -= changeAmount;
+            /* Then increase the next one. */
+            _monsterSpawnRates[i + 1] += changeAmount;
         }
     }
 

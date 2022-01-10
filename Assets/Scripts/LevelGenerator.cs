@@ -398,6 +398,7 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
+        RoomFiller.SetMonsterSpawnRates(_currentLevel);
         PutRoom(firstRoomIndexes, _enteringRoom);
     }
 
