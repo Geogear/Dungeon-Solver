@@ -24,7 +24,7 @@ public static class RoomFiller
     private static readonly FilledType[] MonstersToSpawn =
         { FilledType.MonsterGoblin, FilledType.MonsterOrc, FilledType.MonsterOgre };
     private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 11 };
-    private static readonly int SpawnRateChanger = 4;
+    private static readonly int SpawnRateChanger = 8;
 
     private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0 };
     private static int _currentSRC = SpawnRateChanger;
@@ -184,11 +184,11 @@ public static class RoomFiller
     {
         int changeAmount = 0;
         /* Update current spawn rate changer if needed. Which is when a new cap level has been achieved. */
-        for(int i = 0; i < MonsterSpawnLevelCaps.Length; ++i)
+        for(int i = 1; i < MonsterSpawnLevelCaps.Length; ++i)
         {
             if(MonsterSpawnLevelCaps[i] == currentLevel)
             {
-                _currentSRC *= 2;
+                _currentSRC += SpawnRateChanger;
                 break;
             }
         }
