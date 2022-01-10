@@ -144,8 +144,19 @@ public static class RoomFiller
             _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = filledType;
             allIndexes.RemoveAt(randIndex);
         }
-        /* Fill goblins. */
-        FillWith(allIndexes, FilledType.MonsterGoblin, (int)monsterCount);
+
+        /* Decide how many to spawn, each monster. */
+        int[] monsterCountByType = new int[MonstersToSpawn.Length];
+        for(; monsterCount > 0; --monsterCount)
+        {
+            ++monsterCountByType[LevelGenerator.GetWeightedRandom(_monsterSpawnRates)];
+        }
+
+        /* Fill with monsters. */
+        for(int i = 0; i < monsterCountByType.Length; ++i)
+        {
+            FillWith(allIndexes, MonstersToSpawn[i], monsterCountByType[i]);
+        }
     }
 
     public static float DetermineRangeFixer(float [] difficultyRanges, int difficultyIndex, bool forMinRange)

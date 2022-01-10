@@ -27,7 +27,10 @@ public enum FilledType
     TrapHigh = 7,
     HealingStatue = 8,
     MonsterOrc = 9,
-    MonsterOgre = 10
+    MonsterOgre = 10,
+    MonsterGolem1 = 11,
+    MonsterGolem2 = 12,
+    MonsterGolem3 = 13
 }
 
 public enum CTPColours
