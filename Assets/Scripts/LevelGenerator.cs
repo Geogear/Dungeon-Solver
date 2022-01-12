@@ -9,6 +9,7 @@ public class LevelGenerator : MonoBehaviour
     private static readonly string[] TagsToDestroy =
         { "Enemy", "Treasure", "LevelExit", "Trap", "HealingStatue" };
     public static readonly int MaxLevel = 20;
+    public static readonly int EnemyBaseRenderOrder = 2;
 
     public UnityEngine.Tilemaps.Tile _normalTile;
     public UnityEngine.Tilemaps.Tile _doorTile;
@@ -42,6 +43,7 @@ public class LevelGenerator : MonoBehaviour
     private static int _currentLevel = 0;
     private static int _differenceY = 0;
     private static int _differenceX = 0;
+    private static int _currentEnemyRenderOrder = EnemyBaseRenderOrder;
     private static Indexes _XYMax = new Indexes(0, 0);
     private static Indexes _XYMin = new Indexes(0, 0);
     private static Room _enteringRoom = null;
@@ -225,6 +227,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void VisualizeDungeon()
     {
+        _currentEnemyRenderOrder = EnemyBaseRenderOrder;
         Vector3Int curCell = new Vector3Int();
         Vector3Int originCell = _tileMap.WorldToCell(transform.position);
         /* This makes the 0,0 point of the entrance tile, (_dungeon.Size.i-1 and
@@ -301,7 +304,12 @@ public class LevelGenerator : MonoBehaviour
 
                     if (prefabToPut != null)
                     {                      
-                        Instantiate(prefabToPut, pos, Quaternion.identity);
+                        GameObject go = Instantiate(prefabToPut, pos, Quaternion.identity);
+                        if(filledType == (int)FilledType.MonsterGoblin ||
+                            (filledType >= (int)FilledType.MonsterOrc && filledType <= (int)FilledType.MonsterGolem3))
+                        {
+                            go.GetComponent<SpriteRenderer>().sortingOrder = _currentEnemyRenderOrder++;
+                        }
                         prefabToPut = null;
                     }                 
                 }

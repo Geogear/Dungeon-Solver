@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8790918137477500360, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8817742015899828392, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
@@ -174,6 +178,10 @@ PrefabInstance:
     - target: {fileID: 8817742015899828392, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828394, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8817742015899828395, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: m_RootOrder

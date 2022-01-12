@@ -69,9 +69,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 486478355
+  m_SortingLayer: 4
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.3679245, g: 0.31065324, b: 0.31065324, a: 1}
   m_FlipX: 0
@@ -207,9 +207,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingLayerID: -136608265
+  m_SortingLayer: 3
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 20843f4329b4ef4498a88246050322c4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -263,7 +263,8 @@ MonoBehaviour:
   _moveSpeed: 3.7
   _attackDamage: 3
   _attackRange: 0.35
-  _attackCD: 3
+  _attackRate: 1
+  _maxHitPoints: 15
   _hitPoints: 15
   _targetLayer:
     serializedVersion: 2
@@ -273,6 +274,9 @@ MonoBehaviour:
   _puzzleDisplayer: {fileID: 4780814748487695130}
   _canvas: {fileID: 0}
   _treasurePS: {fileID: 0}
+  _hpText: {fileID: 0}
+  _attackDamageText: {fileID: 0}
+  _levelNumberText: {fileID: 0}
 --- !u!95 &8817742015899828397
 Animator:
   serializedVersion: 3
