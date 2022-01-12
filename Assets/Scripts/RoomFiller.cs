@@ -22,11 +22,12 @@ public static class RoomFiller
         new int[] {20, 40, 40}
     };
     private static readonly FilledType[] MonstersToSpawn =
-        { FilledType.MonsterGoblin, FilledType.MonsterOrc, FilledType.MonsterOgre };
-    private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 11 };
+        { FilledType.MonsterGoblin, FilledType.MonsterOrc, FilledType.MonsterOgre,
+        FilledType.MonsterGolem1, FilledType.MonsterGolem2, FilledType.MonsterGolem3};
+    private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 9, 13, 15, 17};
     private static readonly int SpawnRateChanger = 8;
 
-    private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0 };
+    private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0, 0, 0, 0};
     private static int _currentSRC = SpawnRateChanger;
 
     public static int [,] _filledTypes = null;
@@ -201,7 +202,7 @@ public static class RoomFiller
                 continue;
             }
             /* Set the change amount in a decreased manner with the ith power of 2. First decrease yourself. */
-            changeAmount = _currentSRC / (int)Mathf.Pow(2, i);
+            changeAmount = _currentSRC / ((i == 0) ? 1 : 2*i);
             _monsterSpawnRates[i] -= changeAmount;
             /* Then increase the next one. */
             _monsterSpawnRates[i + 1] += changeAmount;

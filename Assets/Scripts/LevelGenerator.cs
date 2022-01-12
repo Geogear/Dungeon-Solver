@@ -16,8 +16,7 @@ public class LevelGenerator : MonoBehaviour
     public UnityEngine.Tilemaps.Tile _genericWallTile;
     public UnityEngine.Tilemaps.Tilemap _tileMap;
 
-    public GameObject _goblinPrefab;
-    public GameObject _ogrePrefab;
+    public System.Collections.Generic.List<GameObject> _enemyPrefabs;
     public GameObject _treasurePrefab;
     public GameObject _trapPrefab;
     public GameObject _levelExitPrefab;
@@ -273,7 +272,7 @@ public class LevelGenerator : MonoBehaviour
                     }
                     else if (filledType == (int)FilledType.MonsterGoblin)
                     {
-                        prefabToPut = _goblinPrefab;
+                        prefabToPut = _enemyPrefabs[0];
                         pos.y += 0.6f; pos.x += 0.5f;
                     }
                     else if (filledType >= (int)FilledType.TreasureLow && filledType <= (int)FilledType.TreasureHigh)
@@ -294,6 +293,10 @@ public class LevelGenerator : MonoBehaviour
                         prefabToPut = _healingStatuePrefab;
                         pos.y += 0.80f; pos.x += 0.45f;
                         _dungeonMatrix[i, j]._walkable = false;
+                    }else if(filledType >= (int)FilledType.MonsterOrc && filledType <= (int)FilledType.MonsterGolem3)
+                    {
+                        prefabToPut = _enemyPrefabs[filledType-(int)FilledType.MonsterOrc+1];
+                        pos.y += 0.6f; pos.x += 0.5f;
                     }
 
                     if (prefabToPut != null)
