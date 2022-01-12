@@ -99,17 +99,9 @@ public static class RoomFiller
         for (; totalCount > 0 && allIndexes.Count > 0; --totalCount)
         {
             /* Select trap or treasure to fill. */
-            if(trapCount == 0)
-            {
-                fillTrap = false;
-            }
-            else if(treasureCount == 0)
+            if(treasureCount == 0)
             {
                 fillTrap = true;
-            }
-            else
-            {
-                fillTrap = !fillTrap;
             }
 
             /* Currently, mathematically not possible for a treasure to not find a suitable position inside a room. 
@@ -118,8 +110,52 @@ public static class RoomFiller
             for (int failCount = 0; failCount < allIndexes.Count; ++failCount)
             {
                 randIndex = LevelGenerator.rand.Next(allIndexes.Count);
-                if (!leadingDoors.Contains(allIndexes[randIndex]) &&
-                    (allIndexes[randIndex].i != enteringDoor.i || allIndexes[randIndex].j != enteringDoor.j))
+
+                /* If treasure blocks the road, skip. Don't put if blocks horizontal or vertical or diagonal or butterfly. */
+                Indexes tmp = new Indexes(allIndexes[randIndex].j, allIndexes[randIndex].i);
+                if (!fillTrap &&
+                    (
+                    /* It has wall on one side, so it shouldn't have anything on the other side. */
+                    (tmp.i == 0 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i + 1)))
+                    || (tmp.i == roomEdges.i-1 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i - 1)))
+                    /* It shouldn't have anything on both sides. */
+                    || (tmp.i > 0 && tmp.i < roomEdges.i-1 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j, tmp.i + 1)))
+
+                    /* It has wall on one side, so it shouldn't have anything on the other side. */
+                    || (tmp.j == 0 && !allIndexes.Contains(new Indexes(tmp.j +1, tmp.i)))
+                    || (tmp.j == roomEdges.j - 1 && !allIndexes.Contains(new Indexes(tmp.j -1, tmp.i)))
+                    /* It shouldn't have anything on both sides. */
+                    || (tmp.j > 0 && tmp.j < roomEdges.j - 1 && !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i)) && !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i)))
+
+                    /* If not on the right most side, check the right butterfly. */
+                    || (tmp.j < roomEdges.j - 1 && tmp.i > 0 && tmp.i < roomEdges.i -1 &&
+                        (!allIndexes.Contains(new Indexes(tmp.j+1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j+1, tmp.i + 1))))
+
+                    /* If not on the left most side, check the left butterfly. */
+                    || (tmp.j != 0 && tmp.i > 0 && tmp.i < roomEdges.i - 1 &&
+                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1))))
+
+                    /* If not on the upper most side, check the upper butterfly. */
+                    || (tmp.i != 0 && tmp.j > 0 && tmp.i < roomEdges.j - 1 &&
+                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i - 1))))
+
+                    /* If not on the bottom most side, check the bottom butterfly. */
+                    || (tmp.i < roomEdges.i - 1 && tmp.j > 0 && tmp.i < roomEdges.j - 1 &&
+                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1)) || !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i + 1))))
+
+                    /* If not on the room edges, check diagonals. */
+                    || (tmp.j > 0 && tmp.i > 0 && tmp.i < roomEdges.i-1 && 
+                        !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1)))
+                    || (tmp.j < roomEdges.j-1 && tmp.i > 0 && tmp.i < roomEdges.i-1 && 
+                        !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i + 1)))
+                    )
+                   )
+                {
+                    continue;
+                }
+
+                /* Since door indexes are not inside room indexes, have to check them separately. */
+                if (!leadingDoors.Contains(allIndexes[randIndex]) && (allIndexes[randIndex].j != enteringDoor.j))
                 {
                     exitLoop = false;
                     break;
@@ -127,7 +163,14 @@ public static class RoomFiller
             }
             if (exitLoop)
             {
-                break;
+                if(!fillTrap)
+                {
+                    fillTrap = true;
+                }
+                else
+                {
+                    break;
+                }             
             }
 
             /* Put trap or treasure into the selected index. */
@@ -218,5 +261,12 @@ public static class RoomFiller
             _filledTypes[allIndexes[randIndex].i, allIndexes[randIndex].j] = intOfType;
             allIndexes.RemoveAt(randIndex);
         }
+    }
+
+    private static bool BlocksDoor(Indexes door, Indexes index)
+    {
+        return (door.j == index.j && door.i == index.i) ||
+            (door.j == index.j && (door.i == index.i+1 || door.i == index.i-1)) ||
+            (door.i == index.i && (door.j == index.j + 1 || door.j == index.j - 1));
     }
 }
