@@ -5,7 +5,7 @@ public class LevelGenerator : MonoBehaviour
     private static readonly int [] EdgeIncreaseAmount =
         {1, 2, 3, 4};
     private static readonly int[] EdgeIncreaseAmountWeights =
-        {20, 50, 20, 10};
+        {85, 15, 4, 1};
     private static readonly string[] TagsToDestroy =
         { "Enemy", "Treasure", "LevelExit", "Trap", "HealingStatue" };
     public static readonly int MaxLevel = 20;
@@ -30,8 +30,8 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private UnityEngine.UI.Text _seedText;
 
-    [SerializeField]private int _currentMaxEdge = 5;
-    [SerializeField]private int _currentMinEdge = 3;
+    [SerializeField]private int _currentMaxEdge = 4;
+    [SerializeField]private int _currentMinEdge = 2;
     [SerializeField]private int _customSeed = 0;  
 
     public static System.Random rand = null;

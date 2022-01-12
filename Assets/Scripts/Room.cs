@@ -6,7 +6,7 @@ public class Room
     private static readonly int[] ChildAmount =
     {1, 2, 3};
     private static readonly int[] ChildAmountWeights =
-    {40, 40, 20};
+    {85, 10, 5};
     private static readonly int RoomHeightMax = 23;
     private static readonly int RoomWidthMax = 23;
     private static readonly float ExitRoomLimitMax = 0.8f;
