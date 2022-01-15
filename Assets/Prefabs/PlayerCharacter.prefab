@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: -7552296397805003727}
   m_Layer: 7
   m_Name: PlayerCharacter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -277,6 +277,9 @@ MonoBehaviour:
   _hpText: {fileID: 0}
   _attackDamageText: {fileID: 0}
   _levelNumberText: {fileID: 0}
+  _bossLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!95 &8817742015899828397
 Animator:
   serializedVersion: 3
