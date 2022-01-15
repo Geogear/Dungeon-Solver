@@ -13,6 +13,9 @@ TagManager:
   - Trap
   - Icon
   - HealingStatue
+  - HealthBar
+  - HealthBorder
+  - LoadingScreen
   layers:
   - Default
   - TransparentFX

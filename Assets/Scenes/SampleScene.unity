@@ -236,6 +236,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1874010456252774924}
     - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _LSImage
+      value: 
+      objectReference: {fileID: 1556576231}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
       propertyPath: _treasurePS
       value: 
       objectReference: {fileID: 223537690}
@@ -278,6 +282,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1556576231 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1874010455746516277, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+  m_PrefabInstance: {fileID: 1874010456252774923}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1974434965
@@ -443,6 +458,14 @@ PrefabInstance:
     - target: {fileID: 1874010455637877530, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1874010455746516272, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_TagString
+      value: LoadingScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1874010455746516277, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1874010455963255594, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

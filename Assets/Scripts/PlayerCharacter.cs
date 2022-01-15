@@ -6,7 +6,7 @@ public class PlayerCharacter : Character
     public LevelGenerator _levelgenerator;
 
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
-    [SerializeField] private Canvas _canvas;
+    [SerializeField] private UnityEngine.UI.Image _LSImage;
     [SerializeField] private ParticleSystem _treasurePS;
     [SerializeField] private UnityEngine.UI.Text _hpText;
     [SerializeField] private UnityEngine.UI.Text _attackDamageText;
@@ -278,15 +278,15 @@ public class PlayerCharacter : Character
         }
 
         /* Enable loading screen, and generate the next level.*/
-        UnityEngine.UI.Image loadingScreen = _canvas.GetComponentInChildren<UnityEngine.UI.Image>();
-        loadingScreen.enabled = true;
+
+        _LSImage.enabled = true;
         _levelgenerator.GenerateNextLevel();
 
         /* Wait for some time to  create loading effect. Then disable loading screen. */
         GameController.PasueOrResume(false);
         yield return new WaitForSeconds(wait);
         GameController.PasueOrResume(false);
-        loadingScreen.enabled = false;
+        _LSImage.enabled = false;
 
         SetIconTexts(IconType.LevelNumber);
         /* Enable icons. */

@@ -27,6 +27,8 @@ public static class RoomFiller
     private static readonly int SpawnRateChanger = 8;
     private static readonly int[] BossSpawnLevels = { 8, 16, 20 };
 
+    private static bool _bossSpawned = false;
+
     private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0, 0, 0, 0};
     private static int _currentSRC = SpawnRateChanger;
 
@@ -93,6 +95,21 @@ public static class RoomFiller
 
         /* Fill treasures. */
         _filledTypes = new int[roomEdges.i, roomEdges.j];
+
+        if (!_bossSpawned && LevelGenerator.GetCurrentLvl() > 1)
+        {
+            _bossSpawned = true;
+            int randD = LevelGenerator.rand.Next(allIndexes.Count);
+            _filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith1;
+            allIndexes.RemoveAt(randD);
+
+            /*_filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith2;
+            allIndexes.RemoveAt(randD);
+
+            _filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith3;                      
+            allIndexes.RemoveAt(randD);*/
+        }
+
         int randIndex = 0, filledType = 0, totalCount = treasureCount + trapCount,
             richness = 0;
         bool exitLoop = true, fillTrap = false;
