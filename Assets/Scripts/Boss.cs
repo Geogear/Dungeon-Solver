@@ -13,6 +13,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private float _spellDamage = 3.0f;
     [SerializeField] private float _spellRange = 4.0f;
     [SerializeField] private float _spellRate = 0.7f;
+    [SerializeField] private float _spellCastShortener = 0.1f; /* For 1.0f, cast time becomes zero, and vice versa. */
     [SerializeField] private int _hitPoints = 15;
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private Animator _spellAnimator = null;
@@ -115,7 +116,7 @@ public class Boss : MonoBehaviour
         if(_contSpellAttack)
         {
             /* Casting the spell. */
-            if(_spellLeftCD > float.Epsilon + _spellCastPlayTime * 0.1f)
+            if(_spellLeftCD > float.Epsilon + _spellCastPlayTime * _spellCastShortener)
             {
                 _spellLeftCD -= Time.deltaTime;
             }

@@ -19,10 +19,6 @@ public class Spell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_playerScript == null)
-        {
-            _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
