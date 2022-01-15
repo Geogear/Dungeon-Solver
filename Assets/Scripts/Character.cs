@@ -139,7 +139,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    protected void MeleeAttack()
+    protected virtual void MeleeAttack()
     {
         Collider2D[] damage = Physics2D.OverlapCircleAll(_attackLocation.position, _attackRange, _targetLayer);
         for (int i = 0; i < damage.Length; ++i)

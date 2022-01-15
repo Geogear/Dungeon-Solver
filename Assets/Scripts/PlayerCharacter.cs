@@ -11,6 +11,7 @@ public class PlayerCharacter : Character
     [SerializeField] private UnityEngine.UI.Text _hpText;
     [SerializeField] private UnityEngine.UI.Text _attackDamageText;
     [SerializeField] private UnityEngine.UI.Text _levelNumberText;
+    [SerializeField] private LayerMask _bossLayer;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -30,6 +31,7 @@ public class PlayerCharacter : Character
     {
         base.Awake();
         EnemyCharacter._playerTransform = transform;
+        Boss._playerTransform = transform;
     }
 
     // Start is called before the first frame update
@@ -181,6 +183,20 @@ public class PlayerCharacter : Character
     {
         base.TakeHeal(heal);
         SetIconTexts(IconType.HP);
+    }
+
+    protected override void MeleeAttack()
+    {
+        Collider2D[] damage = Physics2D.OverlapCircleAll(_attackLocation.position, _attackRange, _targetLayer);
+        for (int i = 0; i < damage.Length; ++i)
+        {
+            damage[i].GetComponent<Character>().GetHit(_attackDamage);
+        }
+        damage = Physics2D.OverlapCircleAll(_attackLocation.position, _attackRange, _bossLayer);
+        for (int i = 0; i < damage.Length; ++i)
+        {
+            damage[i].GetComponent<Boss>().GetHit(_attackDamage);
+        }
     }
 
     private void TreasureInteraction()
