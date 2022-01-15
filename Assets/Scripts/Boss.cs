@@ -16,7 +16,6 @@ public class Boss : MonoBehaviour
     [SerializeField] private float _spellCastShortener = 0.1f; /* For 1.0f, cast time becomes zero, and vice versa. */
     [SerializeField] private int _hitPoints = 15;
     [SerializeField] private LayerMask _targetLayer;
-    [SerializeField] private Animator _spellAnimator = null;
     [SerializeField] private Animator _attackAnimator = null;
     [SerializeField] private SpriteRenderer _spellRenderer = null;
     [SerializeField] private SpriteRenderer _attackRenderer = null;
