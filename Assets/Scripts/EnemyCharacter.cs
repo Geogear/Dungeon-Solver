@@ -15,8 +15,6 @@ public class EnemyCharacter : Character
     protected Indexes _startTileCell = new Indexes();
     protected Indexes _targetTileCell = new Indexes();
     protected float _targetDistance = 0.0f;
-    protected float _lerpTime = 1f;
-    protected float _currentLerpTime = 0.0f;
     protected bool _continuousAttack = false;
 
     protected override void Awake()
@@ -158,7 +156,6 @@ public class EnemyCharacter : Character
         {
             _PFState = PFState.OnRoute;
             _startPos = transform.position;
-            _currentLerpTime = 0.0f;
             GoToTarget();
         }
     }
