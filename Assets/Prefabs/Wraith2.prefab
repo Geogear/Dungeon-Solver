@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 5136861167831528051}
   - component: {fileID: 5136861167831528055}
   - component: {fileID: 5136861167831528054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wraith2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,7 +111,6 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  _spellAnimator: {fileID: 5136861168574557104}
   _attackAnimator: {fileID: 5136861168451509809}
   _spellRenderer: {fileID: 5136861168574557102}
   _attackRenderer: {fileID: 5136861168451509810}
