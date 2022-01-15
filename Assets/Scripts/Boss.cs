@@ -8,7 +8,7 @@ public class Boss : MonoBehaviour
 
     [SerializeField] private string _bossName = "";
     [SerializeField] private float _attackDamage = 5.0f;
-    [SerializeField] private float _attackRange = 0.35f;
+    [SerializeField] private float _attackRange = 0.9f;
     [SerializeField] private float _attackRate = 1.0f;
     [SerializeField] private float _spellDamage = 3.0f;
     [SerializeField] private float _spellRange = 4.0f;
@@ -16,9 +16,9 @@ public class Boss : MonoBehaviour
     [SerializeField] private int _maxHitPoints = 15;
     [SerializeField] private int _hitPoints = 15;
     [SerializeField] private LayerMask _targetLayer;
-    [SerializeField] private Transform _attackLocation;
     [SerializeField] private Animator _spellAnimator = null;
     [SerializeField] private Spell _spell = null;
+    [SerializeField] private Transform _attackLocation = null;
 
     private SpriteRenderer _spriteRenderer = null;
     private BoxCollider2D _boxCollider2D = null;
@@ -29,6 +29,7 @@ public class Boss : MonoBehaviour
     private float _nextSpellTime = 0.0f;
     private float _spellCastPlayTime = 0.0f;
     private float _spellLeftCD = 0.0f;
+    private float _hitRange = 0.2f;
     private bool _contAttack = false;
     private bool _contSpellAttack = false;
     private bool _facingRight = true;
@@ -39,12 +40,33 @@ public class Boss : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = GetComponent<Animator>();
         _spellCastPlayTime = GetAnimLenFromAnimator(_spellAnimator, _bossName + "Spell");
-        _attackAnimTime = GetAnimLenFromAnimator(_animator, "Attack");
+        _attackAnimTime = GetAnimLenFromAnimator(_animator, _bossName + "Attack");
+        _hitRange += _attackRange;
     }
 
     // Update is called once per frame
     void Update()
     {
+        /* Hit, out of range. */
+        if(_contAttack &&
+            Vector3.Distance(_playerTransform.position, transform.position) > _hitRange)
+        {
+            _contAttack = false;
+        }
+
+        /* Hit, in range. */
+        if(!_contAttack &&
+            Vector3.Distance(_playerTransform.position, transform.position) <= _hitRange)
+        {
+            _contAttack = true;
+            _contSpellAttack = false;
+            /* Trigger anim. */
+            _attackLeftCD = _attackAnimTime;
+            _nextAttackTime = -1f;
+            _animator.SetTrigger("Attack");
+        }
+
+
         /* If out of range, stop spell.*/
         if(_contSpellAttack &&
             Vector3.Distance(_playerTransform.position, transform.position) > _spellRange)
@@ -113,51 +135,27 @@ public class Boss : MonoBehaviour
 
         if(_contAttack)
         {
-            _attackLeftCD -= Time.deltaTime;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            _contSpellAttack = false;
-            _contSpellAttack = true;
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            /* Attack anim is played. */
-            if(_attackLeftCD <= float.Epsilon)
+            /* Wait for anim to end. */
+            if (_attackLeftCD > float.Epsilon)
             {
-                /* Deal damage, start waiting for the next attack. */
-                if(_nextAttackTime == -1f)
+                _attackLeftCD -= Time.deltaTime;
+            }
+            else
+            {
+                if (_nextAttackTime == -1f)
                 {
+                    /* Deal damage at the end of anim. */
                     _spell._playerScript.GetHit(_attackDamage);
                     _nextAttackTime = Time.time + 1f / _attackRate;
                 }
-                else if(Time.time > _nextAttackTime)
+                else if (Time.time > _nextAttackTime)
                 {
                     /* Animate next attack. */
                     _nextAttackTime = -1f;
                     _attackLeftCD = _attackAnimTime;
                     _animator.SetTrigger("Attack");
                 }
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            /* Do this, so attack anim starts right away on next trigger. */
-            _nextAttackTime = -1f;
-            _attackLeftCD = 0.0f;
-            _contSpellAttack = _contSpellAttack = false;
+            }      
         }
     }
 
@@ -173,15 +171,21 @@ public class Boss : MonoBehaviour
         return 0.0f;
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        /* Draw attack range gizmo. */
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(_attackLocation.position, _attackRange);
+    }
+
     public void GetHit(float damage)
     {
         _hitPoints -= Mathf.RoundToInt(damage);
         if (_hitPoints < float.Epsilon)
         {
-            _animator.SetBool("Death", true);
+            _animator.SetTrigger("Death");
             _boxCollider2D.enabled = false;
             this.enabled = false;
         }
-        _animator.SetTrigger("Hurt");
     }
 }

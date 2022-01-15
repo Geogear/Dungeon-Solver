@@ -279,7 +279,7 @@ MonoBehaviour:
   _levelNumberText: {fileID: 0}
   _bossLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!95 &8817742015899828397
 Animator:
   serializedVersion: 3
