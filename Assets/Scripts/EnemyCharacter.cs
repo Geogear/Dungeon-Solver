@@ -59,6 +59,7 @@ public class EnemyCharacter : Character
         _spriteRenderer.flipX = _moveDirection.x < 0.0f;
         if(!_running)
         {
+            _continuousAttack = _attacked = false;
             _animator.SetTrigger("Running");
             _running = true;
         }
