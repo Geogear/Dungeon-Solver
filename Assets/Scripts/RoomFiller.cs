@@ -116,38 +116,38 @@ public static class RoomFiller
                 if (!fillTrap &&
                     (
                     /* It has wall on one side, so it shouldn't have anything on the other side. */
-                    (tmp.i == 0 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i + 1)))
-                    || (tmp.i == roomEdges.i-1 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i - 1)))
+                    (tmp.i == 0 && _filledTypes[tmp.i+1, tmp.j] != 0)
+                    || (tmp.i == roomEdges.i-1 && tmp.i != 0 && _filledTypes[tmp.i-1, tmp.j] != 0)
                     /* It shouldn't have anything on both sides. */
-                    || (tmp.i > 0 && tmp.i < roomEdges.i-1 && !allIndexes.Contains(new Indexes(tmp.j, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j, tmp.i + 1)))
+                    || (tmp.i > 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i -1, tmp.j] != 0 && _filledTypes[tmp.i+1, tmp.j] != 0)
 
                     /* It has wall on one side, so it shouldn't have anything on the other side. */
-                    || (tmp.j == 0 && !allIndexes.Contains(new Indexes(tmp.j +1, tmp.i)))
-                    || (tmp.j == roomEdges.j - 1 && !allIndexes.Contains(new Indexes(tmp.j -1, tmp.i)))
+                    || (tmp.j == 0 && _filledTypes[tmp.i, tmp.j+1] != 0)
+                    || (tmp.j == roomEdges.j - 1 && tmp.j != 0 && _filledTypes[tmp.i, tmp.j-1] != 0)
                     /* It shouldn't have anything on both sides. */
-                    || (tmp.j > 0 && tmp.j < roomEdges.j - 1 && !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i)) && !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i)))
+                    || (tmp.j > 0 && tmp.j < roomEdges.j - 1 && _filledTypes[tmp.i, tmp.j-1] != 0 && _filledTypes[tmp.i, tmp.j+1] != 0)
 
                     /* If not on the right most side, check the right butterfly. */
                     || (tmp.j < roomEdges.j - 1 && tmp.i > 0 && tmp.i < roomEdges.i -1 &&
-                        (!allIndexes.Contains(new Indexes(tmp.j+1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j+1, tmp.i + 1))))
+                        (_filledTypes[tmp.i-1, tmp.j+1] != 0 || _filledTypes[tmp.i+1, tmp.j+1] != 0))
 
                     /* If not on the left most side, check the left butterfly. */
                     || (tmp.j != 0 && tmp.i > 0 && tmp.i < roomEdges.i - 1 &&
-                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1))))
+                        (_filledTypes[tmp.i-1, tmp.j-1] != 0 || _filledTypes[tmp.i+1, tmp.j-1] != 0))
 
                     /* If not on the upper most side, check the upper butterfly. */
-                    || (tmp.i != 0 && tmp.j > 0 && tmp.i < roomEdges.j - 1 &&
-                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) || !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i - 1))))
+                    || (tmp.i != 0 && tmp.j > 0 && tmp.j < roomEdges.j - 1 &&
+                        (_filledTypes[tmp.i-1, tmp.j-1] != 0 || _filledTypes[tmp.i-1, tmp.j+1] != 0))
 
                     /* If not on the bottom most side, check the bottom butterfly. */
-                    || (tmp.i < roomEdges.i - 1 && tmp.j > 0 && tmp.i < roomEdges.j - 1 &&
-                        (!allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1)) || !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i + 1))))
+                    || (tmp.i < roomEdges.i - 1 && tmp.j > 0 && tmp.j < roomEdges.j - 1 &&
+                        (_filledTypes[tmp.i+1, tmp.j-1] != 0 || _filledTypes[tmp.i+1, tmp.j+1] != 0))
 
                     /* If not on the room edges, check diagonals. */
-                    || (tmp.j > 0 && tmp.i > 0 && tmp.i < roomEdges.i-1 && 
-                        !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j - 1, tmp.i + 1)))
-                    || (tmp.j < roomEdges.j-1 && tmp.i > 0 && tmp.i < roomEdges.i-1 && 
-                        !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i - 1)) && !allIndexes.Contains(new Indexes(tmp.j + 1, tmp.i + 1)))
+                    || (tmp.j > 0 && tmp.i > 0 && tmp.i < roomEdges.i-1 &&
+                        _filledTypes[tmp.i-1, tmp.j-1] != 0 && _filledTypes[tmp.i+1, tmp.j-1] != 0)
+                    || (tmp.j < roomEdges.j-1 && tmp.i > 0 && tmp.i < roomEdges.i-1 &&
+                        _filledTypes[tmp.i-1, tmp.j+1] != 0 && _filledTypes[tmp.i+1, tmp.j+1] != 0)
                     )
                    )
                 {
