@@ -30,7 +30,10 @@ public enum FilledType
     MonsterOgre = 10,
     MonsterGolem1 = 11,
     MonsterGolem2 = 12,
-    MonsterGolem3 = 13
+    MonsterGolem3 = 13,
+    BossWraith1 = 14,
+    BossWraith2 = 15,
+    BossWraith3 = 16
 }
 
 public enum CTPColours

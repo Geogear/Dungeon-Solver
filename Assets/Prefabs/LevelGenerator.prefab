@@ -232,6 +232,9 @@ MonoBehaviour:
   - {fileID: 1160452272041555998, guid: 382688301c7da804097ac9f70ff410cc, type: 3}
   - {fileID: 4884578043666037248, guid: b13d76e291fbbe246967df72f857bbc0, type: 3}
   - {fileID: 896059973385041267, guid: 5bed0b51b8f6a5c43a08563652526078, type: 3}
+  - {fileID: 6260396557961394867, guid: c26be14369affc34196e26e3326d629e, type: 3}
+  - {fileID: 5136861167831528050, guid: 840e027e44d368f4f8d4998a4a903ba5, type: 3}
+  - {fileID: 7360228083809554977, guid: bd2f2d38abce88e43b94f12d6cab5f72, type: 3}
   _treasurePrefab: {fileID: 2094785687004538110, guid: ec49a13e19c50ad43b2a951a5ff4e6e2, type: 3}
   _trapPrefab: {fileID: 7902331492991391775, guid: 3d04ebb8d78427a4d83621e80ddd1819, type: 3}
   _levelExitPrefab: {fileID: 4099739057069359962, guid: 36632a08ce3120444b7077af4dfbde53, type: 3}

@@ -296,7 +296,7 @@ public class LevelGenerator : MonoBehaviour
                         prefabToPut = _healingStatuePrefab;
                         pos.y += 0.80f; pos.x += 0.45f;
                         _dungeonMatrix[i, j]._walkable = false;
-                    }else if(filledType >= (int)FilledType.MonsterOrc && filledType <= (int)FilledType.MonsterGolem3)
+                    }else if(filledType >= (int)FilledType.MonsterOrc && filledType <= (int)FilledType.BossWraith3)
                     {
                         prefabToPut = _enemyPrefabs[filledType-(int)FilledType.MonsterOrc+1];
                         pos.y += 0.6f; pos.x += 0.5f;
