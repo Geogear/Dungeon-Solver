@@ -319,13 +319,14 @@ MonoBehaviour:
   _spellDamage: 3
   _spellRange: 4
   _spellRate: 0.7
-  _maxHitPoints: 15
   _hitPoints: 15
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
   _spellAnimator: {fileID: 2012285584}
   _attackAnimator: {fileID: 2090843921}
+  _spellRenderer: {fileID: 2012285582}
+  _attackRenderer: {fileID: 2090843922}
   _spell: {fileID: 2012285586}
   _attackLocation: {fileID: 2090843920}
 --- !u!212 &1535890260
@@ -644,6 +645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerScript: {fileID: 0}
+  _upLift: 0.2
 --- !u!1 &2090843919
 GameObject:
   m_ObjectHideFlags: 0
