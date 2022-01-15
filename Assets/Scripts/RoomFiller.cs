@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +25,7 @@ public static class RoomFiller
         FilledType.MonsterGolem1, FilledType.MonsterGolem2, FilledType.MonsterGolem3};
     private static readonly int[] MonsterSpawnLevelCaps = { 1, 5, 9, 13, 15, 17};
     private static readonly int SpawnRateChanger = 8;
+    private static readonly int[] BossSpawnLevels = { 8, 16, 20 };
 
     private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0, 0, 0, 0};
     private static int _currentSRC = SpawnRateChanger;
