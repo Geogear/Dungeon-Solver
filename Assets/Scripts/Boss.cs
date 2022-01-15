@@ -17,6 +17,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private int _hitPoints = 15;
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private Animator _spellAnimator = null;
+    [SerializeField] private Animator _attackAnimator = null;
     [SerializeField] private Spell _spell = null;
     [SerializeField] private Transform _attackLocation = null;
 
@@ -39,7 +40,7 @@ public class Boss : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = GetComponent<Animator>();
-        _spellCastPlayTime = GetAnimLenFromAnimator(_spellAnimator, _bossName + "Spell");
+        _spellCastPlayTime = GetAnimLenFromAnimator(_animator, _bossName + "Spell");
         _attackAnimTime = GetAnimLenFromAnimator(_animator, _bossName + "Attack");
         _hitRange += _attackRange;
     }
@@ -64,6 +65,7 @@ public class Boss : MonoBehaviour
             _attackLeftCD = _attackAnimTime;
             _nextAttackTime = -1f;
             _animator.SetTrigger("Attack");
+            _attackAnimator.SetTrigger(_bossName);
         }
 
 
@@ -120,7 +122,7 @@ public class Boss : MonoBehaviour
                 {
                     /* Trigger spell object. */
                     _nextSpellTime = Time.time + 1f / _spellRate;
-                    _spell.ActivateSpell(_bossName + "Spell", _spellDamage);
+                    _spell.ActivateSpell(_bossName, _spellDamage);
                 }
                 else if(Time.time > _nextSpellTime)
                 {
@@ -154,6 +156,7 @@ public class Boss : MonoBehaviour
                     _nextAttackTime = -1f;
                     _attackLeftCD = _attackAnimTime;
                     _animator.SetTrigger("Attack");
+                    _attackAnimator.SetTrigger(_bossName);
                 }
             }      
         }
