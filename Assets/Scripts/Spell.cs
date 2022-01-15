@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class Spell : MonoBehaviour
 {
-    public PlayerCharacter _playerScript;
+    public PlayerCharacter _playerScript = null;
+
+    [SerializeField] private float _upLift = 0.2f;
 
     private Animator _animator = null;
     private bool _onPlayer = false;
@@ -17,7 +19,10 @@ public class Spell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(_playerScript == null)
+        {
+            _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,7 +40,7 @@ public class Spell : MonoBehaviour
 
     public void SetPos(Vector3 pos)
     {
-        transform.position = pos;
+        transform.position = new Vector3(pos.x, pos.y + _upLift, pos.z);
     }
 
     public void ActivateSpell(string animName, float damage)

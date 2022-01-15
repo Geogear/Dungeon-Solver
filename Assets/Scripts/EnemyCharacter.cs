@@ -54,7 +54,15 @@ public class EnemyCharacter : Character
 
         /* Move, flip and run animation. */
         transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
+        bool prev = _spriteRenderer.flipX;
         _spriteRenderer.flipX = _moveDirection.x < 0.0f;
+
+        if(prev != _spriteRenderer.flipX)
+        {
+            _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
+                _attackLocation.localPosition.y, _attackLocation.localPosition.z);
+        }
+
         if(!_running)
         {
             _continuousAttack = _attacked = false;

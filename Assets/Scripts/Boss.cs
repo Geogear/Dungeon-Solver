@@ -13,11 +13,12 @@ public class Boss : MonoBehaviour
     [SerializeField] private float _spellDamage = 3.0f;
     [SerializeField] private float _spellRange = 4.0f;
     [SerializeField] private float _spellRate = 0.7f;
-    [SerializeField] private int _maxHitPoints = 15;
     [SerializeField] private int _hitPoints = 15;
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private Animator _spellAnimator = null;
     [SerializeField] private Animator _attackAnimator = null;
+    [SerializeField] private SpriteRenderer _spellRenderer = null;
+    [SerializeField] private SpriteRenderer _attackRenderer = null;
     [SerializeField] private Spell _spell = null;
     [SerializeField] private Transform _attackLocation = null;
 
@@ -96,15 +97,19 @@ public class Boss : MonoBehaviour
             if(!_facingRight && 
                 _playerTransform.position.x > transform.position.x + FaceTurningCap)
             {
-                _spriteRenderer.flipX = false;
+                _spriteRenderer.flipX = _spellRenderer.flipX = _attackRenderer.flipX = false;
                 _facingRight = true;
-            }
+                _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
+                    _attackLocation.localPosition.y, _attackLocation.localPosition.z);
+                }
             else if(_facingRight &&
                 _playerTransform.position.x + FaceTurningCap < transform.position.x )
             {
-                _spriteRenderer.flipX = true;
+                _spriteRenderer.flipX = _spellRenderer.flipX = _attackRenderer.flipX = true;
                 _facingRight = false;
-            }
+                _attackLocation.localPosition = new Vector3(-1 * _attackLocation.localPosition.x,
+                    _attackLocation.localPosition.y, _attackLocation.localPosition.z);
+                }
         }
 
         if(_contSpellAttack)
