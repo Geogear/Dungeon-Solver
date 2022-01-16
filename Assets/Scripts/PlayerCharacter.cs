@@ -5,6 +5,10 @@ public class PlayerCharacter : Character
     public static Vector3 _startingPos;
     public LevelGenerator _levelgenerator;
 
+    private static readonly Color[] RewardColors = 
+        { new Color(245.0f/255.0f, 52.0f/255.0f, 52.0f/255.0f, 255.0f/255.0f), new Color(74.0f/255.0f, 161.0f/255.0f, 221.0f/255.0f, 255.0f/255.0f),
+          new Color(38.0f/255.0f, 226.0f/255.0f, 0.0f/255.0f, 255.0f/255.0f), new Color(233.0f/255.0f, 224.0f/255.0f, 34.0f/255.0f, 255.0f/255.0f)};
+
     [SerializeField] private PuzzleDisplayer _puzzleDisplayer;
     [SerializeField] private UnityEngine.UI.Image _LSImage;
     [SerializeField] private ParticleSystem _treasurePS;
@@ -218,7 +222,7 @@ public class PlayerCharacter : Character
             matched = _puzzleDisplayer.MatchedDisplaySelection(Camera.main.ScreenToWorldPoint(Input.mousePosition), ref success);
             if (matched)
             {
-                Treasure.RewardOrPunish(this, _puzzleDisplayer._currentTreasurePos, success);
+                IconType rewardType = Treasure.RewardOrPunish(this, _puzzleDisplayer._currentTreasurePos, success);
                 _treasureState = TreasureState.TreasureStateCount;
                 _puzzleDisplayer.ClosePuzzle(success);
                 if (success)
@@ -226,8 +230,11 @@ public class PlayerCharacter : Character
                     /* Open chest. */
                     _currentTreasureCollision.GetComponent<SpriteRenderer>().sprite = _puzzleDisplayer._openTreasureSprite;
                     /* Pop the effects. */
+                    var main = _treasurePS.main;
+                    main.startColor = new Color(RewardColors[(int)rewardType].r, RewardColors[(int)rewardType].g, RewardColors[(int)rewardType].b, RewardColors[(int)rewardType].a);
                     var emission = _treasurePS.emission;
                     emission.enabled = true;
+
                     _treasurePS.transform.position = new Vector3(_puzzleDisplayer._currentTreasurePos.x,
                         _puzzleDisplayer._currentTreasurePos.y - 0.2f, _treasurePS.transform.position.z);
                     _treasurePS.Play();
@@ -313,6 +320,16 @@ public class PlayerCharacter : Character
     {
         TakeDamage(Mathf.RoundToInt(damage));
     }
+
+    public float GetCurrentHealth() => _hitPoints;
+    public float GetMaxHealth() => _maxHitPoints;
+    public float GetAttackDamage() => _attackDamage;
+    public float GetMoveSpeed() => _moveSpeed;
+    public float GetAttackRate() => _attackRate;
+    public void SetAttackDamage(float attackDamage) { _attackDamage = attackDamage; SetIconTexts(IconType.AttackDamage); }
+    public void SetMoveSpeed(float moveSpeed) { _moveSpeed = moveSpeed; SetIconTexts(IconType.MoveSpeed); }
+    public void SetAttackRate(float attackRate) { _attackRate = attackRate; SetIconTexts(IconType.AttackRate); }
+    public void SetMaxHealth(int maxHitPoints) { TakeHeal(maxHitPoints - _maxHitPoints); _maxHitPoints = maxHitPoints; }
 
     /* To Use GameController with game components. */
     public void GC_POR()

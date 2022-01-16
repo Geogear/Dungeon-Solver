@@ -11,34 +11,56 @@ public static class Treasure
     };
 
     private static Dictionary<Vector3, TreasureData> _treasures = new Dictionary<Vector3, TreasureData>();
-    private static float _treasureMultiplierMin = 1.0f;
-    private static float _treasureMultiplierMax = 4.0f;
+    private static float _baseReward = 0.08f;
+    private static float _baseRewardIncrement = 0.02f;
     private static int _openedTreasures = 0;
 
+    /* Returns a min multiplier of 0.1 and max muliplier of 0.2 */
     private static float DetermineActualRichness(int richnessIndex)
     {
         float weightIndex = LevelGenerator.GetWeightedRandom(_treasureRichnessWeights[richnessIndex]);
-        float rangeFixer = 1.0f / _treasureRichnessWeights[richnessIndex].Length;
-        return _treasureMultiplierMin +  (_treasureMultiplierMax - _treasureMultiplierMin) * rangeFixer * weightIndex;
+        return _baseReward + _baseRewardIncrement * (weightIndex + 1);
     }
 
-    public static void RewardOrPunish(PlayerCharacter playerCharacter, Vector3 treasurePos, bool success)
+    public static IconType RewardOrPunish(PlayerCharacter playerCharacter, Vector3 treasurePos, bool success)
     {
-        /* TODO */
+        TreasureData td;
+        if (!_treasures.TryGetValue(treasurePos, out td))
+        {
+            Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
+        }
+
+        /* Upgrade a random stat on success as reward or punish i.e deal damage. */
         if (success)
         {
-            TreasureData td;
-            if (!_treasures.TryGetValue(treasurePos, out td))
-            {
-                Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
-            }
             ++_openedTreasures;
             td._opened = true;
             _treasures[treasurePos] = td;
-            Debug.Log("Reward richness: " + td._richnessIndex + " multiplier: " + td._treasureMultiplier);
-            return;
+            IconType rewardType = (IconType)LevelGenerator.rand.Next((int)IconType.LevelNumber);
+            
+            switch(rewardType)
+            {
+                case IconType.HP:
+                    playerCharacter.SetMaxHealth(Mathf.RoundToInt(playerCharacter.GetMaxHealth() + playerCharacter.GetMaxHealth() * td._treasureMultiplier));
+                    break;
+                case IconType.AttackDamage:
+                    playerCharacter.SetAttackDamage(playerCharacter.GetAttackDamage() + playerCharacter.GetAttackDamage() * td._treasureMultiplier);
+                    break;
+                case IconType.MoveSpeed:
+                    playerCharacter.SetMoveSpeed(playerCharacter.GetMoveSpeed() + playerCharacter.GetMoveSpeed() * td._treasureMultiplier);
+                    break;
+                case IconType.AttackRate:
+                    playerCharacter.SetAttackRate(playerCharacter.GetAttackRate() + playerCharacter.GetAttackRate() * td._treasureMultiplier);
+                    break;
+            }
+
+            return rewardType;
         }
-        Debug.Log("Punish");
+        /* Decrease current health with a min of 1. */
+        int healthDecreaseAmount = Mathf.RoundToInt(playerCharacter.GetCurrentHealth() * td._treasureMultiplier);
+        healthDecreaseAmount = (healthDecreaseAmount == 0) ? 1 : healthDecreaseAmount;
+        playerCharacter.GetHit(healthDecreaseAmount);
+        return IconType.IconTypeCount;
     }
 
     public static void AddTreasure(Vector3 treasurePos, int richnessIndex)

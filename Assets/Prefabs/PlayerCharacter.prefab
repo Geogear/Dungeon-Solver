@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterName: FA2
-  _moveSpeed: 3.7
+  _moveSpeed: 2.5
   _attackDamage: 3
   _attackRange: 0.35
   _attackRate: 1
@@ -272,10 +272,12 @@ MonoBehaviour:
   _attackLocation: {fileID: 2149717467512497153}
   _levelgenerator: {fileID: 0}
   _puzzleDisplayer: {fileID: 4780814748487695130}
-  _canvas: {fileID: 0}
+  _LSImage: {fileID: 0}
   _treasurePS: {fileID: 0}
   _hpText: {fileID: 0}
   _attackDamageText: {fileID: 0}
+  _moveSpeedText: {fileID: 0}
+  _attackRateText: {fileID: 0}
   _levelNumberText: {fileID: 0}
   _bossLayer:
     serializedVersion: 2
