@@ -100,14 +100,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bossName: Wraith1
-  _attackDamage: 5
+  _attackDamage: 8
   _attackRange: 0.9
   _attackRate: 1
-  _spellDamage: 3
+  _spellDamage: 5
   _spellRange: 4
   _spellRate: 0.7
   _spellCastShortener: 0.1
-  _hitPoints: 15
+  _hitPoints: 37
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
