@@ -183,7 +183,14 @@ public class PlayerCharacter : Character
         if(!_invincible)
         {
             _hitPoints -= damage;
+            _hitPoints = (_hitPoints < 0) ? 0 : _hitPoints;
             SetIconTexts(IconType.HP);
+            if(_hitPoints == 0)
+            {
+                _died = true;
+                _animator.SetTrigger("Death");
+                return;
+            }
             _flickerData.TriggerFlick();
         }
     }
