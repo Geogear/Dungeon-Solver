@@ -274,6 +274,46 @@ PrefabInstance:
       propertyPath: _attackDamageText
       value: 
       objectReference: {fileID: 1874010456252774925}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMoveSpeeds.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingAttackRates.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMaxHitPoints.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingAttackDamages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMoveSpeeds.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMoveSpeeds.Array.data[1]
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMoveSpeeds.Array.data[2]
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingAttackRates.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingMaxHitPoints.Array.data[1]
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817742015899828396, guid: 45b630db58541a14395675790b2d7c82, type: 3}
+      propertyPath: _startingAttackDamages.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45b630db58541a14395675790b2d7c82, type: 3}
 --- !u!114 &651852983 stripped

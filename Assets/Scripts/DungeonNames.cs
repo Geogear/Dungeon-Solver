@@ -79,6 +79,13 @@ public enum PFState
     PFStateCount = 2
 }
 
+public enum FAType
+{
+    FallenAngel1 = 1,
+    FallenAngel2 = 2,
+    FallenAngel3 = 3,
+}
+
 public struct TreasureData
 {
     public int _richnessIndex;

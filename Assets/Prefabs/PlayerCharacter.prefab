@@ -282,6 +282,24 @@ MonoBehaviour:
   _bossLayer:
     serializedVersion: 2
     m_Bits: 256
+  _deathEnabled: 1
+  _baseSprites:
+  - {fileID: 21300000, guid: d89c8d84603bae14a8f7618a70f3c83f, type: 3}
+  - {fileID: 21300000, guid: 20843f4329b4ef4498a88246050322c4, type: 3}
+  - {fileID: 21300000, guid: ec9e4c45e046a3842afa410f097ad867, type: 3}
+  _startingMoveSpeeds:
+  - 3
+  - 3.5
+  - 2.5
+  _startingAttackDamages:
+  - 5
+  - 3
+  - 6
+  _startingAttackRates:
+  - 0.85
+  - 1.05
+  - 0.6
+  _startingMaxHitPoints: 1e000000140000002d000000
 --- !u!95 &8817742015899828397
 Animator:
   serializedVersion: 3

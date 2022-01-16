@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCharacter : Character
 {
     public static Vector3 _startingPos;
+    public static FAType _FAType = FAType.FallenAngel2;
     public LevelGenerator _levelgenerator;
 
     private static readonly Color[] RewardColors = 
@@ -19,6 +21,11 @@ public class PlayerCharacter : Character
     [SerializeField] private UnityEngine.UI.Text _levelNumberText;
     [SerializeField] private LayerMask _bossLayer;
     [SerializeField] private bool _deathEnabled = true;
+    [SerializeField] private List<Sprite> _baseSprites;
+    [SerializeField] private List<float> _startingMoveSpeeds;
+    [SerializeField] private List<float> _startingAttackDamages;
+    [SerializeField] private List<float> _startingAttackRates;
+    [SerializeField] private List<int> _startingMaxHitPoints;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -47,11 +54,17 @@ public class PlayerCharacter : Character
         base.Start();
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         GameController.SetPMObject();
-        for(int i = 0; i < (int)IconType.IconTypeCount; ++i)
+        _maxHitPoints = _hitPoints = _startingMaxHitPoints[(int)_FAType - 1];
+        _attackDamage = _startingAttackDamages[(int)_FAType - 1];
+        _moveSpeed = _startingMoveSpeeds[(int)_FAType - 1];
+        _attackRate = _startingAttackRates[(int)_FAType - 1];
+        for (int i = 0; i < (int)IconType.IconTypeCount; ++i)
         {
             SetIconTexts((IconType)i);
         }
+        _spriteRenderer.sprite = _baseSprites[(int)_FAType-1];
         _flickerData = new FlickerData(_spriteRenderer);
+        _animator.SetInteger("FAType", (int)_FAType);
     }
 
     // Update is called once per frame
