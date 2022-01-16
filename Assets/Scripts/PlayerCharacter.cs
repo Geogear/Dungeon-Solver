@@ -18,6 +18,7 @@ public class PlayerCharacter : Character
     [SerializeField] private UnityEngine.UI.Text _attackRateText;
     [SerializeField] private UnityEngine.UI.Text _levelNumberText;
     [SerializeField] private LayerMask _bossLayer;
+    [SerializeField] private bool _deathEnabled = true;
     private Collider2D _currentTreasureCollision;
 
     private bool _onLevelExit = false;
@@ -180,14 +181,18 @@ public class PlayerCharacter : Character
 
     protected override void TakeDamage(int damage)
     {
-        if(!_invincible)
+        if(!_invincible && !_died)
         {
             _hitPoints -= damage;
             _hitPoints = (_hitPoints < 0) ? 0 : _hitPoints;
             SetIconTexts(IconType.HP);
-            if(_hitPoints == 0)
+            if(_hitPoints == 0 && _deathEnabled)
             {
                 _died = true;
+                if(_treasureState == TreasureState.OnTreasure)
+                {
+                    _puzzleDisplayer.ClosePuzzle(false);
+                }
                 _animator.SetTrigger("Death");
                 return;
             }
@@ -308,9 +313,9 @@ public class PlayerCharacter : Character
         _levelgenerator.GenerateNextLevel();
 
         /* Wait for some time to  create loading effect. Then disable loading screen. */
-        GameController.PasueOrResume(false);
+        GameController.PauseOrResume(false);
         yield return new WaitForSeconds(wait);
-        GameController.PasueOrResume(false);
+        GameController.PauseOrResume(false);
         _LSImage.enabled = false;
 
         SetIconTexts(IconType.LevelNumber);
@@ -341,7 +346,7 @@ public class PlayerCharacter : Character
     /* To Use GameController with game components. */
     public void GC_POR()
     {
-        GameController.PasueOrResume(true, true);
+        GameController.PauseOrResume(true, true);
     }
 
     public void GC_QFMM()

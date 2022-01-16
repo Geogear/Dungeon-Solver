@@ -511,8 +511,6 @@ public class LevelGenerator : MonoBehaviour
 
     private bool CanPutHealingStatute()
     {
-        Debug.Log("lvl: " +_currentLevel);
-        return (_currentLevel > 10) ? _currentLevel % 2 == 0
-            : _currentLevel % 4 == 0;
+        return _currentLevel != 1;
     }
 }
