@@ -16,6 +16,7 @@ TagManager:
   - HealthBar
   - HealthBorder
   - LoadingScreen
+  - ResumeButton
   layers:
   - Default
   - TransparentFX

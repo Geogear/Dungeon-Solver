@@ -58,6 +58,10 @@ public class PlayerCharacter : Character
     protected override void Update()
     {
         base.Update();
+        if (_died || GameController.IsPaused())
+        {
+            return;
+        }
         TreasureInteraction();
         LevelExitInteraction();
         HealingStatueInteraction();
@@ -194,6 +198,7 @@ public class PlayerCharacter : Character
                     _puzzleDisplayer.ClosePuzzle(false);
                 }
                 _animator.SetTrigger("Death");
+                GameController.OnDeath();
                 return;
             }
             _flickerData.TriggerFlick();

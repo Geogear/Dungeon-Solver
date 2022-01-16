@@ -5,8 +5,9 @@ public static class GameController
     private static bool _onLoading = false;
     private static bool _paused = false;
     private static GameObject _pauseMenu;
+    private static GameObject _resumeButton;
 
-    public static void PasueOrResume(bool setTimeScale, bool forPauseMenu = false)
+    public static void PauseOrResume(bool setTimeScale, bool forPauseMenu = false)
     {
         _paused = !_paused;
         if (setTimeScale)
@@ -27,6 +28,7 @@ public static class GameController
     public static void SetPMObject()
     {
         _pauseMenu = GameObject.FindWithTag("PauseMenu");
+        _resumeButton = GameObject.FindGameObjectWithTag("ResumeButton");
         _pauseMenu.SetActive(false);
     }
 
@@ -38,7 +40,7 @@ public static class GameController
         }
         if(Input.GetButtonDown("Pause"))
         {
-            PasueOrResume(true, true);
+            PauseOrResume(true, true);
         }
     }
 
@@ -49,6 +51,13 @@ public static class GameController
         LevelGenerator.ClearLGData();
         _paused = false; Time.timeScale = 1;
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+    }
+
+    public static void OnDeath()
+    {
+        PauseOrResume(false, true);
+        _pauseMenu.GetComponentInChildren<UnityEngine.UI.Text>().enabled = true;
+        _resumeButton.SetActive(false);
     }
 
     public static bool IsPaused() => _paused;

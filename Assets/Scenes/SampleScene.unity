@@ -501,6 +501,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1874010455637877508, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_TagString
+      value: ResumeButton
+      objectReference: {fileID: 0}
     - target: {fileID: 1874010455637877530, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -524,6 +528,10 @@ PrefabInstance:
     - target: {fileID: 1874010455746516277, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1874010455916852412, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1874010455963255594, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -641,13 +649,73 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1874010456155329321, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1874010457011375916, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -499
       objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Text
+      value: YOU DIED
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Color.b
+      value: 0.1735938
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Color.g
+      value: 0.1735938
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 6ad17bc06bf0ac24a830ecf86a94cced, type: 3}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_MaxSize
+      value: 73
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_MinSize
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 73
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_FontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_FontData.m_HorizontalOverflow
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3010999010369641164, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3121027666134234873, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 130
       objectReference: {fileID: 0}
     - target: {fileID: 3179925730118130225, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_LocalScale.x
