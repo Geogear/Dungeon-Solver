@@ -27,8 +27,6 @@ public static class RoomFiller
     private static readonly int SpawnRateChanger = 8;
     private static readonly int[] BossSpawnLevels = { 8, 16, 20 };
 
-    private static bool _bossSpawned = false;
-
     private static int[] _monsterSpawnRates = { SpawnRateChanger * LevelGenerator.MaxLevel, 0, 0, 0, 0, 0};
     private static int _currentSRC = SpawnRateChanger;
 
@@ -96,18 +94,19 @@ public static class RoomFiller
         /* Fill treasures. */
         _filledTypes = new int[roomEdges.i, roomEdges.j];
 
-        if (!_bossSpawned && LevelGenerator.GetCurrentLvl() > 1)
+        /* Before treasures, spawn the boss at a random pos. */
+        if(LevelGenerator._spawnBoss)
         {
-            _bossSpawned = true;
-            int randD = LevelGenerator.rand.Next(allIndexes.Count);
-            _filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith1;
-            allIndexes.RemoveAt(randD);
-
-            /*_filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith2;
-            allIndexes.RemoveAt(randD);
-
-            _filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith3;                      
-            allIndexes.RemoveAt(randD);*/
+            for (int i = 0; i < BossSpawnLevels.Length; ++i)
+            {
+                if (LevelGenerator.GetCurrentLvl() == BossSpawnLevels[i])
+                {
+                    int randD = LevelGenerator.rand.Next(allIndexes.Count);
+                    _filledTypes[allIndexes[randD].i, allIndexes[randD].j] = (int)FilledType.BossWraith1 + i;
+                    allIndexes.RemoveAt(randD);
+                    break;
+                }
+            }
         }
 
         int randIndex = 0, filledType = 0, totalCount = treasureCount + trapCount,
@@ -133,13 +132,13 @@ public static class RoomFiller
                 if (!fillTrap &&
                     (
                     /* It has wall on one side, so it shouldn't have anything on the other side. */
-                    (tmp.i == 0 && _filledTypes[tmp.i+1, tmp.j] != 0)
+                    (tmp.i == 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i+1, tmp.j] != 0)
                     || (tmp.i == roomEdges.i-1 && tmp.i != 0 && _filledTypes[tmp.i-1, tmp.j] != 0)
                     /* It shouldn't have anything on both sides. */
                     || (tmp.i > 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i -1, tmp.j] != 0 && _filledTypes[tmp.i+1, tmp.j] != 0)
 
                     /* It has wall on one side, so it shouldn't have anything on the other side. */
-                    || (tmp.j == 0 && _filledTypes[tmp.i, tmp.j+1] != 0)
+                    || (tmp.j == 0 && tmp.j < roomEdges.j-1 && _filledTypes[tmp.i, tmp.j+1] != 0)
                     || (tmp.j == roomEdges.j - 1 && tmp.j != 0 && _filledTypes[tmp.i, tmp.j-1] != 0)
                     /* It shouldn't have anything on both sides. */
                     || (tmp.j > 0 && tmp.j < roomEdges.j - 1 && _filledTypes[tmp.i, tmp.j-1] != 0 && _filledTypes[tmp.i, tmp.j+1] != 0)
