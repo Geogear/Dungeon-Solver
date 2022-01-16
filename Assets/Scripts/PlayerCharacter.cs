@@ -264,7 +264,7 @@ public class PlayerCharacter : Character
 
     private void LevelExitInteraction()
     {
-        if(Input.GetButtonDown("Fire1") && _onLevelExit)
+        if(Input.GetButtonDown("Fire1") && _onLevelExit && Boss.BossIsDead())
         {
             StartCoroutine(CleanerCoroutine());
         }

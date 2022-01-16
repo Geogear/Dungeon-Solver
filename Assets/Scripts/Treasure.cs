@@ -37,8 +37,8 @@ public static class Treasure
             td._opened = true;
             _treasures[treasurePos] = td;
             IconType rewardType = (IconType)LevelGenerator.rand.Next((int)IconType.LevelNumber);
-            
-            switch(rewardType)
+
+            switch (rewardType)
             {
                 case IconType.HP:
                     playerCharacter.SetMaxHealth(Mathf.RoundToInt(playerCharacter.GetMaxHealth() + playerCharacter.GetMaxHealth() * td._treasureMultiplier));
@@ -65,14 +65,14 @@ public static class Treasure
 
     public static void AddTreasure(Vector3 treasurePos, int richnessIndex)
     {
-        float treasureMultipler = DetermineActualRichness(richnessIndex-2);
-        _treasures.Add(treasurePos, new TreasureData(richnessIndex-2, treasureMultipler));
+        float treasureMultipler = DetermineActualRichness(richnessIndex - 2);
+        _treasures.Add(treasurePos, new TreasureData(richnessIndex - 2, treasureMultipler));
     }
 
     public static bool IsOpened(Vector3 treasurePos)
     {
         TreasureData td;
-        if(!_treasures.TryGetValue(treasurePos, out td))
+        if (!_treasures.TryGetValue(treasurePos, out td))
         {
             Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
         }
@@ -86,4 +86,15 @@ public static class Treasure
     }
 
     public static TreasureData GetTreasureData(Vector3 treasurePos) => _treasures[treasurePos];
+    public static bool AllTreasuresOpened()
+    {
+        foreach(KeyValuePair<Vector3, TreasureData> kvp in _treasures)
+        {
+            if(!kvp.Value._opened)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

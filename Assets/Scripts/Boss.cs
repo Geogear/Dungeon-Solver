@@ -7,6 +7,8 @@ public class Boss : MonoBehaviour
     private const float FaceTurningCap = 0.5f;
     private const float HBBaseScale = 2.0f;
 
+    private static bool _bossIsDead = true;
+
     [SerializeField] private int _maxHealth = 15;
     [SerializeField] private string _bossName = "";
     [SerializeField] private string _displayName = "";
@@ -45,6 +47,7 @@ public class Boss : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _bossIsDead = false;
         _hitPoints = _maxHealth;
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
@@ -215,6 +218,7 @@ public class Boss : MonoBehaviour
         if (_hitPoints < float.Epsilon)
         {
             _animator.SetTrigger("Death");
+            _bossIsDead = true;
             _boxCollider2D.enabled = false;
             _healthBarBorder.enabled = false;
             _healthBarBorderText.enabled = false;
@@ -222,4 +226,6 @@ public class Boss : MonoBehaviour
             this.enabled = false;
         }
     }
+
+    public static bool BossIsDead() => _bossIsDead;
 }
