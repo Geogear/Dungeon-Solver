@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterName: FA2
-  _moveSpeed: 2.5
+  _moveSpeed: 3.7
   _attackDamage: 3
   _attackRange: 0.35
   _attackRate: 1

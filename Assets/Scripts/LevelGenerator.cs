@@ -37,6 +37,7 @@ public class LevelGenerator : MonoBehaviour
     public static System.Random rand = null;
     public static Indexes _dungeonSize = new Indexes(0, 0);
     public static Cell[,] _dungeonMatrix = null;
+    public static bool _spawnBoss = true;
     private static int _currentSeed = new System.Random().Next();
     private static int _currentDungeonHeight = -1;
     private static int _currentDungeonWidth = -1;
@@ -44,6 +45,7 @@ public class LevelGenerator : MonoBehaviour
     private static int _differenceY = 0;
     private static int _differenceX = 0;
     private static int _currentEnemyRenderOrder = EnemyBaseRenderOrder;
+    private static int _bossSpawnRoom = -1;
     private static Indexes _XYMax = new Indexes(0, 0);
     private static Indexes _XYMin = new Indexes(0, 0);
     private static Room _enteringRoom = null;
@@ -336,6 +338,7 @@ public class LevelGenerator : MonoBehaviour
         }
 
         RoomFiller.SetMonsterSpawnRates(_currentLevel);
+        _bossSpawnRoom = rand.Next(Room.GetNumOfRooms()/2) + Room.GetNumOfRooms()/2 + 1;
         PutRoom(firstRoomIndexes, _enteringRoom);
     }
 
@@ -350,7 +353,15 @@ public class LevelGenerator : MonoBehaviour
         bool notOnFirstRoom = room.GetEnteringDoorDirection() != Direction.DirectionCount;
         if (notOnFirstRoom)
         {
+            if(room.GetRoomId() == _bossSpawnRoom)
+            {
+                _spawnBoss = true;
+            }
             RoomFiller.FillRoom(new Indexes(room.GetRoomWidth(), room.GetRoomHeight()), room.GetEnteringIndexes(), room.GetChildDoorIndexes());
+            if (room.GetRoomId() == _bossSpawnRoom)
+            {
+                _spawnBoss = false;
+            }
         }
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
