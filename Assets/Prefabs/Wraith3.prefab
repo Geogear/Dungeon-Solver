@@ -345,7 +345,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32a4ffb82d9597c48aa819ac1f147ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxHealth: 153
   _bossName: Wraith3
+  _displayName: Wraith of Chaos
   _attackDamage: 37
   _attackRange: 0.98
   _attackRate: 0.6

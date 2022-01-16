@@ -6,9 +6,10 @@ public class Boss : MonoBehaviour
 
     private const float FaceTurningCap = 0.5f;
     private const float HBBaseScale = 2.0f;
-    [SerializeField] private const int MaxHealth = 15;
 
+    [SerializeField] private int _maxHealth = 15;
     [SerializeField] private string _bossName = "";
+    [SerializeField] private string _displayName = "";
     [SerializeField] private float _attackDamage = 5.0f;
     [SerializeField] private float _attackRange = 0.9f;
     [SerializeField] private float _attackRate = 1.0f;
@@ -16,7 +17,6 @@ public class Boss : MonoBehaviour
     [SerializeField] private float _spellRange = 4.0f;
     [SerializeField] private float _spellRate = 0.7f;
     [SerializeField] private float _spellCastShortener = 0.1f; /* For 1.0f, cast time becomes zero, and vice versa. */
-    [SerializeField] private int _hitPoints = MaxHealth;
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private Animator _attackAnimator = null;
     [SerializeField] private SpriteRenderer _spellRenderer = null;
@@ -29,6 +29,7 @@ public class Boss : MonoBehaviour
     private Animator _animator = null;
     private GameObject _healthBar;
     private UnityEngine.UI.Image _healthBarBorder = null;
+    private UnityEngine.UI.Text _healthBarBorderText = null;
     private float _nextAttackTime = -1f;
     private float _attackLeftCD = 0.0f;
     private float _attackAnimTime = 0.0f;
@@ -36,6 +37,7 @@ public class Boss : MonoBehaviour
     private float _spellCastPlayTime = 0.0f;
     private float _spellLeftCD = 0.0f;
     private float _hitRange = 0.2f;
+    private int _hitPoints = 0;
     private bool _contAttack = false;
     private bool _contSpellAttack = false;
     private bool _facingRight = true;
@@ -43,14 +45,20 @@ public class Boss : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _hitPoints = _maxHealth;
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = GetComponent<Animator>();
         _spellCastPlayTime = GetAnimLenFromAnimator(_animator, _bossName + "Spell");
         _attackAnimTime = GetAnimLenFromAnimator(_animator, _bossName + "Attack");
         _hitRange += _attackRange;
+        /* HBB image and text. */
         _healthBarBorder = GameObject.FindGameObjectWithTag("HealthBorder").GetComponent<UnityEngine.UI.Image>();
+        _healthBarBorderText = GameObject.FindGameObjectWithTag("HealthBorder").GetComponentInChildren<UnityEngine.UI.Text>();
         _healthBarBorder.enabled = true;
+        _healthBarBorderText.enabled = true;
+        _healthBarBorderText.text = _displayName;
+        /* HB. */
         _healthBar = GameObject.FindGameObjectWithTag("HealthBar");
         _healthBar.transform.localScale = new Vector3(HBBaseScale,
             _healthBar.transform.localScale.y, _healthBar.transform.localScale.z);
@@ -200,7 +208,7 @@ public class Boss : MonoBehaviour
     public void GetHit(float damage)
     {
         _hitPoints -= Mathf.RoundToInt(damage);
-        float hp = _hitPoints, hpMax = MaxHealth;
+        float hp = _hitPoints, hpMax = _maxHealth;
         float hbScaleX = (_hitPoints <= 0) ? 0 : hp / hpMax * HBBaseScale;
         _healthBar.transform.localScale =new Vector3(hbScaleX,
             _healthBar.transform.localScale.y, _healthBar.transform.localScale.z);
@@ -209,7 +217,8 @@ public class Boss : MonoBehaviour
             _animator.SetTrigger("Death");
             _boxCollider2D.enabled = false;
             _healthBarBorder.enabled = false;
-            _healthBar.GetComponentInChildren<UnityEngine.UI.Image>().enabled = false;
+            _healthBarBorderText.enabled = false;
+            _healthBar.GetComponentInChildren<UnityEngine.UI.Image>().enabled = false;          
             this.enabled = false;
         }
     }
