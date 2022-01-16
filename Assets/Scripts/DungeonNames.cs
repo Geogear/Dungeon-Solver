@@ -66,8 +66,10 @@ public enum IconType
 {
     HP = 0,
     AttackDamage = 1,
-    LevelNumber = 2,
-    IconTypeCount = 3
+    MoveSpeed = 2,
+    AttackRate = 3,
+    LevelNumber = 4,
+    IconTypeCount = 5
 }
 
 public enum PFState

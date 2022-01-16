@@ -10,6 +10,8 @@ public class PlayerCharacter : Character
     [SerializeField] private ParticleSystem _treasurePS;
     [SerializeField] private UnityEngine.UI.Text _hpText;
     [SerializeField] private UnityEngine.UI.Text _attackDamageText;
+    [SerializeField] private UnityEngine.UI.Text _moveSpeedText;
+    [SerializeField] private UnityEngine.UI.Text _attackRateText;
     [SerializeField] private UnityEngine.UI.Text _levelNumberText;
     [SerializeField] private LayerMask _bossLayer;
     private Collider2D _currentTreasureCollision;
@@ -40,7 +42,10 @@ public class PlayerCharacter : Character
         base.Start();
         _startingPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         GameController.SetPMObject();
-        SetIconTexts(IconType.HP); SetIconTexts(IconType.AttackDamage); SetIconTexts(IconType.LevelNumber);
+        for(int i = 0; i < (int)IconType.IconTypeCount; ++i)
+        {
+            SetIconTexts((IconType)i);
+        }
         _flickerData = new FlickerData(_spriteRenderer);
     }
 
@@ -249,7 +254,13 @@ public class PlayerCharacter : Character
                 _hpText.text = _hitPoints.ToString();
                 break;
             case IconType.AttackDamage:
-                _attackDamageText.text = ((int)_attackDamage).ToString();
+                _attackDamageText.text = _attackDamage.ToString();
+                break;
+            case IconType.MoveSpeed:
+                _moveSpeedText.text = _moveSpeed.ToString();
+                break;
+            case IconType.AttackRate:
+                _attackRateText.text = _attackRate.ToString();
                 break;
             case IconType.LevelNumber:
                 _levelNumberText.text = "Level: " + LevelGenerator.GetCurrentLvl();
