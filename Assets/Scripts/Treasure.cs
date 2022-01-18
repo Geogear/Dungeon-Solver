@@ -28,6 +28,7 @@ public static class Treasure
         if (!_treasures.TryGetValue(treasurePos, out td))
         {
             Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
+            return IconType.IconTypeCount;
         }
 
         /* Upgrade a random stat on success as reward or punish i.e deal damage. */
@@ -75,6 +76,7 @@ public static class Treasure
         if (!_treasures.TryGetValue(treasurePos, out td))
         {
             Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
+            return true;
         }
         return td._opened;
     }
