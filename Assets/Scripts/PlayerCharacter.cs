@@ -246,7 +246,7 @@ public class PlayerCharacter : Character
             _treasureState = TreasureState.OnTreasure;
             _puzzleDisplayer.OpenPuzzle();
         }/* If displayed and collided, let it interact. */
-        else if (Input.GetButtonDown("Fire3") && _treasureState == TreasureState.OnTreasure)
+        else if (Input.GetButtonDown("Fire1") && _treasureState == TreasureState.OnTreasure)
         {
             bool success = false,
             matched = _puzzleDisplayer.MatchedDisplaySelection(Camera.main.ScreenToWorldPoint(Input.mousePosition), ref success);
