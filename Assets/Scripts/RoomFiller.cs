@@ -131,8 +131,12 @@ public static class RoomFiller
                 Indexes tmp = new Indexes(allIndexes[randIndex].j, allIndexes[randIndex].i);
                 if (!fillTrap &&
                     (
+                    /* Room has a length of one, then can only put at the room ends, if there is a door, it will be caught. */
+                    ((roomEdges.i == 1 && tmp.j != 0 && tmp.j != roomEdges.j-1) ||
+                    (roomEdges.j == 1 && tmp.i != 0 && tmp.i != roomEdges.i-1))
+
                     /* It has wall on one side, so it shouldn't have anything on the other side. */
-                    (tmp.i == 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i+1, tmp.j] != 0)
+                    || (tmp.i == 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i+1, tmp.j] != 0)
                     || (tmp.i == roomEdges.i-1 && tmp.i != 0 && _filledTypes[tmp.i-1, tmp.j] != 0)
                     /* It shouldn't have anything on both sides. */
                     || (tmp.i > 0 && tmp.i < roomEdges.i-1 && _filledTypes[tmp.i -1, tmp.j] != 0 && _filledTypes[tmp.i+1, tmp.j] != 0)
