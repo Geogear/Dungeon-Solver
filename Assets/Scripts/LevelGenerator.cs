@@ -46,6 +46,7 @@ public class LevelGenerator : MonoBehaviour
     private static int _differenceX = 0;
     private static int _currentEnemyRenderOrder = EnemyBaseRenderOrder;
     private static int _bossSpawnRoom = -1;
+    private static float _minBGSize = 50f;
     private static Indexes _XYMax = new Indexes(0, 0);
     private static Indexes _XYMin = new Indexes(0, 0);
     private static Room _enteringRoom = null;
@@ -488,7 +489,9 @@ public class LevelGenerator : MonoBehaviour
 
     private void SetBG()
     {
-        _instantiatedBG.transform.localScale = new Vector3(_dungeonSize.j, _dungeonSize.i, 1);
+        float scaleX = (_minBGSize > _dungeonSize.j) ? _minBGSize : _dungeonSize.j;
+        float scaleY = (_minBGSize > _dungeonSize.i) ? _minBGSize : _dungeonSize.i;
+        _instantiatedBG.transform.localScale = new Vector3(scaleX, scaleY, 1);
     }
 
     private void ClearLevel()
