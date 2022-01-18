@@ -129,7 +129,7 @@ MonoBehaviour:
   _moveSpeed: 1
   _attackDamage: 7
   _attackRange: 0.4
-  _attackRate: 0.5
+  _attackRate: 0.4
   _maxHitPoints: 29
   _hitPoints: 29
   _targetLayer:
