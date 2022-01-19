@@ -58,12 +58,12 @@ public class LevelGenerator : MonoBehaviour
         {
             _currentSeed = _customSeed;
         }
-        Debug.Log("Seed:" + _currentSeed);
+        //Debug.Log("Seed:" + _currentSeed);
         rand = new System.Random(_currentSeed);
         /* Only place where, GenerateLevel is not called with AmplifyEdges. */
         _instantiatedBG = Instantiate(_background, new Vector3(transform.position.x, transform.position.y, 1), Quaternion.identity);
         GenerateLevel();
-        PrintDungeonMatrix(false);
+        //PrintDungeonMatrix(false);
         VisualizeDungeon();
         _playerObject.SetActive(true);
         _playerScript = _playerObject.GetComponent<PlayerCharacter>();
@@ -131,8 +131,8 @@ public class LevelGenerator : MonoBehaviour
                 }                   
             }
         }
-        Debug.Log("exit indexes, i, j: " + xi + " " + xj);
-        Debug.Log("room num:" + Room.GetNumOfRooms());
+        //Debug.Log("exit indexes, i, j: " + xi + " " + xj);
+        //Debug.Log("room num:" + Room.GetNumOfRooms());
     }
 
     public static void UpdateDungeonSize(Vector2 minVec, Vector2 maxVec)
@@ -219,7 +219,7 @@ public class LevelGenerator : MonoBehaviour
         ClearLevel();
         AmplifyEdges();
         GenerateLevel();
-        PrintDungeonMatrix(false);
+        //PrintDungeonMatrix(false);
         VisualizeDungeon();
         _playerScript.SetToStartPos();
     }
@@ -321,7 +321,7 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
-        Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
+        //Debug.Assert(exitFound, "Exit not found on dungeon visualizer.");
 
         SetBG();
     }

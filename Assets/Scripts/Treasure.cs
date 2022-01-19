@@ -27,7 +27,7 @@ public static class Treasure
         TreasureData td;
         if (!_treasures.TryGetValue(treasurePos, out td))
         {
-            Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
+            //Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
             return IconType.IconTypeCount;
         }
 
@@ -75,7 +75,7 @@ public static class Treasure
         TreasureData td;
         if (!_treasures.TryGetValue(treasurePos, out td))
         {
-            Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
+            //Debug.LogAssertion("Treasure not found with the given position, this mustn't be possible.");
             return true;
         }
         return td._opened;
