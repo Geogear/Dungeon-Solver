@@ -32,7 +32,7 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField]private int _currentMaxEdge = 4;
     [SerializeField]private int _currentMinEdge = 2;
-    [SerializeField]private int _customSeed = 0;  
+    [SerializeField]private static int _customSeed = 0;  
 
     public static System.Random rand = null;
     public static Indexes _dungeonSize = new Indexes(0, 0);
@@ -207,9 +207,12 @@ public class LevelGenerator : MonoBehaviour
         _XYMax = new Indexes(0, 0);
         _XYMin = new Indexes(0, 0);
         _enteringRoom = null;
+        _customSeed = 0;
     }
 
     public static Indexes GetDifIndex() => new Indexes(_differenceX, _differenceY);
+
+    public static void SetSeed(int seed) { _customSeed = seed; }
 
     public void GenerateNextLevel()
     {

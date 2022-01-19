@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class MainMenuManager : MonoBehaviour
 {
+    [SerializeField] private UnityEngine.UI.Text _seedText;
+
     private GameObject _characterSelection;
     private GameObject _mainMenu;
     // Start is called before the first frame update
@@ -26,6 +28,11 @@ public class MainMenuManager : MonoBehaviour
 
     public void MMMOnPlay()
     {
+        int seed = 0;
+        if (int.TryParse(_seedText.text, out seed))
+        {
+            LevelGenerator.SetSeed(seed);
+        }
         UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
     }
 
