@@ -405,14 +405,27 @@ public class LevelGenerator : MonoBehaviour
         /* Surround with walls. */
         for (int j = -1; j <= room.GetRoomWidth(); ++j)
         {
-            _dungeonMatrix[newOrigin.i -1, newOrigin.j + j]._tileType = (int)Tile.WallTile;
-            _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j]._tileType = (int)Tile.WallTile;
+            if(_dungeonMatrix[newOrigin.i - 1, newOrigin.j + j]._tileType == -1)
+            {
+                _dungeonMatrix[newOrigin.i - 1, newOrigin.j + j]._tileType = (int)Tile.WallTile;
+            }
+             
+            if(_dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j]._tileType == -1)
+            {
+                _dungeonMatrix[newOrigin.i + room.GetRoomHeight(), newOrigin.j + j]._tileType = (int)Tile.WallTile;
+            }     
         }
 
         for (int i = 0; i < room.GetRoomHeight(); ++i)
         {
-            _dungeonMatrix[newOrigin.i + i, newOrigin.j - 1]._tileType = (int)Tile.WallTile;
-            _dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()]._tileType = (int)Tile.WallTile;
+            if (_dungeonMatrix[newOrigin.i + i, newOrigin.j - 1]._tileType == -1)
+            {
+                _dungeonMatrix[newOrigin.i + i, newOrigin.j - 1]._tileType = (int)Tile.WallTile;
+            }
+            if (_dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()]._tileType == -1)
+            {
+                _dungeonMatrix[newOrigin.i + i, newOrigin.j + room.GetRoomWidth()]._tileType = (int)Tile.WallTile;
+            }          
         }
 
         /* Switch the doortile to its correct place. */
