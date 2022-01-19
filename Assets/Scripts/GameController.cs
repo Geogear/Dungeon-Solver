@@ -56,7 +56,13 @@ public static class GameController
     public static void OnDeath()
     {
         PauseOrResume(false, true);
-        _pauseMenu.GetComponentInChildren<UnityEngine.UI.Text>().enabled = true;
+        var text = _pauseMenu.GetComponentInChildren<UnityEngine.UI.Text>();
+        text.enabled = true;
+        if(text.text != "YOU DIED")
+        {
+            text.color = new Color(0.7830189f, 0.1735938f, 0.1735938f, 1);
+            text.text = "YOU DIED";
+        }
         _resumeButton.SetActive(false);
     }
 

@@ -679,7 +679,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1874010457011375907, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 1
+      value: 43
       objectReference: {fileID: 0}
     - target: {fileID: 1874010457011375907, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_FontData.m_Alignment
@@ -707,7 +707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1874010457011375916, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -483
+      value: -505
       objectReference: {fileID: 0}
     - target: {fileID: 2639036432654088435, guid: 971fb25da6bc3484493ec3f4286d10ca, type: 3}
       propertyPath: m_Text
