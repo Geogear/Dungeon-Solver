@@ -277,8 +277,14 @@ public class PlayerCharacter : Character
 
     private void LevelExitInteraction()
     {
-        if(Input.GetButtonDown("Fire1") && _onLevelExit && Boss.BossIsDead())
+        if(Input.GetButtonDown("Fire1") && _onLevelExit
+            && Boss.BossIsDead() && Treasure.AllTreasuresOpened())
         {
+            if(LevelGenerator.GetCurrentLvl()+1 == LevelGenerator.MaxLevel)
+            {
+                GameController.OnFinish();
+                return;
+            }
             StartCoroutine(CleanerCoroutine());
         }
     }

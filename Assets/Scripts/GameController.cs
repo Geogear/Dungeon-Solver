@@ -60,5 +60,15 @@ public static class GameController
         _resumeButton.SetActive(false);
     }
 
+    public static void OnFinish()
+    {
+        PauseOrResume(false, true);
+        var text = _pauseMenu.GetComponentInChildren<UnityEngine.UI.Text>();
+        text.enabled = true;
+        text.color = new Color(0.3295786f, 0.8490566f, 0.2042542f, 1);
+        text.text = "Congrats! You've Solved The Dungeon.";
+        _resumeButton.SetActive(false);
+    }
+
     public static bool IsPaused() => _paused;
 }
