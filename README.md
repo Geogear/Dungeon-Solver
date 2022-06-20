@@ -1,2 +1,2 @@
-## Dungeon Solve
-A 2d dungeon crawler, with simple combat and focus on puzzles. Made as the first graduation project that is requried for CENG major at GTU.
+# Dungeon Solve
+A 2d procedural generated dungeon crawler, with simple combat and puzzle elements. Made as the first graduation project for CENG major at GTU. Game page can be found [here](https://geogear.itch.io/dungeon-solve).
